@@ -1,37 +1,23 @@
 #include <iostream>
 
 #include "imgui_layer.h"
+#include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "nfd.h"
 
-ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark): m_window(window)
+void ImGUILayer::draw_color_selection_widget()
 {
-	m_application_model = application_model;
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::Begin("Color Properties Selection");
 
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	ImGui::ColorEdit3("Default Color", glm::value_ptr(m_application_model->engine_data()->default_color));
 
-	ImGui::StyleColorsDark();
-
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 330 core");
-
-	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
+	ImGui::End();
 }
 
-//TODO: break into smaller functions to make it more readable
-void ImGUILayer::update()
+void ImGUILayer::draw_main_bar()
 {
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	
-	ImGui::NewFrame();
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -57,41 +43,96 @@ void ImGUILayer::update()
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
-
-		if (m_frequenzy_names.size() > 0) {
-			static unsigned num_of_frequencies_selected = 0;
-
-			ImGui::Begin("Data selector");
-
-			if (num_of_frequencies_selected > 1) {
-				ImGui::Text("More than 1 frequency is selected!");
-			}
-			num_of_frequencies_selected = 0;
-
-			if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
-			{
-				bool* selected = new bool[m_frequenzy_names.size()];
-				std::vector<bool>& selected_attributes = m_application_model->selected_attributes;
-				for (int i = 0; i < m_frequenzy_names.size(); i++)
-				{
-					selected[i] = selected_attributes[i];
-
-					ImGui::TableNextColumn();
-					ImGui::Selectable(m_frequenzy_names[i].c_str(), &selected[i]);
-					if (selected_attributes[i] != selected[i])
-						std::cout << m_frequenzy_names[i] << " je " << selected[i] << std::endl;
-					
-					selected_attributes[i] = selected[i];
-
-					num_of_frequencies_selected += selected[i];
-				}
-				delete[] selected;
-
-				ImGui::EndTable();
-			}
-			ImGui::End();
-		}
 	}
+}
+
+void ImGUILayer::draw_frequency_selection_widget()
+{
+	static unsigned num_of_frequencies_selected = 0;
+
+	ImGui::Begin("Frequency Selection");
+	const char* arr[] = { "a", "b"};
+	if (num_of_frequencies_selected > 0) {
+		draw_limits_selection();
+	}
+	
+	if (num_of_frequencies_selected > 1) {
+		ImGui::Text("More than 1 frequency is selected!");
+	}
+	num_of_frequencies_selected = 0;
+
+	if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
+	{
+		bool* selected = new bool[m_frequenzy_names.size()];
+		std::vector<bool>& selected_attributes = m_application_model->selected_attributes;
+		for (int i = 0; i < m_frequenzy_names.size(); i++)
+		{
+			selected[i] = selected_attributes[i];
+
+			ImGui::TableNextColumn();
+			ImGui::Selectable(m_frequenzy_names[i].c_str(), &selected[i]);
+			if (selected_attributes[i] != selected[i])
+				std::cout << m_frequenzy_names[i] << " je " << selected[i] << std::endl;
+
+			if (selected_attributes[i] != selected[i]) {
+				m_application_model->engine_data()->select_frequency(m_frequenzy_names[i], selected[i]);
+			}
+			selected_attributes[i] = selected[i];
+
+			num_of_frequencies_selected += selected[i];
+		}
+		delete[] selected;
+
+		ImGui::EndTable();
+	}
+	ImGui::End();
+}
+
+void ImGUILayer::draw_limits_selection()
+{
+	int selected_mode = *m_application_model->limits_mode();
+	unsigned int num_of_labels = sizeof(EngineData::LIMITS_NAMES) / sizeof(*EngineData::LIMITS_NAMES);
+
+	ImGui::ListBox("Limits Selection", &(selected_mode), EngineData::LIMITS_NAMES, num_of_labels, 2);
+
+	*(m_application_model->limits_mode()) = (Limits)selected_mode;
+
+	if (selected_mode == USER_DEFINED)
+		ImGui::DragFloat2("Custom Limits", m_application_model->user_defined_limits(), 1, -200, 200);
+}
+
+ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark): m_window(window)
+{
+	m_application_model = application_model;
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330 core");
+
+	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
+}
+
+void ImGUILayer::update()
+{
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+
+	ImGui::NewFrame();
+	
+	draw_main_bar();
+
+	draw_color_selection_widget();
+
+	if (m_frequenzy_names.size() > 0)
+		draw_frequency_selection_widget();
 
 	ImGui::Render();
 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "engine_data.h"
 #include "glm_vec_helper.h"
 
@@ -9,13 +10,16 @@ const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineDa
 	std::make_shared<cell_functors::SpreadFunctor>(),
 };
 
+const char* EngineData::FUNCTION_NAMES[5] {"MIN", "MAX", "AVERAGE", "MEDIAN", "SPREAD"};
+const char* EngineData::LIMITS_NAMES[3] {"GLOBAL", "LOCAL", "USER DEFINED"};
+
 void EngineData::calculate_color()
 {
 	std::map<unsigned int, glm::vec3> color_map;
 
 	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
 
-	glm::vec2& limits = m_limits[m_limits_mode];
+	glm::vec2& limits = m_limits[limits_mode];
 	if (n_selected_frequencies == 0) {
 		for (unsigned int& index : m_cell_indeces)
 			color_map[index] = default_color;
@@ -33,7 +37,7 @@ void EngineData::calculate_color()
 			for (int i = 0; i < n_selected_frequencies; ++i)
 				values.push_back(pair.second.freq_map[m_selected_frequencies_names[i]]);
 
-			float value = (*CELL_FUNCTIONS[m_selected_function])(values);
+			float value = (*CELL_FUNCTIONS[selected_function])(values);
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
 			color_map[pair.first] = gradient.evaluate(norm_value);
 		}
@@ -47,6 +51,9 @@ void EngineData::refresh_cached_values()
 	m_cached_default_color = default_color;
 	m_cached_gradient = gradient;
 	m_limits[USER_DEFINED] = user_limits;
+
+	m_cached_limits_mode = limits_mode;
+	m_cached_selected_function = selected_function;
 }
 
 void EngineData::find_local_limits()
@@ -90,11 +97,11 @@ void EngineData::find_global_limits()
 
 EngineData::EngineData(const glm::vec3& color)
 {
-	m_limits_mode = GLOBAL;
-	m_selected_function = AVERAGE;
+	limits_mode = GLOBAL;
+	selected_function = AVERAGE;
 
 	default_color = color;
-	gradient = m_cached_gradient;
+	gradient = { glm::vec3(0), glm::vec3(1)};
 	m_limits = { {0, 0}, {0, 0}, {0, 0} };
 	refresh_cached_values();
 }
@@ -132,11 +139,16 @@ void EngineData::check_for_changes()
 {
 	bool are_changes_pending = false;
 
+	//TODO: FINDER CLEANER WAY TO CHECK THIS
 	if (!are_equal(default_color, m_cached_default_color))
 		are_changes_pending = true;
 	else if (gradient != m_cached_gradient)
 		are_changes_pending = true;
 	else if (!are_equal(m_limits[USER_DEFINED], user_limits))
+		are_changes_pending = true;
+	else if (limits_mode != m_cached_limits_mode)
+		are_changes_pending = true;
+	else if (selected_function != m_cached_selected_function)
 		are_changes_pending = true;
 
 	if (are_changes_pending)

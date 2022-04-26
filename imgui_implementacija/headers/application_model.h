@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "events.h"
 #include "signals.h"
+#include "glm/gtc/type_ptr.hpp"
 
 class ApplicationModel {
 private:
@@ -39,4 +40,10 @@ public:
 	void refresh_camera() { on_view_mat_changed.invoke(m_camera->view_mat()); }
 
 	std::vector<std::string> frequenzy_names() { return m_engine_data->frequenzy_names(); }
+
+	Limits* limits_mode() { return &m_engine_data->limits_mode; }
+
+	CellFunctions* selected_function() { return &m_engine_data->selected_function; }
+
+	float* user_defined_limits() { return glm::value_ptr(m_engine_data->user_limits); }
 };

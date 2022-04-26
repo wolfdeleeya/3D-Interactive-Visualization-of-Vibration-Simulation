@@ -12,6 +12,14 @@ private:
 	std::vector<std::string> m_frequenzy_names;
 	ApplicationModel* m_application_model;
 
+	void draw_color_selection_widget();
+
+	void draw_main_bar();
+
+	void draw_frequency_selection_widget();
+
+	void draw_limits_selection();
+
 public:
 	Event<const char*> on_load_vertex_positions,
 		on_load_cell_vertices,

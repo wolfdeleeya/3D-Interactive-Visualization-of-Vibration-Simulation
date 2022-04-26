@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <memory>
+#include <array>
 
 #include "events.h"
 #include "data_loading.h"
@@ -29,8 +30,8 @@ private:
 	glm::vec3 m_cached_default_color;
 	Gradient m_cached_gradient;
 
-	Limits m_limits_mode;
-	CellFunctions m_selected_function;
+	Limits m_cached_limits_mode;
+	CellFunctions m_cached_selected_function;
 
 	void calculate_color();
 
@@ -41,9 +42,14 @@ private:
 	void find_global_limits();
 
 public:
+	static const char* FUNCTION_NAMES[5];
+	static const char* LIMITS_NAMES[3];
+
 	glm::vec3 default_color;
 	Gradient gradient;
 	glm::vec2 user_limits;
+	Limits limits_mode;
+	CellFunctions selected_function;
 
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
