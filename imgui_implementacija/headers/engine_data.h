@@ -1,0 +1,59 @@
+#pragma once
+
+#include <functional>
+#include <memory>
+
+#include "events.h"
+#include "data_loading.h"
+#include "gradient.h"
+#include "cell_value_functors.h"
+
+enum Limits { GLOBAL, LOCAL, USER_DEFINED};
+
+enum CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD};
+
+class EngineData {
+private:
+
+	static const std::vector <std::unique_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS;
+
+	std::map<unsigned int, cell_stats> m_cell_stats;
+	
+	std::vector<glm::vec2> m_limits;
+
+	std::vector<std::string> m_frequenzy_names;
+	std::vector<std::string> m_selected_frequencies_names;
+	
+	glm::vec3 m_cached_default_color;
+	Gradient m_cached_gradient;
+
+	Limits m_limits_mode;
+	CellFunctions m_selected_function;
+
+	void calculate_color();
+	
+	void refresh_cached_values();
+
+	void find_local_limits();
+
+	void find_global_limits();
+
+public:
+	glm::vec3 default_color;
+	Gradient gradient;
+	glm::vec2 user_limits;
+
+	Event<std::map<unsigned int, glm::vec3>> on_colors_recalculated;
+
+	EngineData(const glm::vec3& default_color);
+
+	void load_cell_stats(const char* path);
+
+	void check_for_changes();
+
+	void select_frequency(const std::string& f_name, bool value);
+
+	bool are_stats_loaded() { return m_cell_stats.size() > 0; }
+
+	std::vector<std::string> frequenzy_names() { return m_frequenzy_names; }
+};
