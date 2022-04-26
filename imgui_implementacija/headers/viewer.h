@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+
+#include "engine_mesh.h"
 #include "application_model.h"
 #include "imgui_layer.h"
 #include "GLFW/glfw3.h"
@@ -9,6 +11,7 @@
 class Viewer {
 private:
 	ApplicationModel* m_appliction_model;
+	EngineMesh* m_engine_mesh;
 	GLFWwindow* m_window;
 
 	ImGUILayer* m_imgui_layer;

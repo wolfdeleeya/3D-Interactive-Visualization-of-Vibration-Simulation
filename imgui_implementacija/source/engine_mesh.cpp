@@ -1,13 +1,13 @@
 #include "engine_mesh.h"
-
+#include "glm/gtc/matrix_transform.hpp"
 #include "GLFW/glfw3.h"
 
 const char* EngineMesh::model_par_name = "model";
 const char* EngineMesh::view_par_name = "view";
 const char* EngineMesh::projection_par_name = "projection";
 
-const char* EngineMesh::LINE_VERT_SHADER = "C:/Users/Nikola Vugdelija/Desktop/Diplomski rad/imgui_implementacija/imgui_implementacija/imgui_implementacija/shaders/line_shader.vert";
-const char* EngineMesh::LINE_FRAG_SHADER = "C:/Users/Nikola Vugdelija/Desktop/Diplomski rad/imgui_implementacija/imgui_implementacija/imgui_implementacija/shaders/line_shader.frag";
+const char* EngineMesh::LINE_VERT_SHADER = "./Shaders/line_shader.vert";
+const char* EngineMesh::LINE_FRAG_SHADER = "./Shaders/line_shader.frag";
 
 
 void EngineMesh::setup_vertex_data()
@@ -118,34 +118,28 @@ void EngineMesh::render()
 	glBindVertexArray(0);
 }
 
-bool EngineMesh::set_model(const glm::mat4& model_mat)
+void EngineMesh::set_model(const glm::mat4& model_mat)
 {
 	m_shader.set_value(model_par_name, model_mat);
 	m_line_shader.set_value(model_par_name, model_mat);
-
-	return true;
 }
 
-bool EngineMesh::set_view(const glm::mat4& view_mat)
+void EngineMesh::set_view(const glm::mat4& view_mat)
 {
 	m_shader.set_value(view_par_name, view_mat);
 	m_line_shader.set_value(view_par_name, view_mat);
-
-	return true;
 }
 
-bool EngineMesh::set_projection(const glm::mat4& projection_mat)
+void EngineMesh::set_projection(const glm::mat4& projection_mat)
 {
 	m_shader.set_value(projection_par_name, projection_mat);
 	m_line_shader.set_value(projection_par_name, projection_mat);
-
-	return true;
 }
 
 void EngineMesh::set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map)
 {
 	m_cell_colors_map = cell_colors_map;
-	load_model_data();		//TODO: separate color loading from vertex lodaing: low priority currently
+	setup_vertex_data();		//TODO: separate color loading from vertex lodaing: low priority currently
 }
 
 void EngineMesh::load_cell_vertices(const char* path)
@@ -166,14 +160,17 @@ void EngineMesh::load_cell_vertices(const char* path)
 	setup_vertex_data();
 }
 
-
-
 void EngineMesh::load_vertex_positions(const char* path)
 {
 	m_vertex_positions = loader::load_vertices(path);
 	if (m_cell_vertices.size() > 0 && m_vertex_positions.size() > 0)
 		calculate_normals();
 	setup_vertex_data();
+}
+
+void EngineMesh::window_size_changed(std::pair<int, int> window_dimensions) 
+{ 
+	set_projection(glm::perspective(45.f, (float)window_dimensions.first / window_dimensions.second, 0.1f, 100.f)); 
 }
 
 void EngineMesh::clear()

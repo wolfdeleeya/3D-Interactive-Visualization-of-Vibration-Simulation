@@ -13,6 +13,11 @@ private:
 	ApplicationModel* m_application_model;
 
 public:
+	Event<const char*> on_load_vertex_positions,
+		on_load_cell_vertices,
+		on_load_cell_stats;
+
+
 	ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark = true);
 	
 	void update();

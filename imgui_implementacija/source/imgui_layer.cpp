@@ -39,19 +39,19 @@ void ImGUILayer::update()
 			if (ImGui::Button("Load Vertices")) {
 				std::string s = get_file_path({ {".csv files", "csv"} });
 				if (s.size() > 0)
-					m_application_model->load_vertices(s.c_str());
+					on_load_vertex_positions.invoke(s.c_str());
 			}
 
 			if (ImGui::Button("Load Cells")) {
 				std::string s = get_file_path({ {".csv files", "csv"} });
 				if (s.size() > 0)
-					m_application_model->load_cells(s.c_str());
+					on_load_cell_vertices.invoke(s.c_str());
 			}
 
 			if (ImGui::Button("Load Cell Data")) {
 				std::string s = get_file_path({ {".csv files", "csv"} });
 				if (s.size() > 0)
-					m_application_model->load_cell_stats(s.c_str());
+					on_load_cell_stats.invoke(s.c_str());
 			}
 
 			ImGui::EndMenu();
@@ -140,7 +140,7 @@ bool ImGUILayer::handle_mouse_click(int button, bool down)
 
 void ImGUILayer::cell_stats_loaded()
 {
-	m_frequenzy_names = m_application_model->model()->frequenzy_names();
+	m_frequenzy_names = m_application_model->frequenzy_names();
 }
 
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)

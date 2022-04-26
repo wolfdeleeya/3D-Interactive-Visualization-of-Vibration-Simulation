@@ -19,13 +19,30 @@ Viewer::Viewer(int init_width, int init_height, const char* vert_shader_path, co
 	init_glfw(init_width, init_height);
 	init_opengl();
 
-	m_appliction_model = new ApplicationModel(vert_shader_path, frag_shader_path, init_width, init_height);
+	m_appliction_model = new ApplicationModel();
 	m_imgui_layer = new ImGUILayer(m_appliction_model, m_window, "version 330 core");
+	m_engine_mesh = new EngineMesh(vert_shader_path, frag_shader_path);
+
+	m_appliction_model->on_view_mat_changed.add_member_listener(&EngineMesh::set_view, m_engine_mesh);
+	m_appliction_model->engine_data()->on_colors_recalculated.add_member_listener(&EngineMesh::set_colors, m_engine_mesh);
+
+	on_window_size_changed.add_member_listener(&EngineMesh::window_size_changed, m_engine_mesh);
+
+	m_imgui_layer->on_load_vertex_positions.add_member_listener(&EngineMesh::load_vertex_positions, m_engine_mesh);
+	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineMesh::load_cell_vertices, m_engine_mesh);
+	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineData::on_cell_vertices_loaded, m_appliction_model->engine_data());
+
+	m_imgui_layer->on_load_cell_stats.add_member_listener(&ApplicationModel::load_cell_stats, m_appliction_model);
+
+	on_window_size_changed.invoke({ init_width, init_height });
+
+	m_appliction_model->refresh_camera();
 }
 
 Viewer::~Viewer()
 {
 	delete m_imgui_layer;
+	delete m_engine_mesh;
 	glfwTerminate();
 	NFD_Quit();
 	delete m_appliction_model;
@@ -67,7 +84,6 @@ void Viewer::resize_callback(int width, int height)
 	m_window_height = height;
 
 	glViewport(0, 0, m_window_width, m_window_height);
-	m_appliction_model->set_window_size(m_window_width, m_window_height);
 
 	on_window_size_changed.invoke({ m_window_width, m_window_height });
 }
@@ -107,7 +123,8 @@ void Viewer::update() {
 	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_appliction_model->model()->draw();
+	m_appliction_model->update();
+	m_engine_mesh->render();
 
 	m_imgui_layer->update();
 

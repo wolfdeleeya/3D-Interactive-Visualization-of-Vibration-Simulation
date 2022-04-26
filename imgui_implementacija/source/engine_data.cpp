@@ -1,12 +1,12 @@
 #include "engine_data.h"
 #include "glm_vec_helper.h"
 
-const std::vector <std::unique_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS{
-	std::make_unique<cell_functors::MinFunctor>(),
-	std::make_unique<cell_functors::MaxFunctor>(),
-	std::make_unique<cell_functors::AvgFunctor>(),
-	std::make_unique<cell_functors::MedianFunctor>(),
-	std::make_unique<cell_functors::SpreadFunctor>(),
+const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineData::CELL_FUNCTIONS{
+	std::make_shared<cell_functors::MinFunctor>(),
+	std::make_shared<cell_functors::MaxFunctor>(),
+	std::make_shared<cell_functors::AvgFunctor>(),
+	std::make_shared<cell_functors::MedianFunctor>(),
+	std::make_shared<cell_functors::SpreadFunctor>(),
 };
 
 void EngineData::calculate_color()
@@ -16,10 +16,9 @@ void EngineData::calculate_color()
 	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
 
 	glm::vec2& limits = m_limits[m_limits_mode];
-
 	if (n_selected_frequencies == 0) {
-		for (auto& pair : m_cell_stats)
-			color_map[pair.first] = default_color;
+		for (unsigned int& index : m_cell_indeces)
+			color_map[index] = default_color;
 	}
 	else if (n_selected_frequencies == 1) {
 		for (auto& pair : m_cell_stats) {
@@ -33,7 +32,7 @@ void EngineData::calculate_color()
 			std::vector<float> values;
 			for (int i = 0; i < n_selected_frequencies; ++i)
 				values.push_back(pair.second.freq_map[m_selected_frequencies_names[i]]);
-			
+
 			float value = (*CELL_FUNCTIONS[m_selected_function])(values);
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
 			color_map[pair.first] = gradient.evaluate(norm_value);
@@ -104,7 +103,27 @@ void EngineData::load_cell_stats(const char* path)
 {
 	m_cell_stats = loader::load_cell_stats(path, m_frequenzy_names);
 
+	m_cell_indeces.clear();
+
+	for (const auto& pair : m_cell_stats)
+		m_cell_indeces.push_back(pair.first);
+
 	find_global_limits();
+
+	calculate_color();
+}
+
+void EngineData::on_cell_vertices_loaded(const char* path)
+{
+	if (m_cell_stats.size() != 0)
+		return;
+
+	const auto& cell_vertices = loader::load_cells(path);
+	
+	m_cell_indeces.clear();
+	
+	for (const auto& pair : cell_vertices)
+		m_cell_indeces.push_back(pair.first);
 
 	calculate_color();
 }

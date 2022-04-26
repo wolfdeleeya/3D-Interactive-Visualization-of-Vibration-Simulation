@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "data_loading.h"
 #include "shader_helper.h"
 
@@ -52,17 +51,19 @@ public:
 
 	bool set_value(const std::string& name, T value);
 
-	bool set_model(const glm::mat4& model_mat);
+	void set_model(const glm::mat4& model_mat);
 
-	bool set_view(const glm::mat4& view_mat);
+	void set_view(const glm::mat4& view_mat);
 
-	bool set_projection(const glm::mat4& projection_mat);
-
-	void load_cell_vertices(const char* path);
+	void set_projection(const glm::mat4& projection_mat);
 
 	void set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map);
 
+	void load_cell_vertices(const char* path);
+
 	void load_vertex_positions(const char* path);
+
+	void window_size_changed(std::pair<int, int> window_dimensions);
 
 	void clear();
 };

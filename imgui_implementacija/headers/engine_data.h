@@ -15,15 +15,17 @@ enum CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD};
 class EngineData {
 private:
 
-	static const std::vector <std::unique_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS;
+	static const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS;
 
 	std::map<unsigned int, cell_stats> m_cell_stats;
 	
+	std::vector<unsigned int> m_cell_indeces;
+
 	std::vector<glm::vec2> m_limits;
 
 	std::vector<std::string> m_frequenzy_names;
 	std::vector<std::string> m_selected_frequencies_names;
-	
+
 	glm::vec3 m_cached_default_color;
 	Gradient m_cached_gradient;
 
@@ -31,7 +33,7 @@ private:
 	CellFunctions m_selected_function;
 
 	void calculate_color();
-	
+
 	void refresh_cached_values();
 
 	void find_local_limits();
@@ -43,11 +45,13 @@ public:
 	Gradient gradient;
 	glm::vec2 user_limits;
 
-	Event<std::map<unsigned int, glm::vec3>> on_colors_recalculated;
+	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
 	EngineData(const glm::vec3& default_color);
 
 	void load_cell_stats(const char* path);
+
+	void on_cell_vertices_loaded(const char* path);
 
 	void check_for_changes();
 
