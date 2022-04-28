@@ -2,6 +2,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include "GLFW/glfw3.h"
+#include "debug.h"
 
 #include <iostream>
 
@@ -92,11 +93,9 @@ void EngineMesh::load_model_data()
 	for (auto& pair : m_cell_vertices) {
 		unsigned int cell_index = pair.first;
 
-		if (cell_index == m_selected_index)
-			std::cout << "LOOL\n";
 		for (unsigned int vert_index : pair.second) {
 			glm::vec3 pos = m_vertex_positions[vert_index];
-			glm::vec3 color = m_cell_colors_map[cell_index];
+			glm::vec3 color = cell_index == m_selected_index ? glm::vec3(1) : m_cell_colors_map[cell_index];
 
 			glm::vec3 normal = m_cell_normals[cell_index];
 
@@ -134,19 +133,45 @@ void EngineMesh::setup_indices()
 	}
 }
 
-EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, bool is_cw):
-	m_shader(vertex_shader_dest, fragment_shader_dest), m_line_shader(LINE_VERT_SHADER, LINE_FRAG_SHADER),
-	m_cell_select_shader(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER) {
-	
+void EngineMesh::update_cell_selection_framebuffer(std::pair<int, int> window_dimensions)
+{
+	int width = window_dimensions.first, height = window_dimensions.second;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_CS_FBO); 
+
+	glBindRenderbuffer(GL_RENDERBUFFER, m_CS_RBO_color); 
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, width, height); 
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_CS_RBO_color); 
+
+	glBindRenderbuffer(GL_RENDERBUFFER, m_CS_RBO_depth); 
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_CS_RBO_depth);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
+EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, 
+	std::pair<int, int> window_dimensions, bool is_cw) :m_shader(vertex_shader_dest, fragment_shader_dest), 
+	m_line_shader(LINE_VERT_SHADER, LINE_FRAG_SHADER), m_cell_select_shader(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER) {
+
 	m_is_cw = is_cw;
-	
+
 	glGenBuffers(1, &m_VBO);
 	glGenVertexArrays(1, &m_VAO);
 
 	glGenBuffers(1, &m_CS_VBO);
 	glGenVertexArrays(1, &m_CS_VAO);
-
+	
 	glGenBuffers(1, &m_EBO);
+
+	glGenFramebuffers(1, &m_CS_FBO);
+
+	glGenRenderbuffers(1, &m_CS_RBO_color);
+	glGenRenderbuffers(1, &m_CS_RBO_depth);
+
+	update_cell_selection_framebuffer(window_dimensions);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_CS_FBO);
 
 	setup_buffers();
 }
@@ -167,14 +192,25 @@ EngineMesh::~EngineMesh()
 
 void EngineMesh::render()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, m_CS_FBO);
+
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	m_cell_select_shader.use();
 	glBindVertexArray(m_CS_VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	m_shader.use();
+	glBindVertexArray(m_VAO);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 	
-	//m_line_shader.use();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
+	m_line_shader.use();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 }
@@ -218,6 +254,7 @@ void EngineMesh::load_vertex_positions(const char* path)
 void EngineMesh::window_size_changed(std::pair<int, int> window_dimensions) 
 { 
 	set_projection(glm::perspective(45.f, (float)window_dimensions.first / window_dimensions.second, 0.1f, 100.f)); 
+	update_cell_selection_framebuffer(window_dimensions);
 }
 
 void EngineMesh::clear()
@@ -238,14 +275,18 @@ int EngineMesh::get_index_at_pos(GLint x, GLint y)
 void EngineMesh::select_index(GLint x, GLint y)
 {
 	m_selected_index = get_index_at_pos(x, y);
-	std::cout << m_selected_index << std::endl;
 	setup_vertex_data();
 }
 
 glm::vec3 EngineMesh::get_color_at_pos(GLint x, GLint y)
 {
-	glm::vec4 pixel;
+	glm::vec4 pixel(0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_CS_FBO);
+
 	glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, glm::value_ptr(pixel));
-	std::cout << pixel.x << ", " << pixel.y << ", " << pixel.z << std::endl;
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	return pixel;
 }

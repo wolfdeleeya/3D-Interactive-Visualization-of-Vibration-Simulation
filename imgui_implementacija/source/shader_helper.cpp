@@ -4,6 +4,8 @@
 #include "shader_helper.h"
 #include <glm/gtc/type_ptr.hpp>
 
+#include "debug.h"
+
 const int SHADER_INFO_LENGTH = 512;
 
 unsigned int load_shader(const char* file_dest, unsigned int shader_type) {
@@ -31,7 +33,7 @@ unsigned int load_shader(const char* file_dest, unsigned int shader_type) {
 unsigned int load_program(const char* vertex_shader_dest, const char* frag_shader_dest) {
 	unsigned int vertex_shader = load_shader(vertex_shader_dest, GL_VERTEX_SHADER);
 	unsigned int frag_shader = load_shader(frag_shader_dest, GL_FRAGMENT_SHADER);
-
+	
 	unsigned int program = glCreateProgram();
 
 	glAttachShader(program, vertex_shader);
@@ -64,7 +66,8 @@ bool check_shader_status(unsigned int shader_id) {
 
 bool check_program_status(unsigned int program_id) {
 	int is_success;
-	glGetProgramiv(program_id, GL_COMPILE_STATUS, &is_success);
+	glGetProgramiv(program_id, GL_LINK_STATUS, &is_success);
+	
 
 	if (!is_success) {
 		char info[SHADER_INFO_LENGTH];
@@ -78,6 +81,7 @@ bool check_program_status(unsigned int program_id) {
 Shader::Shader(const char* vert_shader_dest, const char* frag_shader_dest) {
 
 	m_program_id = load_program(vert_shader_dest, frag_shader_dest);
+	
 	m_is_active = true;
 
 	m_vertex_shader_path = vert_shader_dest;

@@ -87,6 +87,9 @@
     <ClInclude Include="headers\glm_vec_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\Source\imgui.cpp">
@@ -150,6 +153,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\engine_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

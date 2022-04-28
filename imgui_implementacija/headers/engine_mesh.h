@@ -20,6 +20,9 @@ private:
 	unsigned int m_VBO, m_VAO, m_EBO;
 	unsigned int m_CS_VBO, m_CS_VAO;	//cell selection buffer and vertex attribute array
 
+	unsigned int m_CS_FBO;
+	unsigned int m_CS_RBO_color, m_CS_RBO_depth;
+
 	const static char* LINE_VERT_SHADER;
 	const static char* LINE_FRAG_SHADER;
 
@@ -58,10 +61,12 @@ private:
 
 	void setup_indices();
 
+	void update_cell_selection_framebuffer(std::pair<int, int> window_dimensions);
+
 	glm::vec3 get_color_at_pos(GLint x, GLint y);
 
 public:
-	EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, bool is_cw = false);
+	EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, std::pair<int, int> window_dimensions, bool is_cw = false);
 
 	~EngineMesh();
 

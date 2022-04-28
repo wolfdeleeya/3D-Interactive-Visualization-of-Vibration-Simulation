@@ -148,6 +148,7 @@
     <ClInclude Include="headers\camera.h" />
     <ClInclude Include="headers\cell_value_functors.h" />
     <ClInclude Include="headers\data_loading.h" />
+    <ClInclude Include="headers\debug.h" />
     <ClInclude Include="headers\debug_layer.h" />
     <ClInclude Include="headers\engine_data.h" />
     <ClInclude Include="headers\engine_mesh.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="source\application_model.cpp" />
     <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\cell_value_functors.cpp" />
+    <ClCompile Include="source\debug.cpp" />
     <ClCompile Include="source\engine_data.cpp" />
     <ClCompile Include="source\engine_mesh.cpp" />
     <ClCompile Include="source\gradient.cpp" />

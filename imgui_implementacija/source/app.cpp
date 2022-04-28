@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "glad/glad.h"
+#include "debug.h"
 #include "app.h"
 #include "nfd.h"
 #include "imgui_layer.h"
@@ -24,7 +25,7 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 
 	m_appliction_model = new ApplicationModel();
 	m_imgui_layer = new ImGUILayer(m_appliction_model, m_window, "version 330 core");
-	m_engine_mesh = new EngineMesh(vert_shader_path, frag_shader_path);
+	m_engine_mesh = new EngineMesh(vert_shader_path, frag_shader_path, {init_width, init_height});
 
 	m_appliction_model->on_view_mat_changed.add_member_listener(&EngineMesh::set_view, m_engine_mesh);
 	m_appliction_model->engine_data()->on_colors_recalculated.add_member_listener(&EngineMesh::set_colors, m_engine_mesh);
@@ -59,7 +60,8 @@ void App::init_glfw(int width, int height) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
+	glfwWindowHint(GLFW_SAMPLES, 8);
 	
 	m_window = glfwCreateWindow(width, height, "Engine Viewer", nullptr, nullptr);
 
@@ -83,6 +85,9 @@ void App::init_opengl() {
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	
+	glEnable(GL_MULTISAMPLE);
+	
 }
 
 void App::resize_callback(int width, int height)
