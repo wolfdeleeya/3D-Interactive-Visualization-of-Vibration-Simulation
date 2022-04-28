@@ -17,7 +17,7 @@ private:
 
 	const static float min_camera_distance, max_camera_distance;
 public:
-	std::vector<bool> selected_attributes;
+	glm::vec3 clear_color;
 
 	Signal on_cell_stats_loaded;
 
@@ -37,6 +37,8 @@ public:
 
 	void move_camera_distance(float y_offset);
 
+	void on_vertex_positions_loaded(const char* path);
+
 	void refresh_camera() { on_view_mat_changed.invoke(m_camera->view_mat()); }
 
 	std::vector<std::string> frequenzy_names() { return m_engine_data->frequenzy_names(); }
@@ -46,4 +48,12 @@ public:
 	CellFunctions* selected_function() { return &m_engine_data->selected_function; }
 
 	float* user_defined_limits() { return glm::value_ptr(m_engine_data->user_limits); }
+
+	void select_frequency(const std::string& f_name, bool is_selected) { m_engine_data->select_frequency(f_name, is_selected); }
+
+	bool is_frequency_selected(const std::string& f_name) { return m_engine_data->is_frequency_selected(f_name); }
+
+	void clear_selection() { m_engine_data->clear_selection(); }
+
+	std::vector<std::string> selected_frequencies() { return m_engine_data->selected_frequencies(); }
 };

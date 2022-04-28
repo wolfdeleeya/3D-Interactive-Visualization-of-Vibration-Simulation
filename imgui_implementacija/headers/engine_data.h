@@ -61,9 +61,15 @@ public:
 
 	void check_for_changes();
 
-	void select_frequency(const std::string& f_name, bool value);
+	void select_frequency(const std::string& f_name, bool is_selected);
+
+	void clear_selection();
+
+	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
 
 	bool are_stats_loaded() { return m_cell_stats.size() > 0; }
 
 	std::vector<std::string> frequenzy_names() { return m_frequenzy_names; }
+
+	std::vector<std::string> selected_frequencies() { return m_selected_frequencies_names; }
 };

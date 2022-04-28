@@ -1,6 +1,8 @@
+#include <iostream>
+
 #include "application_model.h"
 
-const float ApplicationModel::min_camera_distance = 1, ApplicationModel::max_camera_distance = 30;
+const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_camera_distance = 5;
 
 ApplicationModel::ApplicationModel()
 {
@@ -8,7 +10,7 @@ ApplicationModel::ApplicationModel()
 	m_scroll_sensitivity = 0.05;
 
 	m_engine_data = new EngineData(glm::vec3(0.55, 0.55, 0.55));
-	m_camera = new Camera(10, glm::vec3(0));
+	m_camera = new Camera(max_camera_distance, glm::vec3(0));
 }
 
 ApplicationModel::~ApplicationModel()
@@ -20,9 +22,6 @@ ApplicationModel::~ApplicationModel()
 void ApplicationModel::load_cell_stats(const char* path)
 {
 	m_engine_data->load_cell_stats(path);
-
-	selected_attributes.clear();
-	selected_attributes.resize(frequenzy_names().size());
 	on_cell_stats_loaded.invoke();
 }
 
@@ -49,6 +48,25 @@ void ApplicationModel::move_camera_distance(float y_offset)
 		distance = min_camera_distance;
 
 	m_camera->set_distance(distance);
+
+	on_view_mat_changed.invoke(m_camera->view_mat());
+}
+
+void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set camera to point at average position of vertices
+{
+	const auto& vertices = loader::load_vertices(path);
+
+	glm::vec3 sum(0);
+	
+	glm::vec3 leftest, rightest, frontest, backest, highest, lowest;
+
+	for (const auto& pair : vertices)
+		sum += pair.second;
+
+	glm::vec3 avg = sum / (float)vertices.size();
+	m_camera->set_target(avg);
+
+	std::cout << avg.x << ", " << avg.y << ", " << avg.z << std::endl;
 
 	on_view_mat_changed.invoke(m_camera->view_mat());
 }

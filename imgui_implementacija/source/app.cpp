@@ -1,11 +1,14 @@
 #include <iostream>
 
 #include "glad/glad.h"
-#include "viewer.h"
+#include "app.h"
 #include "nfd.h"
 #include "imgui_layer.h"
 
-Viewer::Viewer(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path) {
+float App::last_timestamp = 0;
+float App::delta_time = 0;
+
+App::App(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path) {
 	NFD_Init();
 
 	for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i)
@@ -29,6 +32,8 @@ Viewer::Viewer(int init_width, int init_height, const char* vert_shader_path, co
 	on_window_size_changed.add_member_listener(&EngineMesh::window_size_changed, m_engine_mesh);
 
 	m_imgui_layer->on_load_vertex_positions.add_member_listener(&EngineMesh::load_vertex_positions, m_engine_mesh);
+	m_imgui_layer->on_load_vertex_positions.add_member_listener(&ApplicationModel::on_vertex_positions_loaded, m_appliction_model);
+
 	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineMesh::load_cell_vertices, m_engine_mesh);
 	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineData::on_cell_vertices_loaded, m_appliction_model->engine_data());
 
@@ -39,7 +44,7 @@ Viewer::Viewer(int init_width, int init_height, const char* vert_shader_path, co
 	m_appliction_model->refresh_camera();
 }
 
-Viewer::~Viewer()
+App::~App()
 {
 	delete m_imgui_layer;
 	delete m_engine_mesh;
@@ -48,13 +53,14 @@ Viewer::~Viewer()
 	delete m_appliction_model;
 }
 
-void Viewer::init_glfw(int width, int height) {
+void App::init_glfw(int width, int height) {
 	glfwInit();
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	
 	m_window = glfwCreateWindow(width, height, "Engine Viewer", nullptr, nullptr);
 
 	if (!m_window) {
@@ -64,9 +70,10 @@ void Viewer::init_glfw(int width, int height) {
 	}
 
 	glfwMakeContextCurrent(m_window);
+	glfwSwapInterval(1);
 }
 
-void Viewer::init_opengl() {
+void App::init_opengl() {
 	int value = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
 	if (!value) {
@@ -78,7 +85,7 @@ void Viewer::init_opengl() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Viewer::resize_callback(int width, int height)
+void App::resize_callback(int width, int height)
 {
 	m_window_width = width;
 	m_window_height = height;
@@ -88,7 +95,7 @@ void Viewer::resize_callback(int width, int height)
 	on_window_size_changed.invoke({ m_window_width, m_window_height });
 }
 
-void Viewer::scroll_callback(double x_offset, double y_offset)
+void App::scroll_callback(double x_offset, double y_offset)
 {
 	bool is_handled = m_imgui_layer->handle_mouse_scroll(x_offset, y_offset);
 
@@ -96,7 +103,7 @@ void Viewer::scroll_callback(double x_offset, double y_offset)
 		m_appliction_model->move_camera_distance(y_offset);
 }
 
-void Viewer::mouse_moved_callback(double x_pos, double y_pos)
+void App::mouse_moved_callback(double x_pos, double y_pos)
 {
 	glm::vec2 current_mouse_pos{ x_pos, y_pos };
 
@@ -106,27 +113,38 @@ void Viewer::mouse_moved_callback(double x_pos, double y_pos)
 		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_LEFT]) {
 			glm::vec2 mouse_delta = current_mouse_pos - m_last_mouse_pos;
 			m_appliction_model->rotate_camera(mouse_delta);
-		}
+		} else if(m_mouse_button_state[GLFW_MOUSE_BUTTON_RIGHT])
+			m_engine_mesh->select_index(x_pos, m_window_height - y_pos);
 	}
 	m_last_mouse_pos = current_mouse_pos;
 }
 
-void Viewer::mouse_button_callback(int button, bool is_pressed)
+void App::mouse_button_callback(int button, bool is_pressed)
 {
 	m_imgui_layer->handle_mouse_click(button, is_pressed);
 	m_mouse_button_state[button] = is_pressed;
 }
 
-void Viewer::update() {
+void App::update() {
 	glfwPollEvents();
+	
+	update_time();
 
-	glClearColor(1, 1, 1, 0);
+	glm::vec3 clear_color = m_appliction_model->clear_color;
+	glClearColor(clear_color.r, clear_color.g, clear_color.b, 1);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_appliction_model->update();
 	m_engine_mesh->render();
-
 	m_imgui_layer->update();
 
 	glfwSwapBuffers(m_window);
+}
+
+void App::update_time()
+{
+	float current_timestamp = glfwGetTime();
+	delta_time = current_timestamp - last_timestamp;
+	last_timestamp = current_timestamp;
 }

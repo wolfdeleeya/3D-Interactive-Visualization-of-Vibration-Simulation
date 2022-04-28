@@ -8,7 +8,7 @@
 #include "GLFW/glfw3.h"
 
 //APP
-class Viewer {
+class App {
 private:
 	ApplicationModel* m_appliction_model;
 	EngineMesh* m_engine_mesh;
@@ -20,17 +20,19 @@ private:
 	int m_window_width, m_window_height;
 	bool m_mouse_button_state[GLFW_MOUSE_BUTTON_LAST + 1];
 
-
 	void init_glfw(int width, int height);
 
 	void init_opengl();
 
 public:
+	static float last_timestamp;
+	static float delta_time;
+
 	Event<std::pair<int, int>> on_window_size_changed;
 
-	Viewer(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path);
+	App(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path);
 
-	~Viewer();
+	~App();
 	
 	bool should_close() { return glfwWindowShouldClose(m_window); }
 
@@ -45,6 +47,8 @@ public:
 	void close() { glfwSetWindowShouldClose(m_window, true); }
 
 	void update();
+
+	static void update_time();
 
 	GLFWwindow* window() { return m_window; }
 };

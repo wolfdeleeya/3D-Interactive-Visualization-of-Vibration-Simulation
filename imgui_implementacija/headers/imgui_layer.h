@@ -14,11 +14,19 @@ private:
 
 	void draw_color_selection_widget();
 
+	void draw_general_info_widget();
+
+	void draw_fps_and_delta_time();
+	
 	void draw_main_bar();
 
 	void draw_frequency_selection_widget();
 
 	void draw_limits_selection();
+
+	void draw_gradient_selection();
+
+	void draw_function_selection();
 
 public:
 	Event<const char*> on_load_vertex_positions,
@@ -28,6 +36,8 @@ public:
 
 	ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark = true);
 	
+	~ImGUILayer();
+
 	void update();
 
 	bool handle_mouse_scroll(double x_offset, double y_offset);

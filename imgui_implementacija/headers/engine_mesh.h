@@ -27,6 +27,8 @@ private:
 
 	std::map<std::pair<unsigned int, unsigned int>, unsigned int> m_indeces_map;
 
+	int m_selected_index;
+
 	bool m_is_cw;
 
 	const static char* model_par_name, * view_par_name, * projection_par_name;
@@ -40,6 +42,11 @@ private:
 	void load_model_data();
 
 	void setup_indices();
+
+	glm::vec3 get_color_for_index(int index);
+
+	glm::uvec3 get_color_at_pos(GLint x, GLint y);
+
 public:
 	EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, bool is_cw = false);
 
@@ -66,6 +73,12 @@ public:
 	void window_size_changed(std::pair<int, int> window_dimensions);
 
 	void clear();
+
+	int get_index_at_pos(GLint x, GLint y);
+
+	void select_index(GLint x, GLint y);
+
+	bool is_empty() { return m_cell_vertices.size() == 0 || m_vertex_positions.size() == 0; }
 };
 
 template<typename T>

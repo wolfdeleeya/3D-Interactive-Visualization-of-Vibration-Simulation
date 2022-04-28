@@ -158,9 +158,9 @@ void EngineData::check_for_changes()
 	}
 }
 
-void EngineData::select_frequency(const std::string& f_name, bool value)
+void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 {
-	if (value)				//if true add name
+	if (is_selected)				//if true add name
 		m_selected_frequencies_names.push_back(f_name);
 	else {					//if false delete name
 		const auto& last = std::remove(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name);
@@ -168,6 +168,13 @@ void EngineData::select_frequency(const std::string& f_name, bool value)
 	}
 
 	find_local_limits();
+
+	calculate_color();
+}
+
+void EngineData::clear_selection()
+{
+	m_selected_frequencies_names.clear();
 
 	calculate_color();
 }

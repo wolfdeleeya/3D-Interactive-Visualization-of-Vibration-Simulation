@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "app.h"
 #include "imgui_layer.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
@@ -13,7 +14,43 @@ void ImGUILayer::draw_color_selection_widget()
 
 	ImGui::ColorEdit3("Default Color", glm::value_ptr(m_application_model->engine_data()->default_color));
 
+	draw_gradient_selection();
+
+	ImGui::ColorEdit3("Background Color", glm::value_ptr(m_application_model->clear_color));
+
 	ImGui::End();
+}
+
+void ImGUILayer::draw_general_info_widget()
+{
+	ImGui::Begin("General Info");
+	draw_fps_and_delta_time();
+	ImGui::End();
+}
+
+void ImGUILayer::draw_fps_and_delta_time()
+{
+	static float timer = 0;
+	static float fps_refresh_time = 0;
+	static float last_delta_time = 1;
+
+	ImGui::DragFloat("FPS Refresh Time", &fps_refresh_time, 0.05, 0, 5);
+
+	float delta_time = App::delta_time;
+
+	timer += delta_time;
+
+	if (timer > fps_refresh_time) {
+		timer = 0;
+		last_delta_time = delta_time;
+	}
+
+	std::string fps_label = "FPS: " + std::to_string(1 / last_delta_time);
+	std::string delta_time_label = "Delta Time: " + std::to_string(last_delta_time);
+
+	ImGui::Text(fps_label.c_str());
+	ImGui::SameLine();
+	ImGui::Text(delta_time_label.c_str());
 }
 
 void ImGUILayer::draw_main_bar()
@@ -51,33 +88,30 @@ void ImGUILayer::draw_frequency_selection_widget()
 	static unsigned num_of_frequencies_selected = 0;
 
 	ImGui::Begin("Frequency Selection");
-	const char* arr[] = { "a", "b"};
 	if (num_of_frequencies_selected > 0) {
 		draw_limits_selection();
+
+		if (ImGui::Button("Clear Selection"))
+			m_application_model->clear_selection();
 	}
 	
-	if (num_of_frequencies_selected > 1) {
-		ImGui::Text("More than 1 frequency is selected!");
-	}
+	if (num_of_frequencies_selected > 1)
+		draw_function_selection();
+
 	num_of_frequencies_selected = 0;
 
 	if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
 	{
 		bool* selected = new bool[m_frequenzy_names.size()];
-		std::vector<bool>& selected_attributes = m_application_model->selected_attributes;
+
 		for (int i = 0; i < m_frequenzy_names.size(); i++)
 		{
-			selected[i] = selected_attributes[i];
+			selected[i] = m_application_model->is_frequency_selected(m_frequenzy_names[i]);
 
 			ImGui::TableNextColumn();
-			ImGui::Selectable(m_frequenzy_names[i].c_str(), &selected[i]);
-			if (selected_attributes[i] != selected[i])
-				std::cout << m_frequenzy_names[i] << " je " << selected[i] << std::endl;
-
-			if (selected_attributes[i] != selected[i]) {
-				m_application_model->engine_data()->select_frequency(m_frequenzy_names[i], selected[i]);
-			}
-			selected_attributes[i] = selected[i];
+			ImGui::Selectable(m_frequenzy_names[i].c_str(), &selected[i], 1);;
+			if (m_application_model->is_frequency_selected(m_frequenzy_names[i]) != selected[i])
+				m_application_model->select_frequency(m_frequenzy_names[i], selected[i]);
 
 			num_of_frequencies_selected += selected[i];
 		}
@@ -101,22 +135,65 @@ void ImGUILayer::draw_limits_selection()
 		ImGui::DragFloat2("Custom Limits", m_application_model->user_defined_limits(), 1, -200, 200);
 }
 
+void ImGUILayer::draw_gradient_selection()
+{
+	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+	ImGui::Text("Engine Gradient");
+	ImGui::ColorEdit3("Low Intensity Color", glm::value_ptr(m_application_model->engine_data()->gradient.color1));
+	ImGui::ColorEdit3("High Intensity Color", glm::value_ptr(m_application_model->engine_data()->gradient.color2));
+
+	glm::vec3 c1 = m_application_model->engine_data()->gradient.color1;
+	glm::vec3 c2 = m_application_model->engine_data()->gradient.color2;
+
+	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
+	ImVec2 gradient_size = ImVec2(ImGui::CalcItemWidth(), ImGui::GetFrameHeight());
+	{
+		ImVec2 p0 = ImGui::GetCursorScreenPos();
+		ImVec2 p1 = ImVec2(p0.x + gradient_size.x, p0.y + gradient_size.y);
+		ImU32 col_a = ImGui::GetColorU32(IM_COL32(c1.r * 255, c1.g * 255, c1.b * 255, 255));
+		ImU32 col_b = ImGui::GetColorU32(IM_COL32(c2.r * 255, c2.g * 255, c2.b * 255, 255));
+		draw_list->AddRectFilledMultiColor(p0, p1, col_a, col_b, col_b, col_a);
+		ImGui::InvisibleButton("##gradient1", gradient_size);
+	}
+}
+
+void ImGUILayer::draw_function_selection()
+{
+	int selected_function = *m_application_model->selected_function();
+	unsigned int num_of_labels = sizeof(EngineData::FUNCTION_NAMES) / sizeof(*EngineData::FUNCTION_NAMES);
+
+	ImGui::ListBox("Function Selection", &(selected_function), EngineData::FUNCTION_NAMES, num_of_labels, 2);
+
+	*(m_application_model->selected_function()) = (CellFunctions)selected_function;
+}
+
 ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark): m_window(window)
 {
 	m_application_model = application_model;
+
+	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 	ImGui::StyleColorsDark();
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 330 core");
+	ImGui_ImplOpenGL3_Init("#version 130");
 
 	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
+}
+
+ImGUILayer::~ImGUILayer()
+{
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void ImGUILayer::update()
@@ -126,13 +203,15 @@ void ImGUILayer::update()
 	ImGui_ImplGlfw_NewFrame();
 
 	ImGui::NewFrame();
-	
-	draw_main_bar();
+
+	draw_general_info_widget();
 
 	draw_color_selection_widget();
 
 	if (m_frequenzy_names.size() > 0)
 		draw_frequency_selection_widget();
+
+	draw_main_bar();
 
 	ImGui::Render();
 

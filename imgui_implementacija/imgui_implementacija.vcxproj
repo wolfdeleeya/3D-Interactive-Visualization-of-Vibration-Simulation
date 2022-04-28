@@ -158,7 +158,7 @@
     <ClInclude Include="headers\model.h" />
     <ClInclude Include="headers\shader_helper.h" />
     <ClInclude Include="headers\signals.h" />
-    <ClInclude Include="headers\viewer.h" />
+    <ClInclude Include="headers\app.h" />
     <ClInclude Include="headers\application_model.h" />
     <ClInclude Include="imgui\Headers\imconfig.h" />
     <ClInclude Include="imgui\Headers\imgui.h" />
@@ -191,7 +191,7 @@
     <ClCompile Include="source\imgui_layer.cpp" />
     <ClCompile Include="source\shader_helper.cpp" />
     <ClCompile Include="source\signals.cpp" />
-    <ClCompile Include="source\viewer.cpp" />
+    <ClCompile Include="source\app.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="shaders\engine_shader.frag">

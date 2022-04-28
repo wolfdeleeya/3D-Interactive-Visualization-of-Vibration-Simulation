@@ -2,6 +2,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "GLFW/glfw3.h"
 
+#include <iostream>
+
 const char* EngineMesh::model_par_name = "model";
 const char* EngineMesh::view_par_name = "view";
 const char* EngineMesh::projection_par_name = "projection";
@@ -64,7 +66,12 @@ void EngineMesh::load_model_data()
 	for (auto& pair : m_cell_vertices) {
 		for (unsigned int vert_index : pair.second) {
 			glm::vec3 pos = m_vertex_positions[vert_index];
-			glm::vec3 color = m_cell_colors_map[pair.first];
+			glm::vec3 color = pair.first == m_selected_index ? glm::vec3(1) : get_color_for_index(pair.first);// m_cell_colors_map[pair.first];
+			//glm::vec3 color = m_cell_colors_map[pair.first];
+			
+			if (m_selected_index == pair.first)
+				std::cout << "NASO\n";
+
 			glm::vec3 normal = m_cell_normals[pair.first];
 
 			unsigned int index = m_indeces_map[{pair.first, vert_index}];
@@ -85,6 +92,19 @@ void EngineMesh::setup_indices()
 	}
 }
 
+glm::vec3 EngineMesh::get_color_for_index(int index)
+{
+	int red = index / (256 * 256);
+	
+	index %= (256 * 256);
+	int green = index / 256;
+
+	index %= 256;
+	int blue = index;
+
+	return glm::vec3(red / 255.f, green / 255.f, blue / 255.f);
+}
+
 EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, bool is_cw):
 	m_shader(vertex_shader_dest, fragment_shader_dest), m_line_shader(LINE_VERT_SHADER, LINE_FRAG_SHADER) {
 	m_is_cw = is_cw;
@@ -103,17 +123,14 @@ EngineMesh::~EngineMesh()
 
 void EngineMesh::render()
 {
-	if (m_indeces.size() == 0 || m_model_data.size() == 0)		//if some part of render data isn't loaded properly
-		return;
-
 	m_shader.use();
 	glBindVertexArray(m_VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 	
-	m_line_shader.use();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
+	//m_line_shader.use();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 }
@@ -145,6 +162,8 @@ void EngineMesh::set_colors(const std::map<unsigned int, glm::vec3>& cell_colors
 void EngineMesh::load_cell_vertices(const char* path)
 {
 	m_cell_vertices = loader::load_cells(path);
+	
+	m_selected_index = 0;
 
 	setup_indices();
 
@@ -177,4 +196,24 @@ void EngineMesh::clear()
 {
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteVertexArrays(1, &m_VAO);
+}
+
+int EngineMesh::get_index_at_pos(GLint x, GLint y)
+{
+	glm::uvec3 color = get_color_at_pos(x, y);
+	return color.r * (255 * 255) + color.g * 255 + color.b;
+}
+
+void EngineMesh::select_index(GLint x, GLint y)
+{
+	m_selected_index = get_index_at_pos(x, y);
+	setup_vertex_data();
+}
+
+glm::uvec3 EngineMesh::get_color_at_pos(GLint x, GLint y)
+{
+	unsigned char pixel[4];
+	glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+	std::cout << (unsigned int)pixel[0] << ", " << (unsigned int)pixel[1] << ", " << (unsigned int)pixel[2] << std::endl;
+	return glm::uvec3(pixel[0], pixel[1], pixel[2]);
 }

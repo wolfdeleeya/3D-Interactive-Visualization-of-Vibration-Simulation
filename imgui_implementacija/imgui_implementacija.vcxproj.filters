@@ -42,7 +42,7 @@
     <ClInclude Include="imgui\Headers\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\viewer.h">
+    <ClInclude Include="headers\app.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\imgui_layer.h">
@@ -113,7 +113,7 @@
     <ClCompile Include="glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\viewer.cpp">
+    <ClCompile Include="source\app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\imgui_layer.cpp">
