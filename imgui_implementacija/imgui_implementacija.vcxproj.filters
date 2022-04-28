@@ -158,5 +158,7 @@
     <CopyFileToFolders Include="shaders\engine_shader.vert" />
     <CopyFileToFolders Include="shaders\line_shader.frag" />
     <CopyFileToFolders Include="shaders\line_shader.vert" />
+    <CopyFileToFolders Include="shaders\engine_cell_selection_shader.frag" />
+    <CopyFileToFolders Include="shaders\engine_cell_selection_shader.vert" />
   </ItemGroup>
 </Project>
