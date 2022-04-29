@@ -85,9 +85,7 @@ void App::init_opengl() {
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	
 	glEnable(GL_MULTISAMPLE);
-	
 }
 
 void App::resize_callback(int width, int height)

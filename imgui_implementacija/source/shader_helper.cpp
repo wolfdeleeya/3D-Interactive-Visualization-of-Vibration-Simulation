@@ -67,7 +67,6 @@ bool check_shader_status(unsigned int shader_id) {
 bool check_program_status(unsigned int program_id) {
 	int is_success;
 	glGetProgramiv(program_id, GL_LINK_STATUS, &is_success);
-	
 
 	if (!is_success) {
 		char info[SHADER_INFO_LENGTH];
@@ -81,7 +80,6 @@ bool check_program_status(unsigned int program_id) {
 Shader::Shader(const char* vert_shader_dest, const char* frag_shader_dest) {
 
 	m_program_id = load_program(vert_shader_dest, frag_shader_dest);
-	
 	m_is_active = true;
 
 	m_vertex_shader_path = vert_shader_dest;

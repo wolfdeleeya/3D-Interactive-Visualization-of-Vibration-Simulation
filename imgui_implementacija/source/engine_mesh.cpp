@@ -171,7 +171,6 @@ EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shad
 	glGenRenderbuffers(1, &m_CS_RBO_depth);
 
 	update_cell_selection_framebuffer(window_dimensions);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_CS_FBO);
 
 	setup_buffers();
 }
@@ -179,11 +178,10 @@ EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shad
 EngineMesh::~EngineMesh()
 {
 	glDeleteBuffers(1, &m_VBO);
-	glDeleteBuffers(1, &m_EBO);
 	glDeleteVertexArrays(1, &m_VAO);
-
-	glDeleteBuffers(1, &m_CS_VBO);
-	glDeleteVertexArrays(1, &m_CS_VAO);
+	glDeleteFramebuffers(1, &m_CS_FBO);
+	glDeleteRenderbuffers(1, &m_CS_RBO_color);
+	glDeleteRenderbuffers(1, &m_CS_RBO_depth);
 
 	m_shader.delete_shader();
 	m_line_shader.delete_shader();
@@ -196,6 +194,7 @@ void EngineMesh::render()
 
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
 	m_cell_select_shader.use();
 	glBindVertexArray(m_CS_VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -255,12 +254,6 @@ void EngineMesh::window_size_changed(std::pair<int, int> window_dimensions)
 { 
 	set_projection(glm::perspective(45.f, (float)window_dimensions.first / window_dimensions.second, 0.1f, 100.f)); 
 	update_cell_selection_framebuffer(window_dimensions);
-}
-
-void EngineMesh::clear()
-{
-	glDeleteBuffers(1, &m_VBO);
-	glDeleteVertexArrays(1, &m_VAO);
 }
 
 int EngineMesh::get_index_at_pos(GLint x, GLint y)

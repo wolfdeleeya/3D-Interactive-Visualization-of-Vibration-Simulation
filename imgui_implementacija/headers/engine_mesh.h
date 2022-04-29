@@ -90,8 +90,6 @@ public:
 
 	void window_size_changed(std::pair<int, int> window_dimensions);
 
-	void clear();
-
 	int get_index_at_pos(GLint x, GLint y);
 
 	void select_index(GLint x, GLint y);
