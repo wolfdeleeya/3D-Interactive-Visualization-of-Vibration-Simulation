@@ -166,12 +166,17 @@
     <ClInclude Include="imgui\Headers\imgui_impl_opengl3.h" />
     <ClInclude Include="imgui\Headers\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="imgui\Headers\imgui_internal.h" />
+    <ClInclude Include="imgui\Headers\implot.h" />
+    <ClInclude Include="imgui\Headers\implot_internal.h" />
     <ClInclude Include="imgui\Headers\imstb_rectpack.h" />
     <ClInclude Include="imgui\Headers\imstb_textedit.h" />
     <ClInclude Include="imgui\Headers\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
+    <ClCompile Include="imgui\Source\implot.cpp" />
+    <ClCompile Include="imgui\Source\implot_demo.cpp" />
+    <ClCompile Include="imgui\Source\implot_items.cpp" />
     <ClCompile Include="source\application_model.cpp" />
     <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\cell_value_functors.cpp" />

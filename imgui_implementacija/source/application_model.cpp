@@ -70,3 +70,9 @@ void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set cam
 
 	on_view_mat_changed.invoke(m_camera->view_mat());
 }
+
+void ApplicationModel::select_cell(unsigned int cell_index)
+{
+	m_selected_cell = cell_index;
+	on_cell_selected.invoke(cell_index);
+}

@@ -1,6 +1,15 @@
 #include <iostream>
+#include <algorithm>
+
 #include "engine_data.h"
 #include "glm_vec_helper.h"
+
+struct FrequenzyPairsComparator {
+	bool operator()(const std::pair<std::string, float>& p1, const std::pair<std::string, float>& p2) const
+	{
+		return p1.second <= p2.second;
+	}
+};
 
 const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineData::CELL_FUNCTIONS{
 	std::make_shared<cell_functors::MinFunctor>(),
@@ -177,4 +186,18 @@ void EngineData::clear_selection()
 	m_selected_frequencies_names.clear();
 
 	calculate_color();
+}
+
+std::vector<std::pair<std::string, float>> EngineData::get_values_for_cell(unsigned int index) 
+{
+	std::vector<std::pair<std::string, float>> result;
+	
+	cell_stats stats = m_cell_stats[index];
+
+	for (const auto& name : m_selected_frequencies_names)
+		result.push_back({ name, stats.freq_map[name] });
+	
+	std::sort(result.begin(), result.end(), FrequenzyPairsComparator());
+	
+	return result;
 }

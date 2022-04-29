@@ -29,6 +29,7 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 
 	m_appliction_model->on_view_mat_changed.add_member_listener(&EngineMesh::set_view, m_engine_mesh);
 	m_appliction_model->engine_data()->on_colors_recalculated.add_member_listener(&EngineMesh::set_colors, m_engine_mesh);
+	m_appliction_model->on_cell_selected.add_member_listener(&EngineMesh::on_cell_selected, m_engine_mesh);
 
 	on_window_size_changed.add_member_listener(&EngineMesh::window_size_changed, m_engine_mesh);
 
@@ -111,17 +112,23 @@ void App::mouse_moved_callback(double x_pos, double y_pos)
 	glm::vec2 current_mouse_pos{ x_pos, y_pos };
 
 	bool is_handled = m_imgui_layer->handle_mouse_pos(x_pos, y_pos);
-
-	if (!is_handled) {
+	if (is_handled) {
+		if (m_appliction_model->is_valid_cell_selected())
+			m_appliction_model->clear_selected_cell();
+	}
+	else {
 		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_LEFT]) {
 			glm::vec2 mouse_delta = current_mouse_pos - m_last_mouse_pos;
 			m_appliction_model->rotate_camera(mouse_delta);
-			if (m_engine_mesh->is_cell_selected())
-				m_engine_mesh->clear_selection();
+			if (m_appliction_model->is_valid_cell_selected())
+				m_appliction_model->clear_selected_cell();
 		}
-		else
-			m_engine_mesh->select_index(m_last_mouse_pos.x, m_window_height - m_last_mouse_pos.y);
+		else {
+			unsigned int selected_cell_index = m_engine_mesh->get_index_at_pos(m_last_mouse_pos.x, m_window_height - m_last_mouse_pos.y);
+			m_appliction_model->select_cell(selected_cell_index);
+		}
 	}
+
 	m_last_mouse_pos = current_mouse_pos;
 }
 

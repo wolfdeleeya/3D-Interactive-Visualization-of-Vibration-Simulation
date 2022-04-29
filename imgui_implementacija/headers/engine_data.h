@@ -15,7 +15,6 @@ enum CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD};
 
 class EngineData {
 private:
-
 	static const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS;
 
 	std::map<unsigned int, cell_stats> m_cell_stats;
@@ -64,6 +63,8 @@ public:
 	void select_frequency(const std::string& f_name, bool is_selected);
 
 	void clear_selection();
+
+	std::vector<std::pair<std::string, float>> get_values_for_cell(unsigned int index);
 
 	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
 

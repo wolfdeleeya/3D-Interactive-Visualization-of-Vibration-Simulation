@@ -193,12 +193,6 @@ void EngineMesh::update_cell_selection_framebuffer(std::pair<int, int> window_di
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
-void EngineMesh::set_selected_index(unsigned int index)
-{
-	m_selected_index = index;
-	m_shader.set_value(selected_cell_par_name, index);
-}
-
 EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, 
 	std::pair<int, int> window_dimensions, bool is_cw) :m_shader(vertex_shader_dest, fragment_shader_dest), 
 	m_line_shader(LINE_VERT_SHADER, LINE_FRAG_SHADER), m_cell_select_shader(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER) {
@@ -220,7 +214,7 @@ EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shad
 	glGenRenderbuffers(1, &m_CS_RBO_color);
 	glGenRenderbuffers(1, &m_CS_RBO_depth);
 
-	fbo_dimensions = { 70, 70 };
+	fbo_dimensions = { 200, 200 };
 
 	update_cell_selection_framebuffer(window_dimensions);
 
@@ -279,8 +273,6 @@ void EngineMesh::set_colors(const std::map<unsigned int, glm::vec3>& cell_colors
 void EngineMesh::load_cell_vertices(const char* path)
 {
 	m_cell_vertices = loader::load_cells(path);
-	
-	set_selected_index(0);
 
 	setup_indices();
 
@@ -313,22 +305,14 @@ void EngineMesh::window_size_changed(std::pair<int, int> window_dimensions)
 
 int EngineMesh::get_index_at_pos(GLint x, GLint y)
 {
-	glm::vec3 color = get_color_at_pos(x, y);
+	glm::vec3 color = get_cell_color_at_pos(x, y);
 	int red_factor = round(color.r * 255) * 256 * 256;
 	int green_factor = round(color.g * 255) * 256;
 	int blue_factor = round(color.b * 255);
 	return red_factor + green_factor + blue_factor;
 }
 
-void EngineMesh::select_index(GLint x, GLint y)
-{
-	unsigned int selected_index = get_index_at_pos(x, y);
-	
-	if (m_selected_index != selected_index)
-		set_selected_index(selected_index);
-}
-
-glm::vec3 EngineMesh::get_color_at_pos(GLint x, GLint y)
+glm::vec3 EngineMesh::get_cell_color_at_pos(GLint x, GLint y)
 {
 	glm::vec4 pixel(0);
 

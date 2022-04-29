@@ -1,5 +1,6 @@
 #pragma once
 
+#include "events.h"
 #include "data_loading.h"
 #include "shader_helper.h"
 
@@ -47,8 +48,6 @@ private:
 	glm::vec2 fbo_dimensions;
 	glm::vec2 m_window_dimensions;
 
-	int m_selected_index;
-
 	bool m_is_cw;
 
 	const static char* model_par_name, * view_par_name, * projection_par_name;
@@ -76,9 +75,7 @@ private:
 
 	void update_cell_selection_framebuffer(std::pair<int, int> window_dimensions);
 
-	void set_selected_index(unsigned int index);
-
-	glm::vec3 get_color_at_pos(GLint x, GLint y);
+	glm::vec3 get_cell_color_at_pos(GLint x, GLint y);
 
 public:
 	EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, std::pair<int, int> window_dimensions, bool is_cw = false);
@@ -107,11 +104,7 @@ public:
 
 	int get_index_at_pos(GLint x, GLint y);
 
-	void select_index(GLint x, GLint y);
-
-	void clear_selection() { set_selected_index(0); }
-
-	bool is_cell_selected() { return m_selected_index != 0; }
+	void on_cell_selected(unsigned int cell_index) { m_shader.set_value(selected_cell_par_name, cell_index); }
 
 	bool is_empty() { return m_cell_vertices.size() == 0 || m_vertex_positions.size() == 0; }
 };
