@@ -5,8 +5,8 @@
 
 struct vertex {
 	glm::vec3 position;
-	glm::vec3 color;
 	glm::vec3 normal;
+	unsigned int cell_index;
 };
 
 struct cell_select_vertex {
@@ -17,7 +17,7 @@ struct cell_select_vertex {
 class EngineMesh {
 private:
 	Shader m_shader, m_line_shader, m_cell_select_shader;
-	unsigned int m_VBO, m_VAO, m_EBO;
+	unsigned int m_VBO_vertex, m_VBO_color, m_VAO, m_EBO;
 	unsigned int m_CS_VBO, m_CS_VAO;	//cell selection buffer and vertex attribute array
 
 	unsigned int m_CS_FBO;
@@ -30,6 +30,8 @@ private:
 	const static char* CELL_SELECT_FRAG_SHADER;
 
 	std::vector<vertex> m_model_data;
+	std::vector<glm::vec3> m_color_data;
+
 	std::vector<cell_select_vertex> m_model_cell_selection_data;
 
 	std::vector<unsigned int> m_indeces;
@@ -39,15 +41,24 @@ private:
 	std::map<unsigned int, glm::vec3> m_vertex_positions;
 	std::map<unsigned int, glm::vec3> m_cell_normals;
 
-	std::map<std::pair<unsigned int, unsigned int>, unsigned int> m_indeces_map;
+	std::map<unsigned int, std::map<unsigned int, unsigned int>> m_indeces_map;
+	unsigned int m_num_verts_to_render;
+
+	glm::vec2 fbo_dimensions;
+	glm::vec2 m_window_dimensions;
 
 	int m_selected_index;
 
 	bool m_is_cw;
 
 	const static char* model_par_name, * view_par_name, * projection_par_name;
+	const static char* selected_cell_par_name, * selected_cell_color_par_name;
+
+	void setup_model_data();
 
 	void setup_vertex_data();
+
+	void setup_color_data();
 
 	void setup_cell_selection_vertex_data();
 
@@ -57,11 +68,15 @@ private:
 
 	void load_model_data();
 
+	void load_color_data();
+
 	void load_cell_selection_data();
 
 	void setup_indices();
 
 	void update_cell_selection_framebuffer(std::pair<int, int> window_dimensions);
+
+	void set_selected_index(unsigned int index);
 
 	glm::vec3 get_color_at_pos(GLint x, GLint y);
 
@@ -93,6 +108,10 @@ public:
 	int get_index_at_pos(GLint x, GLint y);
 
 	void select_index(GLint x, GLint y);
+
+	void clear_selection() { set_selected_index(0); }
+
+	bool is_cell_selected() { return m_selected_index != 0; }
 
 	bool is_empty() { return m_cell_vertices.size() == 0 || m_vertex_positions.size() == 0; }
 };

@@ -116,6 +116,11 @@ void Shader::set_value(int location, const glm::vec3& value) {
 	glUniform3fv(location, 1, glm::value_ptr(value));
 }
 
+void Shader::set_value(int location, unsigned int value) {
+	this->use();
+	glUniform1ui(location, value);
+}
+
 template <typename T>
 bool Shader::set_value(const std::string& name, T value) {
 	if (m_uniform_map.count(name) > 0)
@@ -170,3 +175,4 @@ template bool Shader::set_value<>(const std::string& name, glm::vec2 value);
 template bool Shader::set_value<>(const std::string& name, glm::vec4 value);
 template bool Shader::set_value<>(const std::string& name, glm::vec3 value);
 template bool Shader::set_value<>(const std::string& name, glm::mat4x4 value);
+template bool Shader::set_value<>(const std::string& name, unsigned int value);

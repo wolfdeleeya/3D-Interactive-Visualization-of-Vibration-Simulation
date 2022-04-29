@@ -116,8 +116,10 @@ void App::mouse_moved_callback(double x_pos, double y_pos)
 		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_LEFT]) {
 			glm::vec2 mouse_delta = current_mouse_pos - m_last_mouse_pos;
 			m_appliction_model->rotate_camera(mouse_delta);
+			if (m_engine_mesh->is_cell_selected())
+				m_engine_mesh->clear_selection();
 		}
-		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_RIGHT])
+		else
 			m_engine_mesh->select_index(m_last_mouse_pos.x, m_window_height - m_last_mouse_pos.y);
 	}
 	m_last_mouse_pos = current_mouse_pos;
@@ -127,11 +129,6 @@ void App::mouse_button_callback(int button, bool is_pressed)
 {
 	bool is_handled = m_imgui_layer->handle_mouse_click(button, is_pressed);
 	m_mouse_button_state[button] = is_pressed;
-
-	if (!is_handled && m_mouse_button_state[GLFW_MOUSE_BUTTON_RIGHT]) {
-		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_RIGHT])
-			m_engine_mesh->select_index(m_last_mouse_pos.x, m_window_height - m_last_mouse_pos.y);
-	}
 }
 
 void App::update() {

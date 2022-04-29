@@ -156,7 +156,6 @@
     <ClInclude Include="headers\glm_vec_helper.h" />
     <ClInclude Include="headers\gradient.h" />
     <ClInclude Include="headers\imgui_layer.h" />
-    <ClInclude Include="headers\model.h" />
     <ClInclude Include="headers\shader_helper.h" />
     <ClInclude Include="headers\signals.h" />
     <ClInclude Include="headers\app.h" />
@@ -181,7 +180,6 @@
     <ClCompile Include="source\engine_mesh.cpp" />
     <ClCompile Include="source\gradient.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\model.cpp" />
     <ClCompile Include="imgui\Source\imgui.cpp" />
     <ClCompile Include="imgui\Source\imgui_demo.cpp" />
     <ClCompile Include="imgui\Source\imgui_draw.cpp" />

@@ -20,7 +20,7 @@ namespace loader {
 	std::map<unsigned int, std::vector<unsigned int>> load_cells(const char* path);
 
 	std::vector<unsigned int> triangulate_cell_indeces(const std::map<unsigned int, std::vector<unsigned int>>& cell_indeces,
-		const std::map<std::pair<unsigned int, unsigned int>, unsigned int>& index_map);
+		const std::map<unsigned int, std::map<unsigned int, unsigned int>>& index_map);
 
 	std::map<unsigned int, cell_stats> load_cell_stats(const char* path, std::vector<std::string>& frequenzy_names);
 }

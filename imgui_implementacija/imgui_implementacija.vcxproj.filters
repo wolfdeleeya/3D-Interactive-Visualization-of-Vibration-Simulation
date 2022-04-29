@@ -57,9 +57,6 @@
     <ClInclude Include="headers\gradient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\shader_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -126,9 +123,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\shader_helper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\application_model.cpp">
