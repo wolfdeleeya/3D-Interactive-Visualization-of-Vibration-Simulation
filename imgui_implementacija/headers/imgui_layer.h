@@ -27,6 +27,7 @@ private:
 	std::vector<std::string> m_frequenzy_names;
 	ApplicationModel* m_application_model;
 	ImVec2 m_mouse_delta;
+	ImVec2 m_plot_size;
 
 	GraphData m_graph_data;
 

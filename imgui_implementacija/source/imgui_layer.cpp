@@ -7,9 +7,10 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "implot.h"
+#include "implot_internal.h"
 #include "nfd.h"
 
-const char* GraphData::item_labels[] = {"frequencies"};
+const char* GraphData::item_labels[] = {"Frequencies"};
 
 void ImGUILayer::draw_color_selection_widget()
 {
@@ -30,6 +31,8 @@ void ImGUILayer::draw_general_info_widget()
 	draw_fps_and_delta_time();
 
 	ImGui::DragFloat2("Cell Graph Mouse Delta", &m_mouse_delta.x, 0.5, 10, 50);
+
+	ImGui::DragFloat2("Graph Window Size", &m_plot_size.x, 0.5, 50, 1000);
 
 	ImGui::End();
 }
@@ -178,10 +181,13 @@ void ImGUILayer::draw_function_selection()
 void ImGUILayer::draw_graph_tooltip()
 {
 	ImGui::SetNextWindowPos(ImGui::GetMousePos() + m_mouse_delta);
-	ImGui::SetNextWindowSize({ 1000, 1000 });
+	ImGui::SetNextWindowSize({500, 300});
+	ImPlotContext* gp = ImPlot::GetCurrentContext();
+
 	ImGui::Begin("Graph");
 	
-	if (ImPlot::BeginPlot("a")) {
+	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
+		gp->CurrentPlot->FitThisFrame = true;
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
 
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
@@ -212,6 +218,7 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 	ImGui_ImplOpenGL3_Init("#version 130");
 
 	m_mouse_delta = { 10, 10 };
+	m_plot_size = { 500, 300 };
 
 	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
 	m_application_model->on_cell_selected.add_member_listener(&ImGUILayer::on_cell_selected, this);
