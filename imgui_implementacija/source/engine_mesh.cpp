@@ -256,10 +256,6 @@ void EngineMesh::render()
 	glBindVertexArray(m_VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
-	
-	m_line_shader.use();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 }

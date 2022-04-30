@@ -1,5 +1,6 @@
 #pragma once
 
+#include "engine_lines_mesh.h"
 #include "events.h"
 #include "data_loading.h"
 #include "shader_helper.h"
@@ -17,6 +18,8 @@ struct cell_select_vertex {
 
 class EngineMesh {
 private:
+	EngineLinesMesh m_engine_lines_mesh;
+
 	Shader m_shader, m_line_shader, m_cell_select_shader;
 	unsigned int m_VBO_vertex, m_VBO_color, m_VAO, m_EBO;
 	unsigned int m_CS_VBO, m_CS_VAO;	//cell selection buffer and vertex attribute array

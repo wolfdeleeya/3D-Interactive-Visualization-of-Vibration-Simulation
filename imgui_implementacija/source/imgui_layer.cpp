@@ -41,21 +41,24 @@ void ImGUILayer::draw_fps_and_delta_time()
 {
 	static float timer = 0;
 	static float fps_refresh_time = 0;
-	static float last_delta_time = 1;
+	static float last_avg_delta_time = 0;
+	static int count = 0;
 
 	ImGui::DragFloat("FPS Refresh Time", &fps_refresh_time, 0.05, 0, 5);
 
 	float delta_time = App::delta_time;
 
 	timer += delta_time;
+	++count;
 
 	if (timer > fps_refresh_time) {
+		last_avg_delta_time = timer / count;
 		timer = 0;
-		last_delta_time = delta_time;
+		count = 0;
 	}
 
-	std::string fps_label = "FPS: " + std::to_string(1 / last_delta_time);
-	std::string delta_time_label = "Delta Time: " + std::to_string(last_delta_time);
+	std::string fps_label = "FPS: " + std::to_string((unsigned int)round(1 / last_avg_delta_time));
+	std::string delta_time_label = "Delta Time: " + std::to_string(last_avg_delta_time);
 
 	ImGui::Text(fps_label.c_str());
 	ImGui::SameLine();
@@ -181,13 +184,21 @@ void ImGUILayer::draw_function_selection()
 void ImGUILayer::draw_graph_tooltip()
 {
 	ImGui::SetNextWindowPos(ImGui::GetMousePos() + m_mouse_delta);
-	ImGui::SetNextWindowSize({500, 300});
-	ImPlotContext* gp = ImPlot::GetCurrentContext();
+	//ImGui::SetNextWindowSize({500, 320});
 
-	ImGui::Begin("Graph");
+	ImPlotContext* implot_context = ImPlot::GetCurrentContext();
+	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
 	
+	ImGui::Begin("Graph");
+	ImGui::BeginChild("");
+	ImGuiWindow* current_window = imgui_context->CurrentWindow;
+
+	current_window->HasCloseButton = false;
+	current_window->WantCollapseToggle = false;
+
 	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
-		gp->CurrentPlot->FitThisFrame = true;
+		//implot_context->CurrentPlot->FitThisFrame = true;
+
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
 
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
@@ -196,6 +207,7 @@ void ImGUILayer::draw_graph_tooltip()
 
 		ImPlot::EndPlot();
 	}
+	ImGui::EndChild();
 	ImGui::End();
 }
 
