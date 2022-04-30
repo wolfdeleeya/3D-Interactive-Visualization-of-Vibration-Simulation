@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\mesh\abstract_mesh.h" />
     <ClInclude Include="headers\camera.h" />
     <ClInclude Include="headers\cell_value_functors.h" />
     <ClInclude Include="headers\data_loading.h" />
@@ -152,6 +153,8 @@
     <ClInclude Include="headers\debug_layer.h" />
     <ClInclude Include="headers\engine_data.h" />
     <ClInclude Include="headers\engine_mesh.h" />
+    <ClInclude Include="headers\mesh\engine_lines_mesh.h" />
+    <ClInclude Include="headers\mesh\engine_visualization_mesh.h" />
     <ClInclude Include="headers\events.h" />
     <ClInclude Include="headers\glm_vec_helper.h" />
     <ClInclude Include="headers\gradient.h" />
@@ -177,6 +180,7 @@
     <ClCompile Include="imgui\Source\implot.cpp" />
     <ClCompile Include="imgui\Source\implot_demo.cpp" />
     <ClCompile Include="imgui\Source\implot_items.cpp" />
+    <ClCompile Include="source\mesh\abstract_mesh.cpp" />
     <ClCompile Include="source\application_model.cpp" />
     <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\cell_value_functors.cpp" />
@@ -194,6 +198,8 @@
     <ClCompile Include="imgui\Source\imgui_widgets.cpp" />
     <ClCompile Include="source\data_loading.cpp" />
     <ClCompile Include="source\imgui_layer.cpp" />
+    <ClCompile Include="source\mesh\engine_lines_mesh.cpp" />
+    <ClCompile Include="source\mesh\engine_visualization_mesh.cpp" />
     <ClCompile Include="source\shader_helper.cpp" />
     <ClCompile Include="source\signals.cpp" />
     <ClCompile Include="source\app.cpp" />

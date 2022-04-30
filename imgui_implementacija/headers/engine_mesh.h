@@ -1,6 +1,5 @@
 #pragma once
 
-#include "engine_lines_mesh.h"
 #include "events.h"
 #include "data_loading.h"
 #include "shader_helper.h"
@@ -18,9 +17,7 @@ struct cell_select_vertex {
 
 class EngineMesh {
 private:
-	EngineLinesMesh m_engine_lines_mesh;
-
-	Shader m_shader, m_line_shader, m_cell_select_shader;
+	Shader m_shader, m_cell_select_shader;
 	unsigned int m_VBO_vertex, m_VBO_color, m_VAO, m_EBO;
 	unsigned int m_CS_VBO, m_CS_VAO;	//cell selection buffer and vertex attribute array
 
@@ -46,7 +43,6 @@ private:
 	std::map<unsigned int, glm::vec3> m_cell_normals;
 
 	std::map<unsigned int, std::map<unsigned int, unsigned int>> m_indeces_map;
-	unsigned int m_num_verts_to_render;
 
 	glm::vec2 fbo_dimensions;
 	glm::vec2 m_window_dimensions;
@@ -116,7 +112,7 @@ template<typename T>
 inline bool EngineMesh::set_value(const std::string& name, T value)
 {
 	m_shader.set_value(name, value);
-	m_line_shader.set_value(name, value);
+	//m_line_shader.set_value(name, value);
 	m_cell_select_shader.set_value(name, value);
 
 	return true;
