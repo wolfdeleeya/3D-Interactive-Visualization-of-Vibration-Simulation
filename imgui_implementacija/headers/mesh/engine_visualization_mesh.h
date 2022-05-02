@@ -13,6 +13,8 @@ class EngineVisualizationMesh : public AbstractMesh {
 private:
 	static const char* VERTEX_SHADER, * FRAGMENT_SHADER;
 
+	const static char* SELECTED_CELL_PAR_NAME, * SELECTED_CELL_COLOR_PAR_NAME;
+
 	unsigned int m_VBO_color;
 
 	std::vector<vertex> m_model_data;
@@ -46,4 +48,6 @@ public:
 	void set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map);
 
 	virtual void render() override;
+
+	void on_cell_selected(unsigned int cell_index) { m_shader.set_value(SELECTED_CELL_PAR_NAME, cell_index); }
 };

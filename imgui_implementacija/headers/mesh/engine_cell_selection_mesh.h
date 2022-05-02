@@ -12,7 +12,6 @@ private:
 	unsigned int m_FBO;
 	unsigned int m_RBO_color, m_RBO_depth;
 
-	const static char* SELECTED_CELL_PAR_NAME, * SELECTED_CELL_COLOR_PAR_NAME;
 	const static char* CELL_SELECT_VERT_SHADER;
 	const static char* CELL_SELECT_FRAG_SHADER;
 
@@ -21,7 +20,6 @@ private:
 	std::map<unsigned int, std::map<unsigned int, unsigned int>> m_indeces_map;
 
 	glm::ivec2 m_fbo_dimensions;
-	glm::ivec2 m_window_dimensions;
 
 	void intialize_framebuffer(const glm::ivec2& framebuffer_dimensions);
 
@@ -43,6 +41,4 @@ public:
 	virtual void render() override;
 
 	int get_index_at_pos(GLint x, GLint y);
-
-	void on_cell_selected(unsigned int cell_index) { m_shader.set_value(SELECTED_CELL_PAR_NAME, cell_index); }
 };

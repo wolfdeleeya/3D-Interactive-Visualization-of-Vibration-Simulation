@@ -4,6 +4,9 @@
 const char* EngineVisualizationMesh::VERTEX_SHADER = "./Shaders/engine_shader.vert";
 const char* EngineVisualizationMesh::FRAGMENT_SHADER = "./Shaders/engine_shader.frag";
 
+const char* EngineVisualizationMesh::SELECTED_CELL_PAR_NAME = "selected_index";
+const char* EngineVisualizationMesh::SELECTED_CELL_COLOR_PAR_NAME = "selected_color";
+
 void EngineVisualizationMesh::setup_buffers()
 {
 	glBindVertexArray(m_VAO);
@@ -118,7 +121,7 @@ void EngineVisualizationMesh::load_color_data()
 	}
 }
 
-EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, bool is_cw = false) :
+EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, bool is_cw ) :
 	AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
 {
 	glGenBuffers(1, &m_VBO_color);
@@ -142,10 +145,10 @@ void EngineVisualizationMesh::set_colors(const std::map<unsigned int, glm::vec3>
 
 void EngineVisualizationMesh::render()
 {
-	glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
-	m_shader.use();
-	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
+	//glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
+	//m_shader.use();
+	//glBindVertexArray(m_VAO);
+	//glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }

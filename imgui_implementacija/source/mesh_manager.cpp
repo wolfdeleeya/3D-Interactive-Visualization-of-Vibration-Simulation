@@ -1,18 +1,24 @@
 #include "mesh_manager.h"
 #include "data_loading.h"
+
 #include "mesh/engine_visualization_mesh.h"
 #include "mesh/engine_cell_selection_mesh.h"
+#include "mesh/engine_lines_mesh.h"
 
 MeshManager::MeshManager(const glm::ivec2& window_dimensions)
 {
 	EngineVisualizationMesh* evm = new EngineVisualizationMesh(window_dimensions);
 	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(window_dimensions, { 100, 100 });
+	EngineLineMesh* elm = new EngineLineMesh(window_dimensions);
 
-	on_cell_selected.add_member_listener(&EngineCellSelectionMesh::on_cell_selected, ecm);
+	on_cell_selected.add_member_listener(&EngineVisualizationMesh::on_cell_selected, evm);
 	on_colors_recalculated.add_member_listener(&EngineVisualizationMesh::set_colors, evm);
 
-	m_meshes.push_back(evm);
+	f = std::bind(&EngineCellSelectionMesh::get_index_at_pos, ecm, std::placeholders::_1, std::placeholders::_2);
+
 	m_meshes.push_back(ecm);
+	m_meshes.push_back(elm);
+	m_meshes.push_back(evm);
 }
 
 MeshManager::~MeshManager()
@@ -45,4 +51,15 @@ void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
 {
 	for (AbstractMesh* mesh : m_meshes)
 		mesh->update_window_size(window_dimensions);
+}
+
+unsigned int MeshManager::get_index_at_pos(GLint x, GLint y)
+{
+	return f(x, y);
+}
+
+void MeshManager::render()
+{
+	for (AbstractMesh* mesh : m_meshes)
+		mesh->render();
 }

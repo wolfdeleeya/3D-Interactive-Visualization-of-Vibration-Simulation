@@ -1,10 +1,9 @@
 #include "mesh/engine_cell_selection_mesh.h"
+
+#include <iostream>
+
 #include "data_loading.h"
 #include <glm/gtc/type_ptr.hpp>
-
-
-const char* EngineCellSelectionMesh::SELECTED_CELL_PAR_NAME = "selected_index";
-const char* EngineCellSelectionMesh::SELECTED_CELL_COLOR_PAR_NAME = "selected_color";
 
 const char* EngineCellSelectionMesh::CELL_SELECT_VERT_SHADER = "./Shaders/engine_cell_selection_shader.vert";
 const char* EngineCellSelectionMesh::CELL_SELECT_FRAG_SHADER = "./Shaders/engine_cell_selection_shader.frag";
@@ -50,8 +49,8 @@ glm::vec3 EngineCellSelectionMesh::get_cell_color_at_pos(GLint x, GLint y)
 {
 	glm::vec4 pixel(0);
 
-	GLint true_x = (x / m_window_dimensions.x) * m_fbo_dimensions.x;
-	GLint true_y = (y / m_window_dimensions.y) * m_fbo_dimensions.y;
+	GLint true_x = ((float)x / m_window_dimensions.x) * m_fbo_dimensions.x;
+	GLint true_y = ((float)y / m_window_dimensions.y) * m_fbo_dimensions.y;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 
@@ -129,23 +128,24 @@ EngineCellSelectionMesh::~EngineCellSelectionMesh()
 void EngineCellSelectionMesh::render()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	
 	glViewport(0, 0, m_fbo_dimensions.x, m_fbo_dimensions.y);
-
+	
 	m_shader.use();
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 int EngineCellSelectionMesh::get_index_at_pos(GLint x, GLint y)
 {
 	glm::vec3 color = get_cell_color_at_pos(x, y);
+
 	int red_factor = round(color.r * 255) * 256 * 256;
 	int green_factor = round(color.g * 255) * 256;
 	int blue_factor = round(color.b * 255);
+
 	return red_factor + green_factor + blue_factor;
 }

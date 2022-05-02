@@ -89,6 +89,21 @@ std::vector<unsigned int> triangulate_cell_indeces(const std::map<unsigned int, 
 	return result;
 }
 
+std::vector<unsigned int> create_line_faces(const std::map<unsigned int, std::vector<unsigned int>>& cell_indeces, const std::map<unsigned int, unsigned int>& index_map)
+{
+	std::vector<unsigned int> result;
+
+	for (const auto& p : cell_indeces) {
+		unsigned int cell_index = p.first;
+		const std::vector<unsigned int>& vertex_indeces = p.second;
+		for (int i = 0; i < vertex_indeces.size(); ++i) {
+			result.push_back(index_map.at(vertex_indeces[i]));
+		}
+	}
+
+	return result;
+}
+
 std::map<unsigned int, cell_stats> load_cell_stats(const char* path, std::vector<std::string>& frequenzy_names) {
 	int valid_line_count = 0;
 	std::ifstream file(path);

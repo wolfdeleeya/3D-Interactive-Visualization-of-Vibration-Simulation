@@ -29,7 +29,7 @@ public:
 
 	virtual void render() = 0;
 	
-	virtual void update_window_size(const glm::ivec2& window_dimensions);
+	void update_window_size(const glm::ivec2& window_dimensions);
 
 	void set_cell_vertices(const std::map<unsigned int, std::vector<unsigned int>>& cell_vertices);
 
