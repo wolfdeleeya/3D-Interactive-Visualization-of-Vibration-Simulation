@@ -99,7 +99,7 @@ public:
 
 	void load_vertex_positions(const char* path);
 
-	void window_size_changed(std::pair<int, int> window_dimensions);
+	void window_size_changed(const glm::ivec2& window_dimensions);
 
 	int get_index_at_pos(GLint x, GLint y);
 

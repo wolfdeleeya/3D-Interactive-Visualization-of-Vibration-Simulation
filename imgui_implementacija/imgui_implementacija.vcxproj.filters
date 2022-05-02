@@ -102,6 +102,12 @@
     <ClInclude Include="headers\mesh\engine_lines_mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\mesh\engine_cell_selection_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mesh_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\Source\imgui.cpp">
@@ -183,6 +189,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\mesh\engine_lines_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh\engine_cell_selection_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

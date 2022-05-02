@@ -1,6 +1,9 @@
 #include "mesh/engine_visualization_mesh.h"
 #include "glm/gtc/matrix_transform.hpp"
 
+const char* EngineVisualizationMesh::VERTEX_SHADER = "./Shaders/engine_shader.vert";
+const char* EngineVisualizationMesh::FRAGMENT_SHADER = "./Shaders/engine_shader.frag";
+
 void EngineVisualizationMesh::setup_buffers()
 {
 	glBindVertexArray(m_VAO);
@@ -115,20 +118,26 @@ void EngineVisualizationMesh::load_color_data()
 	}
 }
 
-EngineVisualizationMesh::EngineVisualizationMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, const glm::ivec2& window_dimensions, bool is_cw):
-	AbstractMesh(vertex_shader_dest, fragment_shader_dest)
+EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, bool is_cw = false) :
+	AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
 {
 	glGenBuffers(1, &m_VBO_color);
 
 	m_is_cw = is_cw;
 
-	update_window_size(window_dimensions);
 	setup_buffers();
 }
 
 EngineVisualizationMesh::~EngineVisualizationMesh()
 {
 	glDeleteBuffers(1, &m_VBO_color);
+}
+
+void EngineVisualizationMesh::set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map)
+{
+	m_cell_colors_map = cell_colors_map;
+
+	setup_color_data();
 }
 
 void EngineVisualizationMesh::render()
@@ -139,10 +148,4 @@ void EngineVisualizationMesh::render()
 	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
-}
-
-void EngineVisualizationMesh::update_window_size(const glm::ivec2& window_dimensions)
-{
-	m_window_dimensions = window_dimensions;
-	set_projection(glm::perspective(45.f, (float)window_dimensions.x / window_dimensions.y, 0.1f, 100.f));
 }

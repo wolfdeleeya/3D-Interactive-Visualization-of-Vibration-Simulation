@@ -292,10 +292,10 @@ void EngineMesh::load_vertex_positions(const char* path)
 	setup_model_data();
 }
 
-void EngineMesh::window_size_changed(std::pair<int, int> window_dimensions) 
+void EngineMesh::window_size_changed(const glm::ivec2& window_dimensions) 
 { 
-	m_window_dimensions = glm::vec2(window_dimensions.first, window_dimensions.second);
-	set_projection(glm::perspective(45.f, (float)window_dimensions.first / window_dimensions.second, 0.1f, 100.f));
+	m_window_dimensions = glm::vec2(window_dimensions.x, window_dimensions.y);
+	set_projection(glm::perspective(45.f, (float)window_dimensions.x / window_dimensions.y, 0.1f, 100.f));
 }
 
 int EngineMesh::get_index_at_pos(GLint x, GLint y)

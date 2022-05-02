@@ -11,6 +11,8 @@ protected:
 	Shader m_shader;
 	unsigned int m_VBO, m_VAO, m_EBO;
 
+	glm::ivec2 m_window_dimensions;
+
 	std::map<unsigned int, std::vector<unsigned int>> m_cell_vertices;
 	std::map<unsigned int, glm::vec3> m_vertex_positions;
 
@@ -21,17 +23,17 @@ protected:
 	virtual void setup_vertex_data() = 0;
 
 public:
-	AbstractMesh(const char* vertex_shader_dest, const char* fragment_shader_dest);
+	AbstractMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, const glm::ivec2& window_dimensions);
 
 	virtual ~AbstractMesh();
 
 	virtual void render() = 0;
 	
-	virtual void update_window_size(const glm::ivec2& window_dimensions) = 0;
+	virtual void update_window_size(const glm::ivec2& window_dimensions);
 
-	void load_cell_vertices(const char* path);
+	void set_cell_vertices(const std::map<unsigned int, std::vector<unsigned int>>& cell_vertices);
 
-	void load_vertex_positions(const char* path);
+	void set_vertex_positions(const std::map<unsigned int, glm::vec3>& vertex_positions);
 
 	template <typename T>
 	bool set_value(const std::string& name, T value);

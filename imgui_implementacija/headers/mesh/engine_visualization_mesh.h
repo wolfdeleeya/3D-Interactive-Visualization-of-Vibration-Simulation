@@ -11,9 +11,9 @@ struct vertex {
 
 class EngineVisualizationMesh : public AbstractMesh {
 private:
-	unsigned int m_VBO_color;
+	static const char* VERTEX_SHADER, * FRAGMENT_SHADER;
 
-	glm::ivec2 m_window_dimensions;
+	unsigned int m_VBO_color;
 
 	std::vector<vertex> m_model_data;
 	std::vector<glm::vec3> m_color_data;
@@ -39,12 +39,11 @@ private:
 
 	void load_color_data();
 public:
-	EngineVisualizationMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, 
-		const glm::ivec2& window_dimensions, bool is_cw = false);
+	EngineVisualizationMesh(const glm::ivec2& window_dimensions, bool is_cw = false);
 	
 	virtual ~EngineVisualizationMesh() override;
 
-	virtual void render() override;
+	void set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map);
 
-	virtual void update_window_size(const glm::ivec2& window_dimensions) override;
+	virtual void render() override;
 };
