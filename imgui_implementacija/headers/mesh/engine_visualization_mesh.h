@@ -13,7 +13,7 @@ class EngineVisualizationMesh : public AbstractMesh {
 private:
 	static const char* VERTEX_SHADER, * FRAGMENT_SHADER;
 
-	const static char* SELECTED_CELL_PAR_NAME, * SELECTED_CELL_COLOR_PAR_NAME;
+	const static char* SELECTED_CELL_PAR_NAME;
 
 	unsigned int m_VBO_color;
 

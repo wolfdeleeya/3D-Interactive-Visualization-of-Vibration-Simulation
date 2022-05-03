@@ -6,7 +6,6 @@ const char* EngineVisualizationMesh::VERTEX_SHADER = "./Shaders/engine_shader.ve
 const char* EngineVisualizationMesh::FRAGMENT_SHADER = "./Shaders/engine_shader.frag";
 
 const char* EngineVisualizationMesh::SELECTED_CELL_PAR_NAME = "selected_index";
-const char* EngineVisualizationMesh::SELECTED_CELL_COLOR_PAR_NAME = "selected_color";
 
 void EngineVisualizationMesh::setup_buffers()
 {

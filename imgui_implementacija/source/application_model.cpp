@@ -56,7 +56,7 @@ void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set cam
 {
 	const auto& vertices = loader::load_vertices(path);
 	
-	float min_x, max_x, min_y, max_y, min_z, max_z;
+	float min_x, max_x, min_y, max_y, min_z, max_z;		//calculate bounding box
 
 	min_x = min_y = min_z = std::numeric_limits<float>::max();
 	max_x = max_y = max_z = std::numeric_limits<float>::min();
