@@ -195,7 +195,7 @@ void EngineMesh::update_cell_selection_framebuffer(std::pair<int, int> window_di
 
 EngineMesh::EngineMesh(const char* vertex_shader_dest, const char* fragment_shader_dest, 
 	std::pair<int, int> window_dimensions, bool is_cw) :m_shader(vertex_shader_dest, fragment_shader_dest), 
-	m_line_shader(LINE_VERT_SHADER, LINE_FRAG_SHADER), m_cell_select_shader(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER) {
+	m_cell_select_shader(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER) {
 
 	m_is_cw = is_cw;
 
@@ -232,7 +232,6 @@ EngineMesh::~EngineMesh()
 	glDeleteRenderbuffers(1, &m_CS_RBO_depth);
 
 	m_shader.delete_shader();
-	m_line_shader.delete_shader();
 	m_cell_select_shader.delete_shader();
 }
 
@@ -293,10 +292,10 @@ void EngineMesh::load_vertex_positions(const char* path)
 	setup_model_data();
 }
 
-void EngineMesh::window_size_changed(std::pair<int, int> window_dimensions) 
+void EngineMesh::window_size_changed(const glm::ivec2& window_dimensions) 
 { 
-	m_window_dimensions = glm::vec2(window_dimensions.first, window_dimensions.second);
-	set_projection(glm::perspective(45.f, (float)window_dimensions.first / window_dimensions.second, 0.1f, 100.f));
+	m_window_dimensions = glm::vec2(window_dimensions.x, window_dimensions.y);
+	set_projection(glm::perspective(45.f, (float)window_dimensions.x / window_dimensions.y, 0.1f, 100.f));
 }
 
 int EngineMesh::get_index_at_pos(GLint x, GLint y)
