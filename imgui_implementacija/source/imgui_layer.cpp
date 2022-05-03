@@ -40,7 +40,7 @@ void ImGUILayer::draw_general_info_widget()
 void ImGUILayer::draw_fps_and_delta_time()
 {
 	static float timer = 0;
-	static float fps_refresh_time = 0;
+	static float fps_refresh_time = 1;
 	static float last_avg_delta_time = 0;
 	static int count = 0;
 
