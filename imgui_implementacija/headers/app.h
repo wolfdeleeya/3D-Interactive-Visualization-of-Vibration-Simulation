@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "engine_mesh.h"
+#include "mesh_manager.h"
 #include "application_model.h"
 #include "imgui_layer.h"
 #include "GLFW/glfw3.h"
@@ -11,8 +12,9 @@
 class App {
 private:
 	ApplicationModel* m_appliction_model;
-	EngineMesh* m_engine_mesh;
+	//EngineMesh* m_engine_mesh;
 	GLFWwindow* m_window;
+	MeshManager* m_mesh_manager;
 
 	ImGUILayer* m_imgui_layer;
 
@@ -28,7 +30,7 @@ public:
 	static float last_timestamp;
 	static float delta_time;
 
-	Event<std::pair<int, int>> on_window_size_changed;
+	Event<const glm::ivec2&> on_window_size_changed;
 
 	App(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path);
 

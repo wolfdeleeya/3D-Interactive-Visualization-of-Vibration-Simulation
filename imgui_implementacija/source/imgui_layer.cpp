@@ -6,7 +6,11 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "implot.h"
+#include "implot_internal.h"
 #include "nfd.h"
+
+const char* GraphData::item_labels[] = {"Frequencies"};
 
 void ImGUILayer::draw_color_selection_widget()
 {
@@ -25,6 +29,11 @@ void ImGUILayer::draw_general_info_widget()
 {
 	ImGui::Begin("General Info");
 	draw_fps_and_delta_time();
+
+	ImGui::DragFloat2("Cell Graph Mouse Delta", &m_mouse_delta.x, 0.5, 10, 50);
+
+	ImGui::DragFloat2("Graph Window Size", &m_plot_size.x, 0.5, 50, 1000);
+
 	ImGui::End();
 }
 
@@ -32,21 +41,24 @@ void ImGUILayer::draw_fps_and_delta_time()
 {
 	static float timer = 0;
 	static float fps_refresh_time = 0;
-	static float last_delta_time = 1;
+	static float last_avg_delta_time = 0;
+	static int count = 0;
 
 	ImGui::DragFloat("FPS Refresh Time", &fps_refresh_time, 0.05, 0, 5);
 
 	float delta_time = App::delta_time;
 
 	timer += delta_time;
+	++count;
 
 	if (timer > fps_refresh_time) {
+		last_avg_delta_time = timer / count;
 		timer = 0;
-		last_delta_time = delta_time;
+		count = 0;
 	}
 
-	std::string fps_label = "FPS: " + std::to_string(1 / last_delta_time);
-	std::string delta_time_label = "Delta Time: " + std::to_string(last_delta_time);
+	std::string fps_label = "FPS: " + std::to_string((unsigned int)round(1 / last_avg_delta_time));
+	std::string delta_time_label = "Delta Time: " + std::to_string(last_avg_delta_time);
 
 	ImGui::Text(fps_label.c_str());
 	ImGui::SameLine();
@@ -169,12 +181,43 @@ void ImGUILayer::draw_function_selection()
 	*(m_application_model->selected_function()) = (CellFunctions)selected_function;
 }
 
-ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark): m_window(window)
+void ImGUILayer::draw_graph_tooltip()
+{
+	ImGui::SetNextWindowPos(ImGui::GetMousePos() + m_mouse_delta);
+	//ImGui::SetNextWindowSize({500, 320});
+
+	ImPlotContext* implot_context = ImPlot::GetCurrentContext();
+	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
+	
+	ImGui::Begin("Graph");
+	ImGui::BeginChild("");
+	ImGuiWindow* current_window = imgui_context->CurrentWindow;
+
+	current_window->HasCloseButton = false;
+	current_window->WantCollapseToggle = false;
+
+	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
+		//implot_context->CurrentPlot->FitThisFrame = true;
+
+		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
+
+		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+		ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], m_graph_data.groups, &m_graph_data.frequenzy_labels[0]);
+		ImPlot::PlotBarGroups(GraphData::item_labels, &m_graph_data.plot_data[0], 1, m_graph_data.groups, m_graph_data.size, 0, 0);
+
+		ImPlot::EndPlot();
+	}
+	ImGui::EndChild();
+	ImGui::End();
+}
+
+ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark) : m_window(window), m_graph_data({})
 {
 	m_application_model = application_model;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImPlot::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -186,7 +229,11 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
 
+	m_mouse_delta = { 10, 10 };
+	m_plot_size = { 500, 300 };
+
 	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
+	m_application_model->on_cell_selected.add_member_listener(&ImGUILayer::on_cell_selected, this);
 }
 
 ImGUILayer::~ImGUILayer()
@@ -203,6 +250,9 @@ void ImGUILayer::update()
 	ImGui_ImplGlfw_NewFrame();
 
 	ImGui::NewFrame();
+
+	if (m_application_model->is_valid_cell_selected() && m_application_model->num_of_selected_frequencies() >= 2)
+		draw_graph_tooltip();
 
 	draw_general_info_widget();
 
@@ -263,6 +313,12 @@ void ImGUILayer::cell_stats_loaded()
 	m_frequenzy_names = m_application_model->frequenzy_names();
 }
 
+void ImGUILayer::on_cell_selected(unsigned int cell_index)
+{
+	if (m_application_model->is_valid_cell_selected())
+		m_graph_data = m_application_model->get_selected_cell_values();
+}
+
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)
 {
 	nfdchar_t* model_path;
@@ -285,4 +341,71 @@ std::string fix_path(const std::string path) {
 		result.replace(pos, 1, "/");
 
 	return result;
+}
+
+GraphData::GraphData(const std::vector<std::pair<std::string, float>>& data)
+{
+	groups = data.size();
+
+	for (int i = 0; i < groups; ++i) {
+		const std::string& name = data[i].first;
+		
+		frequenzy_labels.push_back(new char[name.size() + 1]);
+		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
+		frequenzy_labels[i][name.size()] = '\0';
+
+		plot_data.push_back(data[i].second);
+		positions.push_back(i);
+	}
+
+	size = 0.5;
+}
+
+GraphData::GraphData(const GraphData& gd)
+{
+	groups = gd.groups;
+
+	for (int i = 0; i < groups; ++i) {
+		const std::string name = gd.frequenzy_labels[i];
+
+		frequenzy_labels.push_back(new char[name.size() + 1]);
+		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
+		frequenzy_labels[i][name.size()] = '\0';
+
+		plot_data.push_back(gd.plot_data[i]);
+		positions.push_back(i);
+	}
+
+	size = gd.size;
+}
+
+GraphData::~GraphData()
+{
+	for (char* label : frequenzy_labels)
+		delete[] label;
+}
+
+void GraphData::operator=(const GraphData& gd)
+{
+	for (char* label : frequenzy_labels)
+		delete[] label;
+
+	frequenzy_labels.clear();
+	plot_data.clear();
+	positions.clear();
+
+	groups = gd.groups;
+
+	for (int i = 0; i < groups; ++i) {
+		const std::string name = gd.frequenzy_labels[i];
+
+		frequenzy_labels.push_back(new char[name.size() + 1]);
+		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
+		frequenzy_labels[i][name.size()] = '\0';
+
+		plot_data.push_back(gd.plot_data[i]);
+		positions.push_back(i);
+	}
+
+	size = gd.size;
 }

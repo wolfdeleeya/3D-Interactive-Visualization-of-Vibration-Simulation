@@ -34,6 +34,7 @@ private:
 	void set_value(int location, const glm::vec4& value);
 	void set_value(int location, const glm::vec3& value);
 	void set_value(int location, const glm::mat4x4& value);
+	void set_value(int location, unsigned int value);
 
 public:
 	Shader(const char* vert_shader_dest, const char* frag_shader_dest);

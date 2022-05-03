@@ -57,9 +57,6 @@
     <ClInclude Include="headers\gradient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\shader_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -85,6 +82,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\glm_vec_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\Headers\implot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\Headers\implot_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mesh\abstract_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mesh\engine_visualization_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mesh\engine_lines_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mesh\engine_cell_selection_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mesh_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,9 +146,6 @@
     <ClCompile Include="source\shader_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\application_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -152,11 +170,40 @@
     <ClCompile Include="source\engine_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\Source\implot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\Source\implot_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\Source\implot_items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh\abstract_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh\engine_visualization_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh\engine_lines_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh\engine_cell_selection_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="shaders\engine_shader.frag" />
     <CopyFileToFolders Include="shaders\engine_shader.vert" />
     <CopyFileToFolders Include="shaders\line_shader.frag" />
     <CopyFileToFolders Include="shaders\line_shader.vert" />
+    <CopyFileToFolders Include="shaders\engine_cell_selection_shader.frag" />
+    <CopyFileToFolders Include="shaders\engine_cell_selection_shader.vert" />
   </ItemGroup>
 </Project>

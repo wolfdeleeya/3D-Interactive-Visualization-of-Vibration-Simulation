@@ -145,17 +145,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\mesh\abstract_mesh.h" />
     <ClInclude Include="headers\camera.h" />
     <ClInclude Include="headers\cell_value_functors.h" />
     <ClInclude Include="headers\data_loading.h" />
+    <ClInclude Include="headers\debug.h" />
     <ClInclude Include="headers\debug_layer.h" />
     <ClInclude Include="headers\engine_data.h" />
     <ClInclude Include="headers\engine_mesh.h" />
+    <ClInclude Include="headers\mesh\engine_cell_selection_mesh.h" />
+    <ClInclude Include="headers\mesh\engine_lines_mesh.h" />
+    <ClInclude Include="headers\mesh\engine_visualization_mesh.h" />
     <ClInclude Include="headers\events.h" />
     <ClInclude Include="headers\glm_vec_helper.h" />
     <ClInclude Include="headers\gradient.h" />
     <ClInclude Include="headers\imgui_layer.h" />
-    <ClInclude Include="headers\model.h" />
+    <ClInclude Include="headers\mesh_manager.h" />
     <ClInclude Include="headers\shader_helper.h" />
     <ClInclude Include="headers\signals.h" />
     <ClInclude Include="headers\app.h" />
@@ -166,20 +171,26 @@
     <ClInclude Include="imgui\Headers\imgui_impl_opengl3.h" />
     <ClInclude Include="imgui\Headers\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="imgui\Headers\imgui_internal.h" />
+    <ClInclude Include="imgui\Headers\implot.h" />
+    <ClInclude Include="imgui\Headers\implot_internal.h" />
     <ClInclude Include="imgui\Headers\imstb_rectpack.h" />
     <ClInclude Include="imgui\Headers\imstb_textedit.h" />
     <ClInclude Include="imgui\Headers\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
+    <ClCompile Include="imgui\Source\implot.cpp" />
+    <ClCompile Include="imgui\Source\implot_demo.cpp" />
+    <ClCompile Include="imgui\Source\implot_items.cpp" />
+    <ClCompile Include="source\mesh\abstract_mesh.cpp" />
     <ClCompile Include="source\application_model.cpp" />
     <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\cell_value_functors.cpp" />
+    <ClCompile Include="source\debug.cpp" />
     <ClCompile Include="source\engine_data.cpp" />
     <ClCompile Include="source\engine_mesh.cpp" />
     <ClCompile Include="source\gradient.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\model.cpp" />
     <ClCompile Include="imgui\Source\imgui.cpp" />
     <ClCompile Include="imgui\Source\imgui_demo.cpp" />
     <ClCompile Include="imgui\Source\imgui_draw.cpp" />
@@ -189,6 +200,10 @@
     <ClCompile Include="imgui\Source\imgui_widgets.cpp" />
     <ClCompile Include="source\data_loading.cpp" />
     <ClCompile Include="source\imgui_layer.cpp" />
+    <ClCompile Include="source\mesh\engine_cell_selection_mesh.cpp" />
+    <ClCompile Include="source\mesh\engine_lines_mesh.cpp" />
+    <ClCompile Include="source\mesh\engine_visualization_mesh.cpp" />
+    <ClCompile Include="source\mesh_manager.cpp" />
     <ClCompile Include="source\shader_helper.cpp" />
     <ClCompile Include="source\signals.cpp" />
     <ClCompile Include="source\app.cpp" />
@@ -223,6 +238,26 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\Shaders</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\Shaders</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="shaders\engine_cell_selection_shader.frag">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\Shaders</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\Shaders</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\engine_cell_selection_shader.vert">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\Shaders</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\Shaders</DestinationFolders>
     </CopyFileToFolders>
