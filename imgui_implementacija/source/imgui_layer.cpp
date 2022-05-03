@@ -1,7 +1,5 @@
-#include <iostream>
-
-#include "app.h"
 #include "imgui_layer.h"
+#include "app.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -22,6 +20,30 @@ void ImGUILayer::draw_color_selection_widget()
 
 	ImGui::ColorEdit3("Background Color", glm::value_ptr(m_application_model->clear_color));
 
+	ImGui::End();
+}
+
+void ImGUILayer::draw_engine_view()
+{
+	ImGui::Begin("Engine View");
+	{
+		ImGui::BeginChild("Engine Render");
+		m_scene_view_position = ImGui::GetWindowPos();
+		ImVec2 scene_scale = ImGui::GetWindowSize();
+
+		bool is_width_changed = abs(scene_scale.x - m_scene_view_scale.x) > 0;
+		bool is_height_changed = abs(scene_scale.y - m_scene_view_scale.y) > 0;
+
+		if (is_width_changed || is_height_changed) {
+			m_scene_view_scale = scene_scale;
+
+			on_scene_view_scale_changed.invoke({ scene_scale.x, scene_scale.y });
+		}
+		ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));			// invert the V from the UV
+		
+		m_is_hovering_scene_view = ImGui::IsItemHovered();
+		ImGui::EndChild();
+	}
 	ImGui::End();
 }
 
@@ -197,8 +219,6 @@ void ImGUILayer::draw_graph_tooltip()
 	current_window->WantCollapseToggle = false;
 
 	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
-		//implot_context->CurrentPlot->FitThisFrame = true;
-
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
 
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
@@ -211,9 +231,12 @@ void ImGUILayer::draw_graph_tooltip()
 	ImGui::End();
 }
 
-ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark) : m_window(window), m_graph_data({})
+ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
+	m_window(window), m_graph_data({})
 {
 	m_application_model = application_model;
+
+	m_scene_view_texture = scene_view_texture;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

@@ -12,6 +12,7 @@ struct GraphData {
 	std::vector<char*> frequenzy_labels;
 	std::vector<float> plot_data;
 	std::vector<double> positions;
+
 	int groups = 0;
 	float size;
 	
@@ -29,9 +30,17 @@ private:
 	ImVec2 m_mouse_delta;
 	ImVec2 m_plot_size;
 
+	ImVec2 m_scene_view_position;
+	ImVec2 m_scene_view_scale;
+	unsigned int m_scene_view_texture;
+
+	bool m_is_hovering_scene_view;
+
 	GraphData m_graph_data;
 
 	void draw_color_selection_widget();
+
+	void draw_engine_view();
 
 	void draw_general_info_widget();
 
@@ -54,7 +63,9 @@ public:
 		on_load_cell_vertices,
 		on_load_cell_stats;
 
-	ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark = true);
+	Event<glm::ivec2> on_scene_view_scale_changed;
+
+	ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark = true);
 	
 	~ImGUILayer();
 
