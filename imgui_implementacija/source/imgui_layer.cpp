@@ -184,7 +184,7 @@ void ImGUILayer::draw_function_selection()
 void ImGUILayer::draw_graph_tooltip()
 {
 	ImGui::SetNextWindowPos(ImGui::GetMousePos() + m_mouse_delta);
-	//ImGui::SetNextWindowSize({500, 320});
+	ImGui::SetNextWindowSize({500, 320});
 
 	ImPlotContext* implot_context = ImPlot::GetCurrentContext();
 	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
