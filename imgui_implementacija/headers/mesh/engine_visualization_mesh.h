@@ -17,6 +17,8 @@ private:
 
 	unsigned int m_VBO_color;
 
+	unsigned int m_target_FBO;
+
 	std::vector<vertex> m_model_data;
 	std::vector<glm::vec3> m_color_data;
 
@@ -41,13 +43,15 @@ private:
 
 	void load_color_data();
 public:
-	EngineVisualizationMesh(const glm::ivec2& window_dimensions, bool is_cw = false);
+	EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int m_target_FBO = 0, bool is_cw = false);
 	
 	virtual ~EngineVisualizationMesh() override;
 
 	void set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map);
 
 	virtual void render() override;
+
+	void set_target_FBO(unsigned int target_FBO) { m_target_FBO = target_FBO; }
 
 	void on_cell_selected(unsigned int cell_index) { m_shader.set_value(SELECTED_CELL_PAR_NAME, cell_index); }
 };

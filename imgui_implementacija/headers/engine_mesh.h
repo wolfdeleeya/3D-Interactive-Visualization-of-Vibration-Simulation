@@ -1,9 +1,9 @@
 #pragma once
 
 #include "events.h"
-#include "data_loading.h"
 #include "shader_helper.h"
 
+#include "data_loading.h"
 struct vertex {
 	glm::vec3 position;
 	glm::vec3 normal;

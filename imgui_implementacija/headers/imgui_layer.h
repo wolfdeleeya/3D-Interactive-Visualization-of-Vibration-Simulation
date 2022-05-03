@@ -63,7 +63,7 @@ public:
 		on_load_cell_vertices,
 		on_load_cell_stats;
 
-	Event<glm::ivec2> on_scene_view_scale_changed;
+	Event<const glm::ivec2&> on_scene_view_scale_changed;
 
 	ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark = true);
 	
@@ -80,6 +80,10 @@ public:
 	void cell_stats_loaded();
 
 	void on_cell_selected(unsigned int cell_index);
+
+	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
+
+	ImVec2 scene_view_scale() { return m_scene_view_scale; }
 };
 
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items);

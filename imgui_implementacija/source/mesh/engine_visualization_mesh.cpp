@@ -1,6 +1,5 @@
 #include "mesh/engine_visualization_mesh.h"
 #include "glm/gtc/matrix_transform.hpp"
-#include "debug.h"
 
 const char* EngineVisualizationMesh::VERTEX_SHADER = "./Shaders/engine_shader.vert";
 const char* EngineVisualizationMesh::FRAGMENT_SHADER = "./Shaders/engine_shader.frag";
@@ -121,12 +120,13 @@ void EngineVisualizationMesh::load_color_data()
 	}
 }
 
-EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, bool is_cw ) :
+EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO, bool is_cw ) :
 	AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
 {
 	glGenBuffers(1, &m_VBO_color);
 
 	m_is_cw = is_cw;
+	m_target_FBO = target_FBO;
 
 	setup_buffers();
 }
@@ -145,10 +145,14 @@ void EngineVisualizationMesh::set_colors(const std::map<unsigned int, glm::vec3>
 
 void EngineVisualizationMesh::render()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, m_target_FBO);
+
 	glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
 	m_shader.use();
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

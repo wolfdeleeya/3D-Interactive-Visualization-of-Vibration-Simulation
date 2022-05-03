@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "engine_mesh.h"
 #include "mesh_manager.h"
 #include "application_model.h"
 #include "imgui_layer.h"
@@ -12,7 +11,6 @@
 class App {
 private:
 	ApplicationModel* m_appliction_model;
-	//EngineMesh* m_engine_mesh;
 	GLFWwindow* m_window;
 	MeshManager* m_mesh_manager;
 

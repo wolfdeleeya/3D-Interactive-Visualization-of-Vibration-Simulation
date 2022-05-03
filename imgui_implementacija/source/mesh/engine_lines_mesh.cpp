@@ -1,7 +1,5 @@
 #include "mesh/engine_lines_mesh.h"
 
-#include "debug.h"
-
 const char* EngineLineMesh::VERTEX_SHADER = "./Shaders/line_shader.vert";
 const char* EngineLineMesh::FRAGMENT_SHADER = "./Shaders/line_shader.frag";
 
@@ -48,10 +46,16 @@ void EngineLineMesh::load_model_data()
 		m_model_data.push_back(pair.second);
 }
 
-EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions) : AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) { setup_buffers(); }
+EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) : AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) 
+{
+	m_target_FBO = target_FBO;
+	setup_buffers(); 
+}
 
 void EngineLineMesh::render()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, m_target_FBO);
+
 	glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
 
 	m_shader.use(); 
@@ -59,4 +63,6 @@ void EngineLineMesh::render()
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_LINES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

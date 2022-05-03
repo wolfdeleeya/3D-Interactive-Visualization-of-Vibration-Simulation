@@ -235,7 +235,7 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 	m_window(window), m_graph_data({})
 {
 	m_application_model = application_model;
-
+	m_is_hovering_scene_view = true;
 	m_scene_view_texture = scene_view_texture;
 
 	IMGUI_CHECKVERSION();
@@ -274,6 +274,8 @@ void ImGUILayer::update()
 
 	ImGui::NewFrame();
 
+	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
 	if (m_application_model->is_valid_cell_selected() && m_application_model->num_of_selected_frequencies() >= 2)
 		draw_graph_tooltip();
 
@@ -285,6 +287,8 @@ void ImGUILayer::update()
 		draw_frequency_selection_widget();
 
 	draw_main_bar();
+
+	draw_engine_view();
 
 	ImGui::Render();
 
@@ -304,7 +308,8 @@ bool ImGUILayer::handle_mouse_scroll(double x_offset, double y_offset)
 	ImGuiIO& io = ImGui::GetIO();
 	io.AddMouseWheelEvent((float)x_offset, (float)y_offset);
 
-	return io.WantCaptureMouse;
+	//won't check if mouse is captured because mouse will be captured over scene view and we want to handle that in backend
+	return !m_is_hovering_scene_view;
 }
 
 bool ImGUILayer::handle_mouse_pos(double x_pos, double y_pos)
@@ -319,7 +324,8 @@ bool ImGUILayer::handle_mouse_pos(double x_pos, double y_pos)
 	}
 	io.AddMousePosEvent((float)x_pos, (float)y_pos);
 
-	return io.WantCaptureMouse;
+	//won't check if mouse is captured because mouse will be captured over scene view and we want to handle that in backend
+	return !m_is_hovering_scene_view;
 }
 
 bool ImGUILayer::handle_mouse_click(int button, bool down)
@@ -328,7 +334,8 @@ bool ImGUILayer::handle_mouse_click(int button, bool down)
 	if (button >= 0 && button < ImGuiMouseButton_COUNT)
 		io.AddMouseButtonEvent(button, down);
 
-	return io.WantCaptureMouse;
+	//won't check if mouse is captured because mouse will be captured over scene view and we want to handle that in backend
+	return !m_is_hovering_scene_view;
 }
 
 void ImGUILayer::cell_stats_loaded()
@@ -340,6 +347,14 @@ void ImGUILayer::on_cell_selected(unsigned int cell_index)
 {
 	if (m_application_model->is_valid_cell_selected())
 		m_graph_data = m_application_model->get_selected_cell_values();
+}
+
+glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)
+{
+	int x = mouse_pos.x - m_scene_view_position.x;
+	int y = mouse_pos.y - m_scene_view_position.y;
+
+	return glm::ivec2(x, y);
 }
 
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)

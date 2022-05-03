@@ -1,7 +1,6 @@
 #include "mesh/engine_cell_selection_mesh.h"
 
 #include <iostream>
-#include "debug.h"
 #include "data_loading.h"
 #include <glm/gtc/type_ptr.hpp>
 
