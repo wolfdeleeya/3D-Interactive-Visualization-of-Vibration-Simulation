@@ -55,18 +55,29 @@ void ApplicationModel::move_camera_distance(float y_offset)
 void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set camera to point at average position of vertices
 {
 	const auto& vertices = loader::load_vertices(path);
-
-	glm::vec3 sum(0);
 	
-	glm::vec3 leftest, rightest, frontest, backest, highest, lowest;
+	float min_x, max_x, min_y, max_y, min_z, max_z;
+
+	min_x = min_y = min_z = std::numeric_limits<float>::max();
+	max_x = max_y = max_z = std::numeric_limits<float>::min();
 
 	for (const auto& pair : vertices)
-		sum += pair.second;
+	{
+		glm::vec3 v = pair.second;
 
-	glm::vec3 avg = sum / (float)vertices.size();
-	m_camera->set_target(avg);
+		min_x = v.x < min_x ? v.x : min_x;
+		max_x = v.x > max_x ? v.x : max_x;
 
-	std::cout << avg.x << ", " << avg.y << ", " << avg.z << std::endl;
+		min_y = v.y < min_y ? v.y : min_y;
+		max_y = v.y > max_y ? v.y : max_y;
+
+		min_z = v.z < min_z ? v.z : min_z;
+		max_z = v.z > max_z ? v.z : max_z;
+	}
+
+	glm::vec3 box_center((min_x + max_x) / 2, (min_y + max_y) / 2, (min_z + max_z) / 2);
+
+	m_camera->set_target(box_center);
 
 	on_view_mat_changed.invoke(m_camera->view_mat());
 }
