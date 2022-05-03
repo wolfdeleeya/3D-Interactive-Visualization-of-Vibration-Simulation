@@ -10,7 +10,8 @@ private:
 	Event<unsigned int> on_cell_selected;
 
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
-	std::function<unsigned int(GLint, GLint)> f;
+
+	std::function<unsigned int(GLint, GLint)> m_index_selection_function;
 public:
 	MeshManager(const glm::ivec2& window_dimensions);
 

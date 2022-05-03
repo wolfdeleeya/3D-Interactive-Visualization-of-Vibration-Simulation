@@ -1,6 +1,7 @@
 #include "mesh/abstract_mesh.h"
 #include "data_loading.h"
 #include <glm/ext/matrix_clip_space.hpp>
+#include <iostream>
 
 const char* AbstractMesh::MODEL_PAR_NAME = "model";
 const char* AbstractMesh::VIEW_PAR_NAME = "view";

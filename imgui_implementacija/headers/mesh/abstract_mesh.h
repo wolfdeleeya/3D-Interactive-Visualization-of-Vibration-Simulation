@@ -1,6 +1,7 @@
 #pragma once
 
 #include "shader_helper.h"
+#include <iostream>
 
 class AbstractMesh {
 private:

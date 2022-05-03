@@ -94,10 +94,15 @@ std::vector<unsigned int> create_line_faces(const std::map<unsigned int, std::ve
 	std::vector<unsigned int> result;
 
 	for (const auto& p : cell_indeces) {
-		unsigned int cell_index = p.first;
 		const std::vector<unsigned int>& vertex_indeces = p.second;
-		for (int i = 0; i < vertex_indeces.size(); ++i) {
-			result.push_back(index_map.at(vertex_indeces[i]));
+		unsigned int num_of_cell_vertices = vertex_indeces.size();
+
+		for (int i = 0; i < num_of_cell_vertices; ++i) {
+			unsigned int current_index = index_map.at(vertex_indeces[i]);
+			unsigned int next_index = index_map.at(vertex_indeces[(i + 1) % num_of_cell_vertices]);
+			
+			result.push_back(current_index);
+			result.push_back(next_index);
 		}
 	}
 

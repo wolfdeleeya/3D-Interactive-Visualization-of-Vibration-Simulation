@@ -1,6 +1,6 @@
 #include "mesh/engine_lines_mesh.h"
 
-#include <iostream>
+#include "debug.h"
 
 const char* EngineLineMesh::VERTEX_SHADER = "./Shaders/line_shader.vert";
 const char* EngineLineMesh::FRAGMENT_SHADER = "./Shaders/line_shader.frag";
@@ -38,7 +38,7 @@ void EngineLineMesh::setup_vertex_data()
 	load_model_data();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, m_model_data.size() * sizeof(m_model_data[0]), &m_model_data[0], GL_STATIC_DRAW); 
+	glBufferData(GL_ARRAY_BUFFER, m_model_data.size() * sizeof(glm::vec3), &m_model_data[0], GL_STATIC_DRAW); 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -48,13 +48,15 @@ void EngineLineMesh::load_model_data()
 		m_model_data.push_back(pair.second);
 }
 
-EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions): AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) {}
+EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions) : AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) { setup_buffers(); }
 
 void EngineLineMesh::render()
 {
 	glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
+
 	m_shader.use(); 
+
 	glBindVertexArray(m_VAO);
-	glDrawElements(GL_LINE_LOOP, m_indeces.size(), GL_UNSIGNED_INT, 0); 
+	glDrawElements(GL_LINES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

@@ -1,5 +1,6 @@
 #include "mesh/engine_visualization_mesh.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "debug.h"
 
 const char* EngineVisualizationMesh::VERTEX_SHADER = "./Shaders/engine_shader.vert";
 const char* EngineVisualizationMesh::FRAGMENT_SHADER = "./Shaders/engine_shader.frag";
@@ -145,10 +146,10 @@ void EngineVisualizationMesh::set_colors(const std::map<unsigned int, glm::vec3>
 
 void EngineVisualizationMesh::render()
 {
-	//glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
-	//m_shader.use();
-	//glBindVertexArray(m_VAO);
-	//glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
+	glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
+	m_shader.use();
+	glBindVertexArray(m_VAO);
+	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
-	//glBindVertexArray(0);
+	glBindVertexArray(0);
 }

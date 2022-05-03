@@ -8,17 +8,17 @@
 MeshManager::MeshManager(const glm::ivec2& window_dimensions)
 {
 	EngineVisualizationMesh* evm = new EngineVisualizationMesh(window_dimensions);
-	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(window_dimensions, { 100, 100 });
+	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(window_dimensions, { 200, 200 });
 	EngineLineMesh* elm = new EngineLineMesh(window_dimensions);
 
 	on_cell_selected.add_member_listener(&EngineVisualizationMesh::on_cell_selected, evm);
 	on_colors_recalculated.add_member_listener(&EngineVisualizationMesh::set_colors, evm);
 
-	f = std::bind(&EngineCellSelectionMesh::get_index_at_pos, ecm, std::placeholders::_1, std::placeholders::_2);
+	m_index_selection_function = std::bind(&EngineCellSelectionMesh::get_index_at_pos, ecm, std::placeholders::_1, std::placeholders::_2);
 
+	m_meshes.push_back(evm);
 	m_meshes.push_back(ecm);
 	m_meshes.push_back(elm);
-	m_meshes.push_back(evm);
 }
 
 MeshManager::~MeshManager()
@@ -55,7 +55,7 @@ void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
 
 unsigned int MeshManager::get_index_at_pos(GLint x, GLint y)
 {
-	return f(x, y);
+	return m_index_selection_function(x, y);
 }
 
 void MeshManager::render()
