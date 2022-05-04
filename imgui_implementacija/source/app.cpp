@@ -14,9 +14,6 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i)
 		m_mouse_button_state[i] = false;
 
-	m_window_width = init_width;
-	m_window_height = init_height;
-
 	m_last_mouse_pos = glm::vec2(0);
 
 	init_glfw(init_width, init_height);
@@ -40,8 +37,6 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineData::on_cell_vertices_loaded, m_appliction_model->engine_data());
 
 	m_imgui_layer->on_load_cell_stats.add_member_listener(&ApplicationModel::load_cell_stats, m_appliction_model);
-
-	on_window_size_changed.invoke({ init_width, init_height });
 
 	m_appliction_model->refresh_camera();
 }
@@ -87,16 +82,6 @@ void App::init_opengl() {
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
-}
-
-void App::resize_callback(int width, int height)
-{
-	m_window_width = width;
-	m_window_height = height;
-
-	glViewport(0, 0, m_window_width, m_window_height);
-
-	on_window_size_changed.invoke({ m_window_width, m_window_height });
 }
 
 void App::scroll_callback(double x_offset, double y_offset)

@@ -6,6 +6,7 @@
 #include "GLFW/glfw3.h"
 #include "nfd.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 
 struct GraphData {
 	static const char* item_labels[];
@@ -57,6 +58,8 @@ private:
 	void draw_function_selection();
 
 	void draw_graph_tooltip();
+
+	bool is_window_resized(ImGuiWindow* window);
 
 public:
 	Event<const char*> on_load_vertex_positions,

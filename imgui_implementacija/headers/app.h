@@ -17,7 +17,7 @@ private:
 	ImGUILayer* m_imgui_layer;
 
 	glm::vec2 m_last_mouse_pos;
-	int m_window_width, m_window_height;
+
 	bool m_mouse_button_state[GLFW_MOUSE_BUTTON_LAST + 1];
 
 	void init_glfw(int width, int height);
@@ -28,15 +28,11 @@ public:
 	static float last_timestamp;
 	static float delta_time;
 
-	Event<const glm::ivec2&> on_window_size_changed;
-
 	App(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path);
 
 	~App();
 	
 	bool should_close() { return glfwWindowShouldClose(m_window); }
-
-	void resize_callback(int width, int height);
 
 	void scroll_callback(double x_offset, double y_offset);
 

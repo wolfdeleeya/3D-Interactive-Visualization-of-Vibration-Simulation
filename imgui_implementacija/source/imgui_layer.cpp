@@ -35,13 +35,12 @@ void ImGUILayer::draw_engine_view()
 		bool is_width_changed = abs(scene_scale.x - m_scene_view_scale.x) > 0;
 		bool is_height_changed = abs(scene_scale.y - m_scene_view_scale.y) > 0;
 
-		if (is_width_changed || is_height_changed) {
+		if ((is_width_changed || is_height_changed) && !is_window_resized(ImGui::GetCurrentWindow())) {
 			m_scene_view_scale = scene_scale;
-
 			on_scene_view_scale_changed.invoke({ scene_scale.x, scene_scale.y });
 		}
 		ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
-		
+
 		m_is_hovering_scene_view = ImGui::IsItemHovered();
 		ImGui::EndChild();
 	}
@@ -230,6 +229,23 @@ void ImGUILayer::draw_graph_tooltip()
 	}
 	ImGui::EndChild();
 	ImGui::End();
+}
+
+bool ImGUILayer::is_window_resized(ImGuiWindow* window)
+{
+	ImGuiID active_id = ImGui::GetActiveID();
+
+	for (int i = 0; i < 4; ++i) {
+		ImGuiID border_id = ImGui::GetWindowResizeBorderID(window, i);
+		if (active_id == border_id)
+			return true;
+
+		ImGuiID corner_id = ImGui::GetWindowResizeCornerID(window, i);
+		if (active_id == corner_id)
+			return true;
+	}
+	
+	return false;
 }
 
 ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 

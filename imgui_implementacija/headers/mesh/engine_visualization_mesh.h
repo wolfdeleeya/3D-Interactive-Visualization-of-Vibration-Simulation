@@ -5,7 +5,6 @@
 
 struct vertex {
 	glm::vec3 position;
-	glm::vec3 normal;
 	unsigned int cell_index;
 };
 
@@ -23,11 +22,8 @@ private:
 	std::vector<glm::vec3> m_color_data;
 
 	std::map<unsigned int, glm::vec3> m_cell_colors_map;
-	std::map<unsigned int, glm::vec3> m_cell_normals;
 
 	std::map<unsigned int, std::map<unsigned int, unsigned int>> m_indeces_map;
-
-	bool m_is_cw;
 
 	virtual void setup_buffers() override;
 
@@ -37,13 +33,11 @@ private:
 
 	void setup_color_data();
 
-	void calculate_normals();
-
 	void load_model_data();
 
 	void load_color_data();
 public:
-	EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int m_target_FBO = 0, bool is_cw = false);
+	EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int m_target_FBO = 0);
 	
 	virtual ~EngineVisualizationMesh() override;
 

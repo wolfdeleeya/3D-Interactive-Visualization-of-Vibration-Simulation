@@ -101,7 +101,9 @@ void MeshManager::load_cell_vertices(const char* path)
 void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
 {
 	m_window_dimensions = window_dimensions;
+	
 	setup_scene_view_framebuffer(window_dimensions);
+	
 	for (AbstractMesh* mesh : m_meshes)
 		mesh->update_window_size(window_dimensions);
 }

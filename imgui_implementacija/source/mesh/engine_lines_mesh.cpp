@@ -54,7 +54,6 @@ void EngineLineMesh::load_model_data()
 	for (auto& pair : m_vertex_positions) {
 		unsigned int index = m_indeces_map[pair.first];
 		m_model_data[index] = pair.second;
-
 	}
 }
 
@@ -66,6 +65,9 @@ EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int
 
 void EngineLineMesh::render()
 {
+	if (is_empty())
+		return;
+
 	glBindFramebuffer(GL_FRAMEBUFFER, m_target_FBO);
 
 	glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);

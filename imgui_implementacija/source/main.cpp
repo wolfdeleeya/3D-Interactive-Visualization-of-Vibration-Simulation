@@ -6,7 +6,6 @@ const char* DEFAULT_FRAG_SHADER = "./Shaders/engine_shader.frag";
 
 App* app;
 
-void resize_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_moved_callback(GLFWwindow* window, double x_pos, double y_pos);
@@ -15,7 +14,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 int main() {
 	app = new App(500, 500, DEFAULT_VERT_SHADER, DEFAULT_FRAG_SHADER);
 
-	glfwSetWindowSizeCallback(app->window(), resize_callback);
 	glfwSetKeyCallback(app->window(), key_callback);
 	glfwSetScrollCallback(app->window(), scroll_callback);
 	glfwSetCursorPosCallback(app->window(), mouse_moved_callback);
@@ -25,10 +23,6 @@ int main() {
 		app->update();
 
 	delete app;
-}
-
-void resize_callback(GLFWwindow* window, int width, int height) {
-	app->resize_callback(width, height);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
