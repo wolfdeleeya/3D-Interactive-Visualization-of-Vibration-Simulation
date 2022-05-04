@@ -43,7 +43,7 @@ public:
 	void mouse_moved_callback(double x_pos, double y_pos);
 
 	void mouse_button_callback(int button, bool is_pressed);
-
+	
 	void close() { glfwSetWindowShouldClose(m_window, true); }
 
 	void update();

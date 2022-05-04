@@ -21,9 +21,16 @@ void EngineLineMesh::setup_buffers()
 
 void EngineLineMesh::setup_indices()
 {
+	m_indeces_map.clear();
+
 	unsigned int current_index = 0;
-	for (auto& pair : m_vertex_positions)
-		m_indeces_map[pair.first] = current_index++;
+	
+	for (auto& pair : m_cell_vertices) {
+		std::vector<unsigned int>& vertices = pair.second;
+		for (unsigned int index : vertices)
+			if (m_indeces_map.find(index) == m_indeces_map.end())
+				m_indeces_map[index] = current_index++;
+	}
 
 	m_indeces = loader::create_line_faces(m_cell_vertices, m_indeces_map);
 }
@@ -42,8 +49,13 @@ void EngineLineMesh::setup_vertex_data()
 
 void EngineLineMesh::load_model_data()
 {
-	for (auto& pair : m_vertex_positions)
-		m_model_data.push_back(pair.second);
+	m_model_data.resize(m_vertex_positions.size());
+
+	for (auto& pair : m_vertex_positions) {
+		unsigned int index = m_indeces_map[pair.first];
+		m_model_data[index] = pair.second;
+
+	}
 }
 
 EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) : AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) 

@@ -1,4 +1,5 @@
 #include "app.h"
+#include <imgui_impl_glfw.h>
 
 const char* DEFAULT_VERT_SHADER = "./Shaders/engine_shader.vert";
 const char* DEFAULT_FRAG_SHADER = "./Shaders/engine_shader.frag";
@@ -32,6 +33,7 @@ void resize_callback(GLFWwindow* window, int width, int height) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		app->close();
 }

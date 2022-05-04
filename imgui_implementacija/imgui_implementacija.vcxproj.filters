@@ -75,9 +75,6 @@
     <ClInclude Include="headers\cell_value_functors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\engine_mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\engine_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -156,9 +153,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\cell_value_functors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine_mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\gradient.cpp">

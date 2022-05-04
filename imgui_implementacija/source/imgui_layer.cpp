@@ -7,6 +7,7 @@
 #include "implot.h"
 #include "implot_internal.h"
 #include "nfd.h"
+#include "debug.h"
 
 const char* GraphData::item_labels[] = {"Frequencies"};
 
@@ -39,7 +40,7 @@ void ImGUILayer::draw_engine_view()
 
 			on_scene_view_scale_changed.invoke({ scene_scale.x, scene_scale.y });
 		}
-		ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));			// invert the V from the UV
+		ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
 		
 		m_is_hovering_scene_view = ImGui::IsItemHovered();
 		ImGui::EndChild();

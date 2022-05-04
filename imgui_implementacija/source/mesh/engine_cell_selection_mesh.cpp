@@ -82,6 +82,7 @@ void EngineCellSelectionMesh::setup_buffers()
 void EngineCellSelectionMesh::setup_indices()
 {
 	m_indeces_map.clear();
+
 	unsigned int current_index = 0;
 	for (auto& pair : m_cell_vertices) {
 		unsigned int cell_index = pair.first;

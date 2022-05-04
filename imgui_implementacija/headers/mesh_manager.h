@@ -13,8 +13,12 @@ private:
 
 	std::function<unsigned int(GLint, GLint)> m_index_selection_function;
 
-	unsigned int m_scene_view_FBO;
-	unsigned int m_scene_view_texture, m_scene_view_RBO_depth;
+	unsigned int m_scene_view_FBO, m_scene_view_MS_FBO;
+	unsigned int m_scene_view_texture, m_scene_view_MS_texture;
+	unsigned int m_scene_view_MS_RBO_depth;
+
+	glm::ivec2 m_window_dimensions;
+	glm::vec3 m_current_clear_color;
 
 public:
 	MeshManager(const glm::ivec2& window_dimensions);
@@ -38,6 +42,8 @@ public:
 	unsigned int get_index_at_pos(GLint x, GLint y);
 
 	void render();
+
+	void set_current_clear_color(const glm::vec3& clear_color) { m_current_clear_color = clear_color; }
 
 	unsigned int scene_texture() { return m_scene_view_texture; }
 };

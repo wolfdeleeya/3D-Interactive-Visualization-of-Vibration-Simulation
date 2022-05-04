@@ -29,6 +29,7 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_appliction_model->on_view_mat_changed.add_member_listener(&MeshManager::view_mat_changed, m_mesh_manager);
 	m_appliction_model->engine_data()->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
 	m_appliction_model->on_cell_selected.add_member_listener(&MeshManager::cell_selected, m_mesh_manager);
+	m_appliction_model->on_clear_color_changed.add_member_listener(&MeshManager::set_current_clear_color, m_mesh_manager);
 
 	m_imgui_layer->on_scene_view_scale_changed.add_member_listener(&MeshManager::window_size_changed, m_mesh_manager);
 
@@ -143,11 +144,6 @@ void App::update() {
 	glfwPollEvents();
 	
 	update_time();
-
-	glm::vec3 clear_color = m_appliction_model->clear_color;
-	glClearColor(clear_color.r, clear_color.g, clear_color.b, 1);
-
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_appliction_model->update();
 	m_mesh_manager->render();

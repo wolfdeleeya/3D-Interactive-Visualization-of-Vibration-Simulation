@@ -42,12 +42,14 @@ void AbstractMesh::set_cell_vertices(const std::map<unsigned int, std::vector<un
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indeces.size() * sizeof(unsigned int), &m_indeces[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	setup_vertex_data();
+	if (!is_empty())
+		setup_vertex_data();
 }
 
 void AbstractMesh::set_vertex_positions(const std::map<unsigned int, glm::vec3>& vertex_positions)
 {
 	m_vertex_positions = vertex_positions;
-
-	setup_vertex_data();
+	
+	if (!is_empty())
+		setup_vertex_data();
 }

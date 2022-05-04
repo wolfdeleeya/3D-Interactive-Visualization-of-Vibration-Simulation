@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "application_model.h"
+#include <glm_vec_helper.h>
 
 const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_camera_distance = 5;
 
@@ -27,6 +28,11 @@ void ApplicationModel::load_cell_stats(const char* path)
 
 void ApplicationModel::update()
 {
+	if (!are_equal(m_cached_clear_color, clear_color)) {
+		m_cached_clear_color = clear_color;
+		on_clear_color_changed.invoke(clear_color);
+	}
+
 	m_engine_data->check_for_changes();
 }
 

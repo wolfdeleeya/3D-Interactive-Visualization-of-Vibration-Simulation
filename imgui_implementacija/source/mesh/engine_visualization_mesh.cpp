@@ -36,7 +36,9 @@ void EngineVisualizationMesh::setup_buffers()
 void EngineVisualizationMesh::setup_indices()
 {
 	m_indeces_map.clear();
+
 	unsigned int current_index = 0;
+
 	for (auto& pair : m_cell_vertices) {
 		unsigned int cell_index = pair.first;
 		for (unsigned int vert_index : pair.second) {
