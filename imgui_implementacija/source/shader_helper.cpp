@@ -4,8 +4,6 @@
 #include "shader_helper.h"
 #include <glm/gtc/type_ptr.hpp>
 
-#include "debug.h"
-
 const int SHADER_INFO_LENGTH = 512;
 
 unsigned int load_shader(const char* file_dest, unsigned int shader_type) {

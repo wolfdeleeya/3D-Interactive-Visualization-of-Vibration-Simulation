@@ -1,7 +1,5 @@
-#include <iostream>
-
-#include "app.h"
 #include "imgui_layer.h"
+#include "app.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -9,6 +7,7 @@
 #include "implot.h"
 #include "implot_internal.h"
 #include "nfd.h"
+#include "debug.h"
 
 const char* GraphData::item_labels[] = {"Frequencies"};
 
@@ -25,14 +24,33 @@ void ImGUILayer::draw_color_selection_widget()
 	ImGui::End();
 }
 
+void ImGUILayer::draw_engine_view()
+{
+	ImGui::Begin("Engine View");
+	{
+		ImGui::BeginChild("Engine Render");
+		m_scene_view_position = ImGui::GetWindowPos();
+		ImVec2 scene_scale = ImGui::GetWindowSize();
+
+		bool is_width_changed = abs(scene_scale.x - m_scene_view_scale.x) > 0;
+		bool is_height_changed = abs(scene_scale.y - m_scene_view_scale.y) > 0;
+
+		if ((is_width_changed || is_height_changed) && !is_window_resized(ImGui::GetCurrentWindow())) {
+			m_scene_view_scale = scene_scale;
+			on_scene_view_scale_changed.invoke({ scene_scale.x, scene_scale.y });
+		}
+		ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
+
+		m_is_hovering_scene_view = ImGui::IsItemHovered();
+		ImGui::EndChild();
+	}
+	ImGui::End();
+}
+
 void ImGUILayer::draw_general_info_widget()
 {
 	ImGui::Begin("General Info");
 	draw_fps_and_delta_time();
-
-	ImGui::DragFloat2("Cell Graph Mouse Delta", &m_mouse_delta.x, 0.5, 10, 50);
-
-	ImGui::DragFloat2("Graph Window Size", &m_plot_size.x, 0.5, 50, 1000);
 
 	ImGui::End();
 }
@@ -183,8 +201,7 @@ void ImGUILayer::draw_function_selection()
 
 void ImGUILayer::draw_graph_tooltip()
 {
-	ImGui::SetNextWindowPos(ImGui::GetMousePos() + m_mouse_delta);
-	ImGui::SetNextWindowSize({500, 320});
+	ImGui::SetNextWindowSize({500, 330});
 
 	ImPlotContext* implot_context = ImPlot::GetCurrentContext();
 	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
@@ -197,8 +214,6 @@ void ImGUILayer::draw_graph_tooltip()
 	current_window->WantCollapseToggle = false;
 
 	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
-		//implot_context->CurrentPlot->FitThisFrame = true;
-
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
 
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
@@ -211,9 +226,28 @@ void ImGUILayer::draw_graph_tooltip()
 	ImGui::End();
 }
 
-ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, bool is_dark) : m_window(window), m_graph_data({})
+bool ImGUILayer::is_window_resized(ImGuiWindow* window)
+{
+	ImGuiID active_id = ImGui::GetActiveID();
+
+	for (int i = 0; i < 4; ++i) {
+		ImGuiID border_id = ImGui::GetWindowResizeBorderID(window, i);
+		if (active_id == border_id)
+			return true;
+		ImGuiID corner_id = ImGui::GetWindowResizeCornerID(window, i);
+		if (active_id == corner_id)
+			return true;
+	}
+	
+	return false;
+}
+
+ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
+	m_window(window), m_graph_data({})
 {
 	m_application_model = application_model;
+	m_is_hovering_scene_view = true;
+	m_scene_view_texture = scene_view_texture;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -228,9 +262,6 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
-
-	m_mouse_delta = { 10, 10 };
-	m_plot_size = { 500, 300 };
 
 	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
 	m_application_model->on_cell_selected.add_member_listener(&ImGUILayer::on_cell_selected, this);
@@ -251,8 +282,9 @@ void ImGUILayer::update()
 
 	ImGui::NewFrame();
 
-	if (m_application_model->is_valid_cell_selected() && m_application_model->num_of_selected_frequencies() >= 2)
-		draw_graph_tooltip();
+	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
+	draw_graph_tooltip();
 
 	draw_general_info_widget();
 
@@ -262,6 +294,8 @@ void ImGUILayer::update()
 		draw_frequency_selection_widget();
 
 	draw_main_bar();
+
+	draw_engine_view();
 
 	ImGui::Render();
 
@@ -281,7 +315,8 @@ bool ImGUILayer::handle_mouse_scroll(double x_offset, double y_offset)
 	ImGuiIO& io = ImGui::GetIO();
 	io.AddMouseWheelEvent((float)x_offset, (float)y_offset);
 
-	return io.WantCaptureMouse;
+	//won't check if mouse is captured because mouse will be captured over scene view and we want to handle that in backend
+	return !m_is_hovering_scene_view;
 }
 
 bool ImGUILayer::handle_mouse_pos(double x_pos, double y_pos)
@@ -296,7 +331,8 @@ bool ImGUILayer::handle_mouse_pos(double x_pos, double y_pos)
 	}
 	io.AddMousePosEvent((float)x_pos, (float)y_pos);
 
-	return io.WantCaptureMouse;
+	//won't check if mouse is captured because mouse will be captured over scene view and we want to handle that in backend
+	return !m_is_hovering_scene_view;
 }
 
 bool ImGUILayer::handle_mouse_click(int button, bool down)
@@ -305,7 +341,8 @@ bool ImGUILayer::handle_mouse_click(int button, bool down)
 	if (button >= 0 && button < ImGuiMouseButton_COUNT)
 		io.AddMouseButtonEvent(button, down);
 
-	return io.WantCaptureMouse;
+	//won't check if mouse is captured because mouse will be captured over scene view and we want to handle that in backend
+	return !m_is_hovering_scene_view;
 }
 
 void ImGUILayer::cell_stats_loaded()
@@ -317,6 +354,14 @@ void ImGUILayer::on_cell_selected(unsigned int cell_index)
 {
 	if (m_application_model->is_valid_cell_selected())
 		m_graph_data = m_application_model->get_selected_cell_values();
+}
+
+glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)
+{
+	int x = mouse_pos.x - m_scene_view_position.x;
+	int y = mouse_pos.y - m_scene_view_position.y;
+
+	return glm::ivec2(x, y);
 }
 
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)

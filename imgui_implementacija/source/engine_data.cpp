@@ -4,13 +4,6 @@
 #include "engine_data.h"
 #include "glm_vec_helper.h"
 
-struct FrequenzyPairsComparator {
-	bool operator()(const std::pair<std::string, float>& p1, const std::pair<std::string, float>& p2) const
-	{
-		return p1.second <= p2.second;
-	}
-};
-
 const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineData::CELL_FUNCTIONS{
 	std::make_shared<cell_functors::MinFunctor>(),
 	std::make_shared<cell_functors::MaxFunctor>(),
@@ -104,7 +97,7 @@ void EngineData::find_global_limits()
 	m_limits[GLOBAL] = global_limits;
 }
 
-EngineData::EngineData(const glm::vec3& color)
+EngineData::EngineData(const glm::vec3& color) : m_pairs_comparator({})
 {
 	limits_mode = GLOBAL;
 	selected_function = AVERAGE;
@@ -123,6 +116,8 @@ void EngineData::load_cell_stats(const char* path)
 
 	for (const auto& pair : m_cell_stats)
 		m_cell_indeces.push_back(pair.first);
+
+	m_pairs_comparator.all_names = m_frequenzy_names;
 
 	find_global_limits();
 
@@ -197,7 +192,7 @@ std::vector<std::pair<std::string, float>> EngineData::get_values_for_cell(unsig
 	for (const auto& name : m_selected_frequencies_names)
 		result.push_back({ name, stats.freq_map[name] });
 	
-	std::sort(result.begin(), result.end(), FrequenzyPairsComparator());
+	std::sort(result.begin(), result.end(), m_pairs_comparator);
 	
 	return result;
 }
