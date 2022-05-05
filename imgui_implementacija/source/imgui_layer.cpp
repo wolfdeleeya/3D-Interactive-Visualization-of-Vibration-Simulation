@@ -239,7 +239,6 @@ bool ImGUILayer::is_window_resized(ImGuiWindow* window)
 		ImGuiID border_id = ImGui::GetWindowResizeBorderID(window, i);
 		if (active_id == border_id)
 			return true;
-
 		ImGuiID corner_id = ImGui::GetWindowResizeCornerID(window, i);
 		if (active_id == corner_id)
 			return true;
