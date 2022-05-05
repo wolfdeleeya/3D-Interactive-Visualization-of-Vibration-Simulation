@@ -105,6 +105,12 @@
     <ClInclude Include="headers\mesh_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\color_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\graph_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\Source\imgui.cpp">
@@ -158,9 +164,6 @@
     <ClCompile Include="source\gradient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\engine_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -189,6 +192,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\mesh_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\color_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graph_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

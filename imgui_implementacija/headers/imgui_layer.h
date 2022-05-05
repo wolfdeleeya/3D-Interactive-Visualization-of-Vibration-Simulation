@@ -7,21 +7,7 @@
 #include "nfd.h"
 #include "imgui.h"
 #include "imgui_internal.h"
-
-struct GraphData {
-	static const char* item_labels[];
-	std::vector<char*> frequenzy_labels;
-	std::vector<float> plot_data;
-	std::vector<double> positions;
-
-	int groups = 0;
-	float size;
-	
-	GraphData(const std::vector<std::pair<std::string, float>>& data);
-	GraphData(const GraphData& gd);
-	~GraphData();
-	void operator=(const GraphData& gd);
-};
+#include "graph_data.h"
 
 class ImGUILayer {
 private:
@@ -80,7 +66,7 @@ public:
 
 	void cell_stats_loaded();
 
-	void on_cell_selected(unsigned int cell_index);
+	void on_cell_hovered(unsigned int cell_index);
 
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
 

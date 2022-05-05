@@ -17,6 +17,8 @@ private:
 	ImGUILayer* m_imgui_layer;
 
 	glm::vec2 m_last_mouse_pos;
+	glm::vec2 m_current_mouse_pos;
+	glm::vec2 m_mouse_delta;
 
 	bool m_mouse_button_state[GLFW_MOUSE_BUTTON_LAST + 1];
 

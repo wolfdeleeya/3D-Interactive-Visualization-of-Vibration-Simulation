@@ -3,6 +3,7 @@
 
 #include "engine_data.h"
 #include "glm_vec_helper.h"
+#include "color_helper.h"
 
 const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineData::CELL_FUNCTIONS{
 	std::make_shared<cell_functors::MinFunctor>(),
@@ -21,30 +22,43 @@ void EngineData::calculate_color()
 
 	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
 
+	unsigned int n_selected_cells = m_selected_cells.size();
+
+	for (int i = 0; i < n_selected_cells; ++i)
+		color_map[m_selected_cells[i]] = convert_hsv_to_rgb({ 1 - float(i + 1) / (n_selected_cells + 1), 1, 1 });
+
 	glm::vec2& limits = m_limits[limits_mode];
-	if (n_selected_frequencies == 0) {
-		for (unsigned int& index : m_cell_indeces)
+
+	const auto& selected_cells_begin = m_selected_cells.begin();
+	const auto& selected_cells_end = m_selected_cells.end();
+
+	for (unsigned int index : m_cell_indeces) {
+		if (std::find(selected_cells_begin, selected_cells_end, index) != selected_cells_end)	//if is selected ignore loop
+			continue;
+
+		if (n_selected_frequencies == 0)
 			color_map[index] = default_color;
-	}
-	else if (n_selected_frequencies == 1) {
-		for (auto& pair : m_cell_stats) {
-			float value = pair.second.freq_map[m_selected_frequencies_names[0]];
+		else if (n_selected_frequencies == 1) {
+			auto& cell_stats = m_cell_stats[index];
+			
+			float value = cell_stats.freq_map[m_selected_frequencies_names[0]];
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
-			color_map[pair.first] = gradient.evaluate(norm_value);
+
+			color_map[index] = gradient.evaluate(norm_value);
 		}
-	}
-	else {
-		for (auto& pair : m_cell_stats) {
+		else {
+			auto& cell_stats = m_cell_stats[index];
+
 			std::vector<float> values;
 			for (int i = 0; i < n_selected_frequencies; ++i)
-				values.push_back(pair.second.freq_map[m_selected_frequencies_names[i]]);
+				values.push_back(cell_stats.freq_map[m_selected_frequencies_names[i]]);
 
 			float value = (*CELL_FUNCTIONS[selected_function])(values);
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
-			color_map[pair.first] = gradient.evaluate(norm_value);
+
+			color_map[index] = gradient.evaluate(norm_value);
 		}
 	}
-
 	on_colors_recalculated.invoke(color_map);
 }
 
@@ -181,6 +195,39 @@ void EngineData::clear_selection()
 	m_selected_frequencies_names.clear();
 
 	calculate_color();
+}
+
+void EngineData::clear_hovered_cell()
+{
+	if (is_valid_cell_hovered())
+		set_hovered_cell(0);
+}
+
+void EngineData::clear_selected_cells()
+{
+	if (m_selected_cells.size() > 0)
+	{
+		m_selected_cells.clear();
+		calculate_color();
+	}
+}
+
+void EngineData::handle_cell_selection()
+{
+	const auto& hovered_it = std::find(m_selected_cells.begin(), m_selected_cells.end(), m_hovered_cell);
+	
+	if (hovered_it != m_selected_cells.end())		
+		m_selected_cells.erase(hovered_it);			//if it's already selected, erase it from selection		
+	else
+		m_selected_cells.push_back(m_hovered_cell);	//else select it
+
+	calculate_color();
+}
+
+void EngineData::set_hovered_cell(unsigned int cell_index)
+{
+	m_hovered_cell = cell_index;
+	on_cell_hovered.invoke(cell_index);
 }
 
 std::vector<std::pair<std::string, float>> EngineData::get_values_for_cell(unsigned int index) 

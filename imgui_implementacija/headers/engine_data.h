@@ -36,6 +36,9 @@ private:
 	std::vector<std::string> m_frequenzy_names;
 	std::vector<std::string> m_selected_frequencies_names;
 
+	std::vector<unsigned int> m_selected_cells;
+	unsigned int m_hovered_cell;
+
 	glm::vec3 m_cached_default_color;
 	Gradient m_cached_gradient;
 
@@ -64,6 +67,8 @@ public:
 
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
+	Event<unsigned int> on_cell_hovered;
+
 	EngineData(const glm::vec3& default_color);
 
 	void load_cell_stats(const char* path);
@@ -76,6 +81,14 @@ public:
 
 	void clear_selection();
 
+	void clear_hovered_cell();
+
+	void clear_selected_cells();
+
+	void handle_cell_selection();
+
+	void set_hovered_cell(unsigned int cell_index);
+
 	std::vector<std::pair<std::string, float>> get_values_for_cell(unsigned int index);
 
 	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
@@ -85,4 +98,8 @@ public:
 	std::vector<std::string> frequenzy_names() { return m_frequenzy_names; }
 
 	std::vector<std::string> selected_frequencies() { return m_selected_frequencies_names; }
+
+	bool is_valid_cell_hovered() { return m_hovered_cell != 0; }
+
+	std::vector<std::pair<std::string, float>> get_hovered_cell_values() { return get_values_for_cell(m_hovered_cell); }
 };

@@ -9,8 +9,6 @@
 #include "nfd.h"
 #include "debug.h"
 
-const char* GraphData::item_labels[] = {"Frequencies"};
-
 void ImGUILayer::draw_color_selection_widget()
 {
 	ImGui::Begin("Color Properties Selection");
@@ -122,7 +120,7 @@ void ImGUILayer::draw_frequency_selection_widget()
 		draw_limits_selection();
 
 		if (ImGui::Button("Clear Selection"))
-			m_application_model->clear_selection();
+			m_application_model->clear_frequenzy_selection();
 	}
 	
 	if (num_of_frequencies_selected > 1)
@@ -207,6 +205,11 @@ void ImGUILayer::draw_graph_tooltip()
 	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
 	
 	ImGui::Begin("Graph");
+	
+	bool is_hover_mode_active = m_application_model->is_hover_mode_active();
+	if (ImGui::Button((is_hover_mode_active ? "HOVER MODE" : "CELL SELECTION MODE")))		//if button is clicked flip the flag
+		m_application_model->set_is_hover_mode_active(!is_hover_mode_active);
+
 	ImGui::BeginChild("");
 	ImGuiWindow* current_window = imgui_context->CurrentWindow;
 
@@ -215,10 +218,12 @@ void ImGUILayer::draw_graph_tooltip()
 
 	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
-		ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], m_graph_data.groups, &m_graph_data.frequenzy_labels[0]);
-		ImPlot::PlotBarGroups(GraphData::item_labels, &m_graph_data.plot_data[0], 1, m_graph_data.groups, m_graph_data.size, 0, 0);
+
+		if (m_graph_data.positions.size() > 0) {
+			ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], m_graph_data.groups, &m_graph_data.frequenzy_labels[0]);
+			ImPlot::PlotBarGroups(&m_graph_data.item_labels[0], &m_graph_data.plot_data[0], m_graph_data.items, m_graph_data.groups, m_graph_data.size, 0, 0);
+		}
 
 		ImPlot::EndPlot();
 	}
@@ -264,7 +269,7 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 	ImGui_ImplOpenGL3_Init("#version 130");
 
 	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
-	m_application_model->on_cell_selected.add_member_listener(&ImGUILayer::on_cell_selected, this);
+	m_application_model->engine_data()->on_cell_hovered.add_member_listener(&ImGUILayer::on_cell_hovered, this);
 }
 
 ImGUILayer::~ImGUILayer()
@@ -350,10 +355,12 @@ void ImGUILayer::cell_stats_loaded()
 	m_frequenzy_names = m_application_model->frequenzy_names();
 }
 
-void ImGUILayer::on_cell_selected(unsigned int cell_index)
+void ImGUILayer::on_cell_hovered(unsigned int cell_index)
 {
-	if (m_application_model->is_valid_cell_selected())
-		m_graph_data = m_application_model->get_selected_cell_values();
+	if (!m_application_model->engine_data()->is_valid_cell_hovered())		//if is not valid clear graph
+		m_graph_data = GraphData({});
+	else if (m_application_model->is_hover_mode_active())	//else if is valid and hover mode is active update graph
+		m_graph_data = m_application_model->get_hovered_cell_values();
 }
 
 glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)
@@ -386,71 +393,4 @@ std::string fix_path(const std::string path) {
 		result.replace(pos, 1, "/");
 
 	return result;
-}
-
-GraphData::GraphData(const std::vector<std::pair<std::string, float>>& data)
-{
-	groups = data.size();
-
-	for (int i = 0; i < groups; ++i) {
-		const std::string& name = data[i].first;
-		
-		frequenzy_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
-		frequenzy_labels[i][name.size()] = '\0';
-
-		plot_data.push_back(data[i].second);
-		positions.push_back(i);
-	}
-
-	size = 0.5;
-}
-
-GraphData::GraphData(const GraphData& gd)
-{
-	groups = gd.groups;
-
-	for (int i = 0; i < groups; ++i) {
-		const std::string name = gd.frequenzy_labels[i];
-
-		frequenzy_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
-		frequenzy_labels[i][name.size()] = '\0';
-
-		plot_data.push_back(gd.plot_data[i]);
-		positions.push_back(i);
-	}
-
-	size = gd.size;
-}
-
-GraphData::~GraphData()
-{
-	for (char* label : frequenzy_labels)
-		delete[] label;
-}
-
-void GraphData::operator=(const GraphData& gd)
-{
-	for (char* label : frequenzy_labels)
-		delete[] label;
-
-	frequenzy_labels.clear();
-	plot_data.clear();
-	positions.clear();
-
-	groups = gd.groups;
-
-	for (int i = 0; i < groups; ++i) {
-		const std::string name = gd.frequenzy_labels[i];
-
-		frequenzy_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
-		frequenzy_labels[i][name.size()] = '\0';
-
-		plot_data.push_back(gd.plot_data[i]);
-		positions.push_back(i);
-	}
-
-	size = gd.size;
 }

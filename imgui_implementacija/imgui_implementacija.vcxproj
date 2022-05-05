@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\color_helper.h" />
+    <ClInclude Include="headers\graph_data.h" />
     <ClInclude Include="headers\mesh\abstract_mesh.h" />
     <ClInclude Include="headers\camera.h" />
     <ClInclude Include="headers\cell_value_functors.h" />
@@ -181,6 +183,11 @@
     <ClCompile Include="imgui\Source\implot.cpp" />
     <ClCompile Include="imgui\Source\implot_demo.cpp" />
     <ClCompile Include="imgui\Source\implot_items.cpp" />
+    <ClCompile Include="source\color_helper.cpp" />
+    <ClCompile Include="source\graph_data.cpp" />
+    <ClCompile Include="source\main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\mesh\abstract_mesh.cpp" />
     <ClCompile Include="source\application_model.cpp" />
     <ClCompile Include="source\camera.cpp" />
@@ -188,7 +195,6 @@
     <ClCompile Include="source\debug.cpp" />
     <ClCompile Include="source\engine_data.cpp" />
     <ClCompile Include="source\gradient.cpp" />
-    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="imgui\Source\imgui.cpp" />
     <ClCompile Include="imgui\Source\imgui_demo.cpp" />
     <ClCompile Include="imgui\Source\imgui_draw.cpp" />

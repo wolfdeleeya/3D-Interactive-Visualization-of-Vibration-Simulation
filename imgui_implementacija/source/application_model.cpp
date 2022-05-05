@@ -5,6 +5,20 @@
 
 const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_camera_distance = 5;
 
+void ApplicationModel::set_is_hover_mode_active(bool value)
+{
+	m_is_hover_mode_active = value;
+	if (m_is_hover_mode_active)
+		m_engine_data->clear_selected_cells();
+	else
+		m_engine_data->clear_hovered_cell();
+}
+
+GraphData ApplicationModel::get_graph_data_for_selected_cells()
+{
+	return GraphData();
+}
+
 ApplicationModel::ApplicationModel()
 {
 	m_rotation_sensitivity = 1;
@@ -12,6 +26,11 @@ ApplicationModel::ApplicationModel()
 
 	m_engine_data = new EngineData(glm::vec3(0.55, 0.55, 0.55));
 	m_camera = new Camera(max_camera_distance, glm::vec3(0));
+
+	m_is_hover_mode_active = true;
+
+	clear_color = glm::vec3(0);
+	m_cached_clear_color = clear_color;
 }
 
 ApplicationModel::~ApplicationModel()
@@ -88,8 +107,19 @@ void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set cam
 	on_view_mat_changed.invoke(m_camera->view_mat());
 }
 
-void ApplicationModel::select_cell(unsigned int cell_index)
+void ApplicationModel::handle_out_of_focus()
 {
-	m_selected_cell = cell_index;
-	on_cell_selected.invoke(cell_index);
+	m_engine_data->clear_hovered_cell();
+}
+
+void ApplicationModel::handle_mouse_dragged(glm::ivec2 mouse_delta)
+{
+	rotate_camera(mouse_delta);
+	m_engine_data->clear_hovered_cell();
+}
+
+void ApplicationModel::handle_mouse_click()
+{
+	if (is_cell_selection_mode_active())
+		engine_data()->handle_cell_selection();
 }
