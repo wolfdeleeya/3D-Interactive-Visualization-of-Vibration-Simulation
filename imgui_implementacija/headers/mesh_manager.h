@@ -12,10 +12,20 @@ private:
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
 	std::function<unsigned int(GLint, GLint)> m_index_selection_function;
+
+	unsigned int m_scene_view_FBO, m_scene_view_MS_FBO;
+	unsigned int m_scene_view_texture, m_scene_view_MS_texture;
+	unsigned int m_scene_view_MS_RBO_depth;
+
+	glm::ivec2 m_window_dimensions;
+	glm::vec3 m_current_clear_color;
+
 public:
 	MeshManager(const glm::ivec2& window_dimensions);
 
 	~MeshManager();
+
+	void setup_scene_view_framebuffer(const glm::ivec2& scene_view_dimensions);
 
 	void view_mat_changed(const glm::mat4& view);
 
@@ -32,4 +42,8 @@ public:
 	unsigned int get_index_at_pos(GLint x, GLint y);
 
 	void render();
+
+	void set_current_clear_color(const glm::vec3& clear_color) { m_current_clear_color = clear_color; }
+
+	unsigned int scene_texture() { return m_scene_view_texture; }
 };

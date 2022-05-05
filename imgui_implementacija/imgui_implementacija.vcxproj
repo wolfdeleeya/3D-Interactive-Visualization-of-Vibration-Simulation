@@ -118,7 +118,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -133,7 +133,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -152,7 +152,6 @@
     <ClInclude Include="headers\debug.h" />
     <ClInclude Include="headers\debug_layer.h" />
     <ClInclude Include="headers\engine_data.h" />
-    <ClInclude Include="headers\engine_mesh.h" />
     <ClInclude Include="headers\mesh\engine_cell_selection_mesh.h" />
     <ClInclude Include="headers\mesh\engine_lines_mesh.h" />
     <ClInclude Include="headers\mesh\engine_visualization_mesh.h" />
@@ -188,7 +187,6 @@
     <ClCompile Include="source\cell_value_functors.cpp" />
     <ClCompile Include="source\debug.cpp" />
     <ClCompile Include="source\engine_data.cpp" />
-    <ClCompile Include="source\engine_mesh.cpp" />
     <ClCompile Include="source\gradient.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="imgui\Source\imgui.cpp" />

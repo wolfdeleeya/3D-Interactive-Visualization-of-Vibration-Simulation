@@ -13,6 +13,16 @@ enum Limits { GLOBAL, LOCAL, USER_DEFINED};
 
 enum CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD};
 
+struct FrequenzyPairsComparator {
+	std::vector<std::string> all_names;
+	FrequenzyPairsComparator(const std::vector<std::string>& all_names) : all_names(all_names) {}
+
+	bool operator()(const std::pair<std::string, float>& p1, const std::pair<std::string, float>& p2) const
+	{
+		return std::find(all_names.begin(), all_names.end(), p1.first) < std::find(all_names.begin(), all_names.end(), p2.first);
+	}
+};
+
 class EngineData {
 private:
 	static const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS;
@@ -31,6 +41,8 @@ private:
 
 	Limits m_cached_limits_mode;
 	CellFunctions m_cached_selected_function;
+
+	FrequenzyPairsComparator m_pairs_comparator;
 
 	void calculate_color();
 

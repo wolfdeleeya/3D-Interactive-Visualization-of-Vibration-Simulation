@@ -1,6 +1,5 @@
 #include "mesh/engine_visualization_mesh.h"
 #include "glm/gtc/matrix_transform.hpp"
-#include "debug.h"
 
 const char* EngineVisualizationMesh::VERTEX_SHADER = "./Shaders/engine_shader.vert";
 const char* EngineVisualizationMesh::FRAGMENT_SHADER = "./Shaders/engine_shader.frag";
@@ -18,15 +17,12 @@ void EngineVisualizationMesh::setup_buffers()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), 0);
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (void*)offsetof(vertex, normal));
-
-	glEnableVertexAttribArray(2);
-	glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, sizeof(vertex), (void*)offsetof(vertex, cell_index));
+	glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, sizeof(vertex), (void*)offsetof(vertex, cell_index));
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO_color);
 
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
 	glBindVertexArray(0);
 
@@ -37,7 +33,9 @@ void EngineVisualizationMesh::setup_buffers()
 void EngineVisualizationMesh::setup_indices()
 {
 	m_indeces_map.clear();
+
 	unsigned int current_index = 0;
+
 	for (auto& pair : m_cell_vertices) {
 		unsigned int cell_index = pair.first;
 		for (unsigned int vert_index : pair.second) {
@@ -52,8 +50,6 @@ void EngineVisualizationMesh::setup_vertex_data()
 {
 	if (m_cell_vertices.size() == 0 || m_vertex_positions.size() == 0)
 		return;
-
-	calculate_normals();
 
 	load_model_data();
 
@@ -74,18 +70,6 @@ void EngineVisualizationMesh::setup_color_data()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void EngineVisualizationMesh::calculate_normals()
-{
-	for (auto& pair : m_cell_vertices) {
-		std::vector<unsigned int>& indeces = pair.second;
-
-		glm::vec3 v1 = glm::normalize(m_vertex_positions[indeces[1]] - m_vertex_positions[indeces[0]]);
-		glm::vec3 v2 = glm::normalize(m_vertex_positions[indeces[2]] - m_vertex_positions[indeces[1]]);
-
-		m_cell_normals[pair.first] = glm::normalize(m_is_cw ? glm::cross(v2, v1) : glm::cross(v1, v2));
-	}
-}
-
 void EngineVisualizationMesh::load_model_data()
 {
 	m_model_data.resize(m_indeces.size());
@@ -95,11 +79,9 @@ void EngineVisualizationMesh::load_model_data()
 
 		for (unsigned int vert_index : pair.second) {
 			glm::vec3 pos = m_vertex_positions[vert_index];
-			glm::vec3 normal = m_cell_normals[cell_index];
-
 			unsigned int index = m_indeces_map[cell_index][vert_index];
 
-			m_model_data[index] = { pos, normal, cell_index };
+			m_model_data[index] = { pos, cell_index };
 		}
 	}
 }
@@ -121,12 +103,12 @@ void EngineVisualizationMesh::load_color_data()
 	}
 }
 
-EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, bool is_cw ) :
+EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) :
 	AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
 {
 	glGenBuffers(1, &m_VBO_color);
 
-	m_is_cw = is_cw;
+	m_target_FBO = target_FBO;
 
 	setup_buffers();
 }
@@ -145,10 +127,19 @@ void EngineVisualizationMesh::set_colors(const std::map<unsigned int, glm::vec3>
 
 void EngineVisualizationMesh::render()
 {
+	if (is_empty())
+		return;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_target_FBO);
+
 	glViewport(0, 0, m_window_dimensions.x, m_window_dimensions.y);
+
 	m_shader.use();
+
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, m_indeces.size(), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

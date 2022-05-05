@@ -17,6 +17,8 @@ private:
 
 	std::vector<std::string> m_frequenzy_names;
 
+	glm::vec3 m_cached_clear_color;
+
 	const static float min_camera_distance, max_camera_distance;
 public:
 	glm::vec3 clear_color;
@@ -25,6 +27,7 @@ public:
 
 	Event<const glm::mat4&> on_view_mat_changed;
 	Event<unsigned int> on_cell_selected;
+	Event<const glm::vec3&> on_clear_color_changed;
 
 	ApplicationModel();
 

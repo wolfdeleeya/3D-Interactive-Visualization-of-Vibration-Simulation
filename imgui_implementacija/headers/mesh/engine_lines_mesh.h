@@ -7,6 +7,8 @@ class EngineLineMesh : public AbstractMesh {
 private:
 	static const char* VERTEX_SHADER, * FRAGMENT_SHADER;
 
+	unsigned int m_target_FBO;
+
 	std::vector<glm::vec3> m_model_data;
 
 	std::map<unsigned int, unsigned int> m_indeces_map;
@@ -19,7 +21,9 @@ private:
 
 	void load_model_data();
 public:
-	EngineLineMesh(const glm::ivec2& window_dimensions);
+	EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO = 0);
 
 	virtual void render() override;
+
+	void set_target_FBO(unsigned int target_FBO) { m_target_FBO = target_FBO; }
 };

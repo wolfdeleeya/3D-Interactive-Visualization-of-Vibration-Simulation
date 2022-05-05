@@ -1,7 +1,6 @@
 #include "mesh/engine_cell_selection_mesh.h"
 
 #include <iostream>
-#include "debug.h"
 #include "data_loading.h"
 #include <glm/gtc/type_ptr.hpp>
 
@@ -83,6 +82,7 @@ void EngineCellSelectionMesh::setup_buffers()
 void EngineCellSelectionMesh::setup_indices()
 {
 	m_indeces_map.clear();
+
 	unsigned int current_index = 0;
 	for (auto& pair : m_cell_vertices) {
 		unsigned int cell_index = pair.first;
@@ -127,6 +127,9 @@ EngineCellSelectionMesh::~EngineCellSelectionMesh()
 
 void EngineCellSelectionMesh::render()
 {
+	if (is_empty())
+		return;
+
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
