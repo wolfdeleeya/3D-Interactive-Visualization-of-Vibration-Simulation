@@ -25,7 +25,7 @@ void EngineData::calculate_color()
 	unsigned int n_selected_cells = m_selected_cells.size();
 
 	for (int i = 0; i < n_selected_cells; ++i)
-		color_map[m_selected_cells[i]] = convert_hsv_to_rgb({ 1 - float(i + 1) / (n_selected_cells + 1), 1, 1 });
+		color_map[m_selected_cells[i]] = convert_hsv_to_rgb({ float(i + 1) / (n_selected_cells + 1), 1, 1 });
 
 	glm::vec2& limits = m_limits[limits_mode];
 
@@ -111,8 +111,39 @@ void EngineData::find_global_limits()
 	m_limits[GLOBAL] = global_limits;
 }
 
-EngineData::EngineData(const glm::vec3& color) : m_pairs_comparator({})
+GraphData EngineData::generate_graph_data_selected_cells()
 {
+	std::vector<std::pair<std::string, std::vector<float>>> item_data;
+	std::vector<glm::vec3> colors;
+
+	unsigned int n_selected_cells = m_selected_cells.size();
+
+	for (int i = 0; i < n_selected_cells; ++i) {
+		colors.push_back(convert_hsv_to_rgb({ float(i + 1) / (n_selected_cells + 1), 1, 1 }));
+
+		std::pair<std::string, std::vector<float>> data_entry;
+		unsigned int cell_id = m_selected_cells[i];
+		data_entry.first = "CELL " + std::to_string(cell_id);
+
+		const auto& values = get_values_for_cell(cell_id);
+
+		for (const auto& pair : values)
+			data_entry.second.push_back(pair.second);		//ovo mijenjamo, trebamo odvojiti frequenzy name od same frekvencije, ako su vec poredane
+
+		item_data.push_back(data_entry);
+	}
+
+	return GraphData(m_selected_frequencies_names, item_data, colors);
+}
+
+GraphData EngineData::generate_graph_data_hovered_cell()
+{
+	return GraphData(get_hovered_cell_values(), m_hovered_cell_color);
+}
+
+EngineData::EngineData(const glm::vec3& color) : m_pairs_comparator({}), m_frq_comparator({})
+{
+	m_hovered_cell_color = { 1, 0, 1 };
 	limits_mode = GLOBAL;
 	selected_function = AVERAGE;
 
@@ -132,6 +163,7 @@ void EngineData::load_cell_stats(const char* path)
 		m_cell_indeces.push_back(pair.first);
 
 	m_pairs_comparator.all_names = m_frequenzy_names;
+	m_frq_comparator.all_names = m_frequenzy_names;
 
 	find_global_limits();
 
@@ -157,7 +189,7 @@ void EngineData::check_for_changes()
 {
 	bool are_changes_pending = false;
 
-	//TODO: FINDER CLEANER WAY TO CHECK THIS
+	//TODO: FIND CLEANER WAY TO CHECK THIS
 	if (!are_equal(default_color, m_cached_default_color))
 		are_changes_pending = true;
 	else if (gradient != m_cached_gradient)
@@ -185,9 +217,13 @@ void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 		m_selected_frequencies_names.erase(last);
 	}
 
+	std::sort(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), m_frq_comparator);
+
 	find_local_limits();
 
 	calculate_color();
+
+	on_graph_data_changed.invoke(generate_graph_data_selected_cells());
 }
 
 void EngineData::clear_selection()
@@ -214,6 +250,9 @@ void EngineData::clear_selected_cells()
 
 void EngineData::handle_cell_selection()
 {
+	if (m_hovered_cell <= 0)
+		return;
+
 	const auto& hovered_it = std::find(m_selected_cells.begin(), m_selected_cells.end(), m_hovered_cell);
 	
 	if (hovered_it != m_selected_cells.end())		
@@ -222,12 +261,17 @@ void EngineData::handle_cell_selection()
 		m_selected_cells.push_back(m_hovered_cell);	//else select it
 
 	calculate_color();
+
+	on_graph_data_changed.invoke(generate_graph_data_selected_cells());
 }
 
 void EngineData::set_hovered_cell(unsigned int cell_index)
 {
 	m_hovered_cell = cell_index;
 	on_cell_hovered.invoke(cell_index);
+
+	if (m_update_graph_on_hover)
+		on_graph_data_changed.invoke(generate_graph_data_hovered_cell());
 }
 
 std::vector<std::pair<std::string, float>> EngineData::get_values_for_cell(unsigned int index) 
@@ -239,7 +283,11 @@ std::vector<std::pair<std::string, float>> EngineData::get_values_for_cell(unsig
 	for (const auto& name : m_selected_frequencies_names)
 		result.push_back({ name, stats.freq_map[name] });
 	
-	std::sort(result.begin(), result.end(), m_pairs_comparator);
-	
 	return result;
+}
+
+void EngineData::update_graph_on_hover(bool value)
+{
+	m_update_graph_on_hover = value;
+	on_graph_data_changed.invoke(m_update_graph_on_hover ? generate_graph_data_hovered_cell() : generate_graph_data_selected_cells());
 }

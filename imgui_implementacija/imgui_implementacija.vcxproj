@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="headers\color_helper.h" />
     <ClInclude Include="headers\graph_data.h" />
+    <ClInclude Include="headers\implot_helper.h" />
     <ClInclude Include="headers\mesh\abstract_mesh.h" />
     <ClInclude Include="headers\camera.h" />
     <ClInclude Include="headers\cell_value_functors.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="imgui\Source\implot_items.cpp" />
     <ClCompile Include="source\color_helper.cpp" />
     <ClCompile Include="source\graph_data.cpp" />
+    <ClCompile Include="source\implot_helper.cpp" />
     <ClCompile Include="source\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

@@ -4,6 +4,7 @@
 #include <memory>
 #include <array>
 
+#include "graph_data.h"
 #include "events.h"
 #include "data_loading.h"
 #include "gradient.h"
@@ -23,6 +24,16 @@ struct FrequenzyPairsComparator {
 	}
 };
 
+struct FrequenzyComparator {
+	std::vector<std::string> all_names;
+	FrequenzyComparator(const std::vector<std::string>& all_names) : all_names(all_names) {}
+
+	bool operator()(const std::string& s1, const std::string& s2) const
+	{
+		return std::find(all_names.begin(), all_names.end(), s1) < std::find(all_names.begin(), all_names.end(), s2);
+	}
+};
+
 class EngineData {
 private:
 	static const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS;
@@ -38,6 +49,7 @@ private:
 
 	std::vector<unsigned int> m_selected_cells;
 	unsigned int m_hovered_cell;
+	glm::vec3 m_hovered_cell_color;
 
 	glm::vec3 m_cached_default_color;
 	Gradient m_cached_gradient;
@@ -46,6 +58,9 @@ private:
 	CellFunctions m_cached_selected_function;
 
 	FrequenzyPairsComparator m_pairs_comparator;
+	FrequenzyComparator m_frq_comparator;
+
+	bool m_update_graph_on_hover;
 
 	void calculate_color();
 
@@ -54,6 +69,10 @@ private:
 	void find_local_limits();
 
 	void find_global_limits();
+
+	GraphData generate_graph_data_selected_cells();
+
+	GraphData generate_graph_data_hovered_cell();
 
 public:
 	static const char* FUNCTION_NAMES[5];
@@ -68,6 +87,8 @@ public:
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
 	Event<unsigned int> on_cell_hovered;
+
+	Event<const GraphData&> on_graph_data_changed;
 
 	EngineData(const glm::vec3& default_color);
 
@@ -90,6 +111,8 @@ public:
 	void set_hovered_cell(unsigned int cell_index);
 
 	std::vector<std::pair<std::string, float>> get_values_for_cell(unsigned int index);
+
+	void update_graph_on_hover(bool value);
 
 	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
 

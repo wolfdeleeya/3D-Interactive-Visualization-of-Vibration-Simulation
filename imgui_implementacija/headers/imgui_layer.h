@@ -66,9 +66,9 @@ public:
 
 	void cell_stats_loaded();
 
-	void on_cell_hovered(unsigned int cell_index);
-
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
+
+	void on_graph_changed(const GraphData& gd) { m_graph_data = gd; }
 
 	ImVec2 scene_view_scale() { return m_scene_view_scale; }
 };

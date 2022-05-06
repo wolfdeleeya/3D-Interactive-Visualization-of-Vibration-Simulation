@@ -1,19 +1,25 @@
 #include "graph_data.h"
+#include "color_helper.h"
 
-GraphData::GraphData(const std::vector<std::pair<std::string, float>>& data)
+GraphData::GraphData(const std::vector<std::pair<std::string, float>>& data, const glm::vec3& color)
 {
 	items = 1;
-	char dummy[] = "";
+
+	char* dummy = new char[1];
+	dummy[0] = '\0';
+
 	item_labels.push_back(dummy);
 
 	groups = data.size();
 
+	colors.push_back(color);
+
 	for (int i = 0; i < groups; ++i) {
 		const std::string& name = data[i].first;
 
-		frequenzy_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
-		frequenzy_labels[i][name.size()] = '\0';
+		group_labels.push_back(new char[name.size() + 1]);
+		std::copy(name.begin(), name.end(), group_labels[i]);
+		group_labels[i][name.size()] = '\0';
 
 		plot_data.push_back(data[i].second);
 		positions.push_back(i);
@@ -22,52 +28,74 @@ GraphData::GraphData(const std::vector<std::pair<std::string, float>>& data)
 	size = 0.5;
 }
 
-GraphData::GraphData(const std::vector<std::pair<std::string, std::vector<std::pair<std::string, float>>>>& data) {		//ne ovako, odvojeno cemo predat group imena, a odvojeno podatke
-	items = data.size();
-	groups = data[0].second.size();
+GraphData::GraphData(const std::vector<std::string>& group_names, const std::vector<std::pair<std::string, std::vector<float>>>& item_data, const std::vector<glm::vec3>& colors) {
+	items = item_data.size();
+	groups = group_names.size();
 	
+	this->colors = colors;
+
 	item_labels.resize(items);
 
 	positions.resize(groups);
-	frequenzy_labels.resize(groups);
+	group_labels.resize(groups);
+
+	for (int i = 0; i < groups; ++i) {
+		positions[i] = i;
+
+		const std::string group_label = group_names[i];
+
+		group_labels[i] = new char[group_label.size() + 1];
+		std::copy(group_label.begin(), group_label.end(), group_labels[i]);
+		group_labels[i][group_label.size()] = '\0';
+	}
 
 	for (int i = 0; i < items; ++i) {
-		const std::string item_label = data[i].first;
+		const std::string item_label = item_data[i].first;
 
 		item_labels[i] = new char[item_label.size() + 1];
 		std::copy(item_label.begin(), item_label.end(), item_labels[i]);
 		item_labels[i][item_label.size()] = '\0';
 
 
-		for (int j = 0; j < groups; ++j) {
+		const std::vector<float>& current_item_data = item_data[i].second;
 
-		}
+		for (int j = 0; j < groups; ++j)
+			plot_data.push_back(current_item_data[j]);
 	}
+
+	size = 0.5;
 
 }
 
 GraphData::GraphData(const GraphData& gd)
 {
-	groups = gd.groups;
 	items = gd.items;
+	groups = gd.groups;
+
+	plot_data = gd.plot_data;
+	positions = gd.positions;
+
+	colors = gd.colors;
+
+	item_labels.resize(items);
+	group_labels.resize(groups);
 
 	for (int i = 0; i < groups; ++i) {
-		const std::string name = gd.frequenzy_labels[i];
+		positions[i] = i;
 
-		frequenzy_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
-		frequenzy_labels[i][name.size()] = '\0';
+		const std::string group_label = gd.group_labels[i];
 
-		plot_data.push_back(gd.plot_data[i]);
-		positions.push_back(i);
+		group_labels[i] = new char[group_label.size() + 1];
+		std::copy(group_label.begin(), group_label.end(), group_labels[i]);
+		group_labels[i][group_label.size()] = '\0';
 	}
 
 	for (int i = 0; i < items; ++i) {
-		const std::string name = gd.item_labels[i];
+		const std::string item_label = gd.item_labels[i];
 
-		item_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), item_labels[i]);
-		item_labels[i][name.size()] = '\0';
+		item_labels[i] = new char[item_label.size() + 1];
+		std::copy(item_label.begin(), item_label.end(), item_labels[i]);
+		item_labels[i][item_label.size()] = '\0';
 	}
 
 	size = gd.size;
@@ -75,7 +103,7 @@ GraphData::GraphData(const GraphData& gd)
 
 GraphData::~GraphData()
 {
-	for (char* label : frequenzy_labels)
+	for (char* label : group_labels)
 		delete[] label;
 
 	for (char* label : item_labels)
@@ -84,37 +112,44 @@ GraphData::~GraphData()
 
 void GraphData::operator=(const GraphData& gd)
 {
-	for (char* label : frequenzy_labels)
+	for (char* label : group_labels)
 		delete[] label;
 
 	for (char* label : item_labels)
 		delete[] label;
 
-	frequenzy_labels.clear();
+	group_labels.clear();
 	item_labels.clear();
 	plot_data.clear();
 	positions.clear();
 
-	groups = gd.groups;
 	items = gd.items;
+	groups = gd.groups;
+
+	plot_data = gd.plot_data;
+	positions = gd.positions;
+
+	colors = gd.colors;
+
+	item_labels.resize(items);
+	group_labels.resize(groups);
 
 	for (int i = 0; i < groups; ++i) {
-		const std::string name = gd.frequenzy_labels[i];
+		positions[i] = i;
 
-		frequenzy_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), frequenzy_labels[i]);
-		frequenzy_labels[i][name.size()] = '\0';
+		const std::string group_label = gd.group_labels[i];
 
-		plot_data.push_back(gd.plot_data[i]);
-		positions.push_back(i);
+		group_labels[i] = new char[group_label.size() + 1];
+		std::copy(group_label.begin(), group_label.end(), group_labels[i]);
+		group_labels[i][group_label.size()] = '\0';
 	}
 
 	for (int i = 0; i < items; ++i) {
-		const std::string name = gd.item_labels[i];
+		const std::string item_label = gd.item_labels[i];
 
-		item_labels.push_back(new char[name.size() + 1]);
-		std::copy(name.begin(), name.end(), item_labels[i]);
-		item_labels[i][name.size()] = '\0';
+		item_labels[i] = new char[item_label.size() + 1];
+		std::copy(item_label.begin(), item_label.end(), item_labels[i]);
+		item_labels[i][item_label.size()] = '\0';
 	}
 
 	size = gd.size;

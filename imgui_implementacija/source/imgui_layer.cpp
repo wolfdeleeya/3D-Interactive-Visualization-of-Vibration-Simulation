@@ -8,6 +8,7 @@
 #include "implot_internal.h"
 #include "nfd.h"
 #include "debug.h"
+#include "implot_helper.h"
 
 void ImGUILayer::draw_color_selection_widget()
 {
@@ -221,8 +222,9 @@ void ImGUILayer::draw_graph_tooltip()
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
 
 		if (m_graph_data.positions.size() > 0) {
-			ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], m_graph_data.groups, &m_graph_data.frequenzy_labels[0]);
+			ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], m_graph_data.groups, &m_graph_data.group_labels[0]);
 			ImPlot::PlotBarGroups(&m_graph_data.item_labels[0], &m_graph_data.plot_data[0], m_graph_data.items, m_graph_data.groups, m_graph_data.size, 0, 0);
+			MyImPlot::PlotBarGroups(m_graph_data);
 		}
 
 		ImPlot::EndPlot();
@@ -248,7 +250,7 @@ bool ImGUILayer::is_window_resized(ImGuiWindow* window)
 }
 
 ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
-	m_window(window), m_graph_data({})
+	m_window(window), m_graph_data({}, {})
 {
 	m_application_model = application_model;
 	m_is_hovering_scene_view = true;
@@ -269,7 +271,7 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 	ImGui_ImplOpenGL3_Init("#version 130");
 
 	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
-	m_application_model->engine_data()->on_cell_hovered.add_member_listener(&ImGUILayer::on_cell_hovered, this);
+	m_application_model->engine_data()->on_graph_data_changed.add_member_listener(&ImGUILayer::on_graph_changed, this);
 }
 
 ImGUILayer::~ImGUILayer()
@@ -353,14 +355,6 @@ bool ImGUILayer::handle_mouse_click(int button, bool down)
 void ImGUILayer::cell_stats_loaded()
 {
 	m_frequenzy_names = m_application_model->frequenzy_names();
-}
-
-void ImGUILayer::on_cell_hovered(unsigned int cell_index)
-{
-	if (!m_application_model->engine_data()->is_valid_cell_hovered())		//if is not valid clear graph
-		m_graph_data = GraphData({});
-	else if (m_application_model->is_hover_mode_active())	//else if is valid and hover mode is active update graph
-		m_graph_data = m_application_model->get_hovered_cell_values();
 }
 
 glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)

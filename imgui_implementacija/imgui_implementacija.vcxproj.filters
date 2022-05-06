@@ -111,6 +111,9 @@
     <ClInclude Include="headers\graph_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\implot_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\Source\imgui.cpp">
@@ -201,6 +204,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\graph_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\implot_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

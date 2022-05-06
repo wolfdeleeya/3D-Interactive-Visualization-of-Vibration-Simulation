@@ -8,15 +8,12 @@ const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_c
 void ApplicationModel::set_is_hover_mode_active(bool value)
 {
 	m_is_hover_mode_active = value;
+	m_engine_data->update_graph_on_hover(value);
+
 	if (m_is_hover_mode_active)
 		m_engine_data->clear_selected_cells();
 	else
 		m_engine_data->clear_hovered_cell();
-}
-
-GraphData ApplicationModel::get_graph_data_for_selected_cells()
-{
-	return GraphData();
 }
 
 ApplicationModel::ApplicationModel()
