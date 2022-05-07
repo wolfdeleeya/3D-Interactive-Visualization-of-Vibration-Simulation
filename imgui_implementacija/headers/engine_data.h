@@ -74,6 +74,9 @@ private:
 
 	GraphData generate_graph_data_hovered_cell();
 
+
+	std::vector<std::pair<std::string, float>> get_empty_cell_values();
+
 public:
 	static const char* FUNCTION_NAMES[5];
 	static const char* LIMITS_NAMES[3];

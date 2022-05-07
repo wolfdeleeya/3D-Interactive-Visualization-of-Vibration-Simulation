@@ -83,10 +83,15 @@ void EngineData::find_local_limits()
 		const std::map<std::string, float>& map = pair.second.freq_map;
 
 		for (const std::string& name : m_selected_frequencies_names) {
-			float value = map.at(name);
+			if (map.count(name) > 0) {
+				float value = map.at(name);
 
-			local_limits.x = local_limits.x > value ? value : local_limits.x;		//set min limit
-			local_limits.y = local_limits.y < value ? value : local_limits.y;		//set max limit
+				local_limits.x = local_limits.x > value ? value : local_limits.x;		//set min limit
+				local_limits.y = local_limits.y < value ? value : local_limits.y;		//set max limit
+			}
+			else {
+				std::cout << "CELL " << pair.first << " DOESN'T HAVE FRQ " << name << std::endl;
+			}
 		}
 	}
 
@@ -138,7 +143,19 @@ GraphData EngineData::generate_graph_data_selected_cells()
 
 GraphData EngineData::generate_graph_data_hovered_cell()
 {
+	if (m_hovered_cell == 0)
+		return GraphData({}, m_hovered_cell_color);
 	return GraphData(get_hovered_cell_values(), m_hovered_cell_color);
+}
+
+std::vector<std::pair<std::string, float>> EngineData::get_empty_cell_values()
+{
+	std::vector<std::pair<std::string, float>> result;
+
+	for (const auto& name : m_selected_frequencies_names)
+		result.push_back({ name, 0 });
+
+	return result;
 }
 
 EngineData::EngineData(const glm::vec3& color) : m_pairs_comparator({}), m_frq_comparator({})
@@ -146,6 +163,8 @@ EngineData::EngineData(const glm::vec3& color) : m_pairs_comparator({}), m_frq_c
 	m_hovered_cell_color = { 1, 0, 1 };
 	limits_mode = GLOBAL;
 	selected_function = AVERAGE;
+
+	m_update_graph_on_hover = true;
 
 	default_color = color;
 	gradient = { glm::vec3(0), glm::vec3(1)};
@@ -223,7 +242,10 @@ void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 
 	calculate_color();
 
-	on_graph_data_changed.invoke(generate_graph_data_selected_cells());
+	if (m_update_graph_on_hover)
+		on_graph_data_changed.invoke(generate_graph_data_hovered_cell());
+	else
+		on_graph_data_changed.invoke(generate_graph_data_selected_cells());
 }
 
 void EngineData::clear_selection()
@@ -280,7 +302,7 @@ std::vector<std::pair<std::string, float>> EngineData::get_values_for_cell(unsig
 {
 	std::vector<std::pair<std::string, float>> result;
 	
-	cell_stats stats = m_cell_stats[index];
+	cell_stats stats = m_cell_stats.at(index);
 
 	for (const auto& name : m_selected_frequencies_names)
 		result.push_back({ name, stats.freq_map[name] });
