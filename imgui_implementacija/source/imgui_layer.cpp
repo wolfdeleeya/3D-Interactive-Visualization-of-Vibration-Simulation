@@ -209,7 +209,17 @@ void ImGUILayer::draw_graph_tooltip()
 	
 	bool is_hover_mode_active = m_application_model->is_hover_mode_active();
 	if (ImGui::Button((is_hover_mode_active ? "HOVER MODE" : "CELL SELECTION MODE")))		//if button is clicked flip the flag
+	{
 		m_application_model->set_is_hover_mode_active(!is_hover_mode_active);
+		is_hover_mode_active = !is_hover_mode_active;
+	}
+
+	if (!is_hover_mode_active) {
+		ImGui::SameLine();
+		if(ImGui::Button("CLEAR SELECTED CELLS")) {
+			m_application_model->engine_data()->clear_selected_cells();
+		}
+	}
 
 	ImGui::BeginChild("");
 	ImGuiWindow* current_window = imgui_context->CurrentWindow;

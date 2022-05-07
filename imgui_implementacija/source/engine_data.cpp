@@ -245,6 +245,8 @@ void EngineData::clear_selected_cells()
 	{
 		m_selected_cells.clear();
 		calculate_color();
+
+		on_graph_data_changed.invoke(generate_graph_data_selected_cells());
 	}
 }
 
