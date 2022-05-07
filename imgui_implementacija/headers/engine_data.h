@@ -14,15 +14,11 @@ enum Limits { GLOBAL, LOCAL, USER_DEFINED};
 
 enum CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD};
 
-struct FrequenzyPairsComparator {
-	std::vector<std::string> all_names;
-	FrequenzyPairsComparator(const std::vector<std::string>& all_names) : all_names(all_names) {}
+enum class GradientVariables {END};
 
-	bool operator()(const std::pair<std::string, float>& p1, const std::pair<std::string, float>& p2) const
-	{
-		return std::find(all_names.begin(), all_names.end(), p1.first) < std::find(all_names.begin(), all_names.end(), p2.first);
-	}
-};
+enum class Vec3Variables { END};
+
+enum class UnsignedIntVariables { END};
 
 struct FrequenzyComparator {
 	std::vector<std::string> all_names;
@@ -47,6 +43,8 @@ private:
 	std::vector<std::string> m_frequenzy_names;
 	std::vector<std::string> m_selected_frequencies_names;
 
+	std::map<std::string, glm::vec2> m_frequenzy_limits;
+
 	std::vector<unsigned int> m_selected_cells;
 	unsigned int m_hovered_cell;
 	glm::vec3 m_hovered_cell_color;
@@ -54,10 +52,13 @@ private:
 	glm::vec3 m_cached_default_color;
 	Gradient m_cached_gradient;
 
+	glm::vec3 m_cached_good_color;
+	Gradient m_cached_mid_gradient;
+	Gradient m_cached_bad_gradient;
+
 	Limits m_cached_limits_mode;
 	CellFunctions m_cached_selected_function;
 
-	FrequenzyPairsComparator m_pairs_comparator;
 	FrequenzyComparator m_frq_comparator;
 
 	bool m_update_graph_on_hover;
@@ -74,7 +75,6 @@ private:
 
 	GraphData generate_graph_data_hovered_cell();
 
-
 	std::vector<std::pair<std::string, float>> get_empty_cell_values();
 
 public:
@@ -83,6 +83,11 @@ public:
 
 	glm::vec3 default_color;
 	Gradient gradient;
+
+	glm::vec3 good_color;
+	Gradient mid_gradient;
+	Gradient bad_gradient;
+
 	glm::vec2 user_limits;
 	Limits limits_mode;
 	CellFunctions selected_function;
@@ -96,6 +101,8 @@ public:
 	EngineData(const glm::vec3& default_color);
 
 	void load_cell_stats(const char* path);
+
+	void load_frequenzy_limits(const char* path);
 
 	void on_cell_vertices_loaded(const char* path);
 
@@ -128,4 +135,6 @@ public:
 	bool is_valid_cell_hovered() { return m_hovered_cell != 0; }
 
 	std::vector<std::pair<std::string, float>> get_hovered_cell_values() { return get_values_for_cell(m_hovered_cell); }
+
+	bool are_frequenzy_limits_loaded() { return m_frequenzy_limits.size() > 0; }
 };

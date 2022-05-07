@@ -158,7 +158,7 @@ std::vector<std::pair<std::string, float>> EngineData::get_empty_cell_values()
 	return result;
 }
 
-EngineData::EngineData(const glm::vec3& color) : m_pairs_comparator({}), m_frq_comparator({})
+EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({})
 {
 	m_hovered_cell_color = { 1, 0, 1 };
 	limits_mode = GLOBAL;
@@ -181,12 +181,16 @@ void EngineData::load_cell_stats(const char* path)
 	for (const auto& pair : m_cell_stats)
 		m_cell_indeces.push_back(pair.first);
 
-	m_pairs_comparator.all_names = m_frequenzy_names;
 	m_frq_comparator.all_names = m_frequenzy_names;
 
 	find_global_limits();
 
 	calculate_color();
+}
+
+void EngineData::load_frequenzy_limits(const char* path)
+{
+	m_frequenzy_limits = loader::load_frequenzy_limits(path);
 }
 
 void EngineData::on_cell_vertices_loaded(const char* path)

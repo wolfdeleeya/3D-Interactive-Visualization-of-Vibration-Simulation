@@ -168,7 +168,7 @@ namespace loader {
 		return result;
 	}
 	
-	std::map<std::string, glm::vec2> load_limits(const char* path)		//currently reads only primitive limits format
+	std::map<std::string, glm::vec2> load_frequenzy_limits(const char* path)		//currently reads only primitive limits format
 	{
 		std::map<std::string, glm::vec2> result;
 		std::ifstream file(path);
