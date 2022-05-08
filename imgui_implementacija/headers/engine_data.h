@@ -9,16 +9,17 @@
 #include "data_loading.h"
 #include "gradient.h"
 #include "cell_value_functors.h"
+#include "variable_map.h"
 
 enum Limits { GLOBAL, LOCAL, USER_DEFINED};
 
 enum CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD};
 
-enum class GradientVariables {END};
+enum class GradientVariables { NORMAL_MODE_GRADIENT, LIMITS_MODE_MID_GRADIENT, LIMITS_MODE_BAD_GRADIENT, END };
 
-enum class Vec3Variables { END};
+enum class ColorVariables { DEFAULT_COLOR, GOOD_LIMITS_COLOR, END};
 
-enum class UnsignedIntVariables { END};
+enum class UnsignedIntVariables { NORMAL_MODE_LIMITS, NORMAL_MODE_FUNCTION, END};
 
 struct FrequenzyComparator {
 	std::vector<std::string> all_names;
@@ -47,6 +48,7 @@ private:
 
 	std::vector<unsigned int> m_selected_cells;
 	unsigned int m_hovered_cell;
+
 	glm::vec3 m_hovered_cell_color;
 
 	glm::vec3 m_cached_default_color;
@@ -58,6 +60,10 @@ private:
 
 	Limits m_cached_limits_mode;
 	CellFunctions m_cached_selected_function;
+
+	VariableMap<GradientVariables, Gradient> m_gradient_variables;
+	VariableMap<ColorVariables, glm::vec3> m_color_variables;
+	VariableMap<UnsignedIntVariables, unsigned int> m_uint_variables;
 
 	FrequenzyComparator m_frq_comparator;
 

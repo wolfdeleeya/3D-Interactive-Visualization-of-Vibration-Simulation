@@ -167,6 +167,7 @@
     <ClInclude Include="headers\signals.h" />
     <ClInclude Include="headers\app.h" />
     <ClInclude Include="headers\application_model.h" />
+    <ClInclude Include="headers\variable_map.h" />
     <ClInclude Include="imgui\Headers\imconfig.h" />
     <ClInclude Include="imgui\Headers\imgui.h" />
     <ClInclude Include="imgui\Headers\imgui_impl_glfw.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="source\shader_helper.cpp" />
     <ClCompile Include="source\signals.cpp" />
     <ClCompile Include="source\app.cpp" />
+    <ClCompile Include="source\variable_map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="shaders\engine_shader.frag">

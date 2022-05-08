@@ -118,6 +118,9 @@ void EngineData::find_global_limits()
 
 GraphData EngineData::generate_graph_data_selected_cells()
 {
+	if(m_cell_stats.size() == 0)
+		return GraphData({}, m_hovered_cell_color);
+
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
 
@@ -143,7 +146,7 @@ GraphData EngineData::generate_graph_data_selected_cells()
 
 GraphData EngineData::generate_graph_data_hovered_cell()
 {
-	if (m_hovered_cell == 0)
+	if (m_hovered_cell == 0 || m_cell_stats.size() == 0)
 		return GraphData({}, m_hovered_cell_color);
 	return GraphData(get_hovered_cell_values(), m_hovered_cell_color);
 }
@@ -158,9 +161,11 @@ std::vector<std::pair<std::string, float>> EngineData::get_empty_cell_values()
 	return result;
 }
 
-EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({})
+EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
+m_gradient_variables([](const Gradient& g1, const Gradient& g2) {return g1 == g2; }, GradientVariables::END, Gradient{ glm::vec3(1), glm::vec3(0) }),
+m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, glm::vec3(0)),
+m_uint_variables([](unsigned int ui1, unsigned int ui2) {return ui1 == ui2; }, UnsignedIntVariables::END, 0)
 {
-	m_hovered_cell_color = { 1, 0, 1 };
 	limits_mode = GLOBAL;
 	selected_function = AVERAGE;
 
