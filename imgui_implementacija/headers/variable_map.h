@@ -40,7 +40,7 @@ inline bool VariableMap<E, V>::check_for_changes()
 	unsigned int num_of_values = (unsigned int)m_end_enum;
 
 	for (int i = 0; i < num_of_values; ++i) {
-		if (m_comparator(!m_cached_values[(E)i], m_values[(E)i])) {
+		if (!m_comparator(m_cached_values[(E)i], m_values[(E)i])) {
 			are_changes_pending = true;
 			m_cached_values[(E)i] = m_values[(E)i];
 		}

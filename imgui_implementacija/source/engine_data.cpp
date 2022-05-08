@@ -27,7 +27,7 @@ void EngineData::calculate_color()
 	for (int i = 0; i < n_selected_cells; ++i)
 		color_map[m_selected_cells[i]] = convert_hsv_to_rgb({ float(i + 1) / (n_selected_cells + 1), 1, 1 });
 
-	glm::vec2& limits = m_limits[limits_mode];
+	glm::vec2& limits = m_limits[*get_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS)];
 
 	const auto& selected_cells_begin = m_selected_cells.begin();
 	const auto& selected_cells_end = m_selected_cells.end();
@@ -37,14 +37,14 @@ void EngineData::calculate_color()
 			continue;
 
 		if (n_selected_frequencies == 0)
-			color_map[index] = default_color;
+			color_map[index] = *get_color(ColorVariables::DEFAULT_COLOR);
 		else if (n_selected_frequencies == 1) {
 			auto& cell_stats = m_cell_stats[index];
 			
 			float value = cell_stats.freq_map[m_selected_frequencies_names[0]];
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
 
-			color_map[index] = gradient.evaluate(norm_value);
+			color_map[index] = get_gradient(GradientVariables::NORMAL_MODE_GRADIENT)->evaluate(norm_value);
 		}
 		else {
 			auto& cell_stats = m_cell_stats[index];
@@ -53,10 +53,10 @@ void EngineData::calculate_color()
 			for (int i = 0; i < n_selected_frequencies; ++i)
 				values.push_back(cell_stats.freq_map[m_selected_frequencies_names[i]]);
 
-			float value = (*CELL_FUNCTIONS[selected_function])(values);
+			float value = (*CELL_FUNCTIONS[*get_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION)])(values);
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
 
-			color_map[index] = gradient.evaluate(norm_value);
+			color_map[index] = get_gradient(GradientVariables::NORMAL_MODE_GRADIENT)->evaluate(norm_value);
 		}
 	}
 	on_colors_recalculated.invoke(color_map);
@@ -64,12 +64,7 @@ void EngineData::calculate_color()
 
 void EngineData::refresh_cached_values()
 {
-	m_cached_default_color = default_color;
-	m_cached_gradient = gradient;
 	m_limits[USER_DEFINED] = user_limits;
-
-	m_cached_limits_mode = limits_mode;
-	m_cached_selected_function = selected_function;
 }
 
 void EngineData::find_local_limits()
@@ -166,13 +161,15 @@ m_gradient_variables([](const Gradient& g1, const Gradient& g2) {return g1 == g2
 m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, glm::vec3(0)),
 m_uint_variables([](unsigned int ui1, unsigned int ui2) {return ui1 == ui2; }, UnsignedIntVariables::END, 0)
 {
-	limits_mode = GLOBAL;
-	selected_function = AVERAGE;
+	*get_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS) = GLOBAL;
+	*get_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION) = AVERAGE;
+
+	*get_color(ColorVariables::DEFAULT_COLOR) = color;
 
 	m_update_graph_on_hover = true;
 
-	default_color = color;
-	gradient = { glm::vec3(0), glm::vec3(1)};
+	m_hovered_cell_color = { 1, 0, 1 };
+
 	m_limits = { {0, 0}, {0, 0}, {0, 0} };
 	refresh_cached_values();
 }
@@ -217,17 +214,12 @@ void EngineData::check_for_changes()
 {
 	bool are_changes_pending = false;
 
-	//TODO: FIND CLEANER WAY TO CHECK THIS
-	if (!are_equal(default_color, m_cached_default_color))
+	if (!are_equal(m_limits[USER_DEFINED], user_limits))
 		are_changes_pending = true;
-	else if (gradient != m_cached_gradient)
-		are_changes_pending = true;
-	else if (!are_equal(m_limits[USER_DEFINED], user_limits))
-		are_changes_pending = true;
-	else if (limits_mode != m_cached_limits_mode)
-		are_changes_pending = true;
-	else if (selected_function != m_cached_selected_function)
-		are_changes_pending = true;
+
+	are_changes_pending |= m_gradient_variables.check_for_changes();
+	are_changes_pending |= m_color_variables.check_for_changes();
+	are_changes_pending |= m_uint_variables.check_for_changes();
 
 	if (are_changes_pending)
 	{

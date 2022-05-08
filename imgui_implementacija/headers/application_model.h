@@ -67,9 +67,9 @@ public:
 
 	std::vector<std::string> frequenzy_names() { return m_engine_data->frequenzy_names(); }
 
-	Limits* limits_mode() { return &m_engine_data->limits_mode; }
+	Limits* limits_mode() { return (Limits*)(m_engine_data->get_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS)); }
 
-	CellFunctions* selected_function() { return &m_engine_data->selected_function; }
+	CellFunctions* selected_function() { return (CellFunctions *)(m_engine_data->get_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION)); }
 
 	float* user_defined_limits() { return glm::value_ptr(m_engine_data->user_limits); }
 

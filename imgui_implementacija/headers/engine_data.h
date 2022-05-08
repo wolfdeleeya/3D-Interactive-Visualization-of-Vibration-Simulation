@@ -51,16 +51,6 @@ private:
 
 	glm::vec3 m_hovered_cell_color;
 
-	glm::vec3 m_cached_default_color;
-	Gradient m_cached_gradient;
-
-	glm::vec3 m_cached_good_color;
-	Gradient m_cached_mid_gradient;
-	Gradient m_cached_bad_gradient;
-
-	Limits m_cached_limits_mode;
-	CellFunctions m_cached_selected_function;
-
 	VariableMap<GradientVariables, Gradient> m_gradient_variables;
 	VariableMap<ColorVariables, glm::vec3> m_color_variables;
 	VariableMap<UnsignedIntVariables, unsigned int> m_uint_variables;
@@ -87,16 +77,7 @@ public:
 	static const char* FUNCTION_NAMES[5];
 	static const char* LIMITS_NAMES[3];
 
-	glm::vec3 default_color;
-	Gradient gradient;
-
-	glm::vec3 good_color;
-	Gradient mid_gradient;
-	Gradient bad_gradient;
-
 	glm::vec2 user_limits;
-	Limits limits_mode;
-	CellFunctions selected_function;
 
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
@@ -143,4 +124,10 @@ public:
 	std::vector<std::pair<std::string, float>> get_hovered_cell_values() { return get_values_for_cell(m_hovered_cell); }
 
 	bool are_frequenzy_limits_loaded() { return m_frequenzy_limits.size() > 0; }
+
+	Gradient* get_gradient(GradientVariables e) { return m_gradient_variables.get(e); }
+
+	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }
+
+	unsigned int* get_uint(UnsignedIntVariables e) { return m_uint_variables.get(e); }
 };

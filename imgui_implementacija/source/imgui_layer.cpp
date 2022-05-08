@@ -14,7 +14,7 @@ void ImGUILayer::draw_color_selection_widget()
 {
 	ImGui::Begin("Color Properties Selection");
 
-	ImGui::ColorEdit3("Default Color", glm::value_ptr(m_application_model->engine_data()->default_color));
+	ImGui::ColorEdit3("Default Color", glm::value_ptr(*m_application_model->engine_data()->get_color(ColorVariables::DEFAULT_COLOR)));
 
 	draw_gradient_selection();
 
@@ -170,11 +170,13 @@ void ImGUILayer::draw_gradient_selection()
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 	ImGui::Text("Engine Gradient");
-	ImGui::ColorEdit3("Low Intensity Color", glm::value_ptr(m_application_model->engine_data()->gradient.color1));
-	ImGui::ColorEdit3("High Intensity Color", glm::value_ptr(m_application_model->engine_data()->gradient.color2));
+	Gradient* normal_mode_gradient = m_application_model->engine_data()->get_gradient(GradientVariables::NORMAL_MODE_GRADIENT);
 
-	glm::vec3 c1 = m_application_model->engine_data()->gradient.color1;
-	glm::vec3 c2 = m_application_model->engine_data()->gradient.color2;
+	ImGui::ColorEdit3("Low Intensity Color", glm::value_ptr(normal_mode_gradient->color1));
+	ImGui::ColorEdit3("High Intensity Color", glm::value_ptr(normal_mode_gradient->color2));
+
+	glm::vec3 c1 = normal_mode_gradient->color1;
+	glm::vec3 c2 = normal_mode_gradient->color2;
 
 	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
 	ImVec2 gradient_size = ImVec2(ImGui::CalcItemWidth(), ImGui::GetFrameHeight());
