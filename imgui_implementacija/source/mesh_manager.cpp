@@ -89,6 +89,8 @@ void MeshManager::load_vertex_positions(const char* path)
 	const auto& vertex_positions = loader::load_vertices(path);
 	for (AbstractMesh* mesh : m_meshes)
 		mesh->set_vertex_positions(vertex_positions);
+
+	on_vertices_loaded.invoke();
 }
 
 void MeshManager::load_cell_vertices(const char* path)
@@ -96,6 +98,8 @@ void MeshManager::load_cell_vertices(const char* path)
 	const auto& cell_vertices = loader::load_cells(path);
 	for (AbstractMesh* mesh : m_meshes)
 		mesh->set_cell_vertices(cell_vertices);
+
+	on_cell_vertices_loaded.invoke();
 }
 
 void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)

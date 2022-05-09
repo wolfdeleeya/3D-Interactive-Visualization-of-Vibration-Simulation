@@ -6,8 +6,11 @@
 #include "signals.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "graph_data.h"
+#include "variable_map.h"
 
 class ApplicationModel {
+public:
+	enum class ColorVariables { CLEAR_COLOR, END};
 private:
 	Camera* m_camera;
 	
@@ -19,15 +22,15 @@ private:
 
 	bool m_is_hover_mode_active;
 
+	bool m_is_limits_mode_active;
+
 	std::vector<std::string> m_frequenzy_names;
 
-	glm::vec3 m_cached_clear_color;
+	VariableMap<ColorVariables, glm::vec3> m_color_variables;
 
 	const static float min_camera_distance, max_camera_distance;
 
 public:
-	glm::vec3 clear_color;
-
 	Signal on_cell_stats_loaded;
 
 	Event<const glm::mat4&> on_view_mat_changed;
@@ -55,7 +58,7 @@ public:
 
 	void set_is_hover_mode_active(bool value);
 
-	GraphData get_graph_data_for_selected_cells();
+	void set_is_limits_mode_active(bool value);
 
 	void set_hover_mode_active() { set_is_hover_mode_active(true); }
 
@@ -66,12 +69,6 @@ public:
 	void refresh_camera() { on_view_mat_changed.invoke(m_camera->view_mat()); }
 
 	std::vector<std::string> frequenzy_names() { return m_engine_data->frequenzy_names(); }
-
-	Limits* limits_mode() { return (Limits*)(m_engine_data->get_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS)); }
-
-	CellFunctions* selected_function() { return (CellFunctions *)(m_engine_data->get_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION)); }
-
-	float* user_defined_limits() { return glm::value_ptr(m_engine_data->user_limits); }
 
 	void select_frequency(const std::string& f_name, bool is_selected) { m_engine_data->select_frequency(f_name, is_selected); }
 
@@ -88,4 +85,12 @@ public:
 	bool is_hover_mode_active() { return m_is_hover_mode_active; }
 
 	bool is_cell_selection_mode_active() { return !m_is_hover_mode_active; }
+
+	bool is_limits_mode_active() { return m_is_limits_mode_active; }
+
+	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }
+
+	void set_color(ColorVariables e, const glm::vec3& c) { m_color_variables.set(e, c); }
+
+	void invoke_clear_color_changed() { on_clear_color_changed.invoke(*get_color(ColorVariables::CLEAR_COLOR)); }
 };

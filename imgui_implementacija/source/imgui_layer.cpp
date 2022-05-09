@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "imgui_layer.h"
 #include "app.h"
 #include "glm/gtc/type_ptr.hpp"
@@ -14,13 +16,39 @@ void ImGUILayer::draw_color_selection_widget()
 {
 	ImGui::Begin("Color Properties Selection");
 
-	ImGui::ColorEdit3("Default Color", glm::value_ptr(*m_application_model->engine_data()->get_color(ColorVariables::DEFAULT_COLOR)));
+	draw_color_selection("Background Color", *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR));
+	
+	draw_color_selection("Default Color", *m_application_model->engine_data()->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
 
-	draw_gradient_selection();
+	if (m_application_model->engine_data()->are_stats_loaded()) {
+		bool is_limits_mode_active = m_application_model->is_limits_mode_active();
 
-	ImGui::ColorEdit3("Background Color", glm::value_ptr(m_application_model->clear_color));
+		if (m_application_model->engine_data()->are_frequenzy_limits_loaded()) {
+
+			if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "Normal Mode")) {
+				m_application_model->set_is_limits_mode_active(!is_limits_mode_active);
+			}
+		}
+
+		if (is_limits_mode_active)
+			draw_limits_mode_color_selection();
+		else
+			draw_normal_color_selection();
+	}
 
 	ImGui::End();
+}
+
+void ImGUILayer::draw_normal_color_selection()
+{
+	draw_gradient_selection("Normal Mode Gradient", *m_application_model->engine_data()->get_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT));
+}
+
+void ImGUILayer::draw_limits_mode_color_selection()
+{
+	draw_color_selection("Good Color", *m_application_model->engine_data()->get_color(EngineData::ColorVariables::GOOD_LIMITS_COLOR));
+	draw_gradient_selection("Mid Gradient", *m_application_model->engine_data()->get_gradient(EngineData::GradientVariables::LIMITS_MODE_MID_GRADIENT));
+	draw_gradient_selection("Bad Gradient", *m_application_model->engine_data()->get_gradient(EngineData::GradientVariables::LIMITS_MODE_BAD_GRADIENT));
 }
 
 void ImGUILayer::draw_engine_view()
@@ -106,6 +134,12 @@ void ImGUILayer::draw_main_bar()
 					on_load_cell_stats.invoke(s.c_str());
 			}
 
+			if (ImGui::Button("Load Limits")) {
+				std::string s = get_file_path({ {".csv files", "csv"} });
+				if (s.size() > 0)
+					on_load_frequency_limits.invoke(s.c_str());
+			}
+
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -114,69 +148,81 @@ void ImGUILayer::draw_main_bar()
 
 void ImGUILayer::draw_frequency_selection_widget()
 {
-	static unsigned num_of_frequencies_selected = 0;
-
 	ImGui::Begin("Frequency Selection");
-	if (num_of_frequencies_selected > 0) {
-		draw_limits_selection();
-
-		if (ImGui::Button("Clear Selection"))
-			m_application_model->clear_frequenzy_selection();
-	}
-	
-	if (num_of_frequencies_selected > 1)
-		draw_function_selection();
-
-	num_of_frequencies_selected = 0;
 
 	if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
 	{
-		bool* selected = new bool[m_frequenzy_names.size()];
+		std::unique_ptr<bool> selected(new bool[m_frequenzy_names.size()]);
 
 		for (int i = 0; i < m_frequenzy_names.size(); i++)
 		{
-			selected[i] = m_application_model->is_frequency_selected(m_frequenzy_names[i]);
+			selected.get()[i] = m_application_model->is_frequency_selected(m_frequenzy_names[i]);
 
 			ImGui::TableNextColumn();
-			ImGui::Selectable(m_frequenzy_names[i].c_str(), &selected[i], 1);;
-			if (m_application_model->is_frequency_selected(m_frequenzy_names[i]) != selected[i])
-				m_application_model->select_frequency(m_frequenzy_names[i], selected[i]);
+			ImGui::Selectable(m_frequenzy_names[i].c_str(), &selected.get()[i], 1);;
 
-			num_of_frequencies_selected += selected[i];
+			if (m_application_model->is_frequency_selected(m_frequenzy_names[i]) != selected.get()[i]) {
+				m_application_model->select_frequency(m_frequenzy_names[i], selected.get()[i]);
+			}
 		}
-		delete[] selected;
 
 		ImGui::EndTable();
 	}
 	ImGui::End();
 }
 
+void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
+{
+	unsigned int num_of_selected_frequencies = m_application_model->engine_data()->num_of_selected_frequencies();
+
+	if (num_of_selected_frequencies > 0) {
+		if (ImGui::Begin("Frequency Selection Evaluation Settings")) {
+			draw_limits_selection();
+
+			if (ImGui::Button("Clear Selection"))
+				m_application_model->clear_frequenzy_selection();
+
+			if (num_of_selected_frequencies > 1)
+				draw_function_selection();
+
+			ImGui::End();
+		}
+	}
+}
+
 void ImGUILayer::draw_limits_selection()
 {
-	int selected_mode = *m_application_model->limits_mode();
+	int selected_mode = *m_application_model->engine_data()->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS);
 	unsigned int num_of_labels = sizeof(EngineData::LIMITS_NAMES) / sizeof(*EngineData::LIMITS_NAMES);
 
 	ImGui::ListBox("Limits Selection", &(selected_mode), EngineData::LIMITS_NAMES, num_of_labels, 2);
 
-	*(m_application_model->limits_mode()) = (Limits)selected_mode;
+	m_application_model->engine_data()->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS, selected_mode);
 
-	if (selected_mode == USER_DEFINED)
-		ImGui::DragFloat2("Custom Limits", m_application_model->user_defined_limits(), 1, -200, 200);
+	if (selected_mode == (int)EngineData::NormalModeLimitsVariables::USER_DEF) {
+		glm::vec2* user_limits = m_application_model->engine_data()->get_normal_mode_limits(EngineData::NormalModeLimitsVariables::USER_DEF);
+		ImGui::DragFloat2("Custom Limits", glm::value_ptr(*user_limits), 1, -200, 200);
+	}
 }
 
-void ImGUILayer::draw_gradient_selection()
+void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 {
 	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-	ImGui::Text("Engine Gradient");
-	Gradient* normal_mode_gradient = m_application_model->engine_data()->get_gradient(GradientVariables::NORMAL_MODE_GRADIENT);
+	ImGui::Text(gradient_name);
 
-	ImGui::ColorEdit3("Low Intensity Color", glm::value_ptr(normal_mode_gradient->color1));
-	ImGui::ColorEdit3("High Intensity Color", glm::value_ptr(normal_mode_gradient->color2));
+	glm::vec3& c1 = g.color1;
+	glm::vec3& c2 = g.color2;
 
-	glm::vec3 c1 = normal_mode_gradient->color1;
-	glm::vec3 c2 = normal_mode_gradient->color2;
+	std::string c1_name(gradient_name);
+	c1_name += " Color 1";
+
+	std::string c2_name(gradient_name);
+	c2_name += " Color 2";
+
+	draw_color_selection(c1_name.c_str(), c1);
+	draw_color_selection(c2_name.c_str(), c2);
 
 	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
 	ImVec2 gradient_size = ImVec2(ImGui::CalcItemWidth(), ImGui::GetFrameHeight());
@@ -192,12 +238,12 @@ void ImGUILayer::draw_gradient_selection()
 
 void ImGUILayer::draw_function_selection()
 {
-	int selected_function = *m_application_model->selected_function();
+	int selected_function = (int) * m_application_model->engine_data()->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION);
 	unsigned int num_of_labels = sizeof(EngineData::FUNCTION_NAMES) / sizeof(*EngineData::FUNCTION_NAMES);
 
 	ImGui::ListBox("Function Selection", &(selected_function), EngineData::FUNCTION_NAMES, num_of_labels, 2);
-
-	*(m_application_model->selected_function()) = (CellFunctions)selected_function;
+	
+	m_application_model->engine_data()->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION, selected_function);
 }
 
 void ImGUILayer::draw_graph_tooltip()
@@ -223,7 +269,7 @@ void ImGUILayer::draw_graph_tooltip()
 		}
 	}
 
-	ImGui::BeginChild("");
+	ImGui::BeginChild("Graph Child");
 	ImGuiWindow* current_window = imgui_context->CurrentWindow;
 
 	current_window->HasCloseButton = false;
@@ -309,8 +355,10 @@ void ImGUILayer::update()
 
 	draw_color_selection_widget();
 
-	if (m_frequenzy_names.size() > 0)
+	if (m_frequenzy_names.size() > 0) {
+		draw_frequency_selection_evaluation_settings_widget();
 		draw_frequency_selection_widget();
+	}
 
 	draw_main_bar();
 

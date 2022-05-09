@@ -212,9 +212,6 @@
     <ClCompile Include="source\implot_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\variable_map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="shaders\engine_shader.frag" />

@@ -37,6 +37,10 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineData::on_cell_vertices_loaded, m_appliction_model->engine_data());
 
 	m_imgui_layer->on_load_cell_stats.add_member_listener(&ApplicationModel::load_cell_stats, m_appliction_model);
+	m_imgui_layer->on_load_frequency_limits.add_member_listener(&EngineData::load_frequenzy_limits, m_appliction_model->engine_data());
+
+	m_mesh_manager->on_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_appliction_model->engine_data());		//notify engine data to recalculate colors if it's loaded before cells and vertices
+	m_mesh_manager->on_cell_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_appliction_model->engine_data());
 
 	m_appliction_model->refresh_camera();
 }

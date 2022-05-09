@@ -25,19 +25,29 @@ private:
 
 	void draw_color_selection_widget();
 
+	void draw_normal_color_selection();
+
+	void draw_limits_mode_color_selection();
+
 	void draw_engine_view();
 
 	void draw_general_info_widget();
 
 	void draw_fps_and_delta_time();
 	
+	void draw_color_selection(const char* color_variable_name, glm::vec3& color) {
+		ImGui::ColorEdit3(color_variable_name, glm::value_ptr(color));
+	}
+
 	void draw_main_bar();
 
 	void draw_frequency_selection_widget();
 
+	void draw_frequency_selection_evaluation_settings_widget();
+
 	void draw_limits_selection();
 
-	void draw_gradient_selection();
+	void draw_gradient_selection(const char* gradient_name, Gradient& g);
 
 	void draw_function_selection();
 
@@ -48,7 +58,8 @@ private:
 public:
 	Event<const char*> on_load_vertex_positions,
 		on_load_cell_vertices,
-		on_load_cell_stats;
+		on_load_cell_stats,
+		on_load_frequency_limits;
 
 	Event<const glm::ivec2&> on_scene_view_scale_changed;
 

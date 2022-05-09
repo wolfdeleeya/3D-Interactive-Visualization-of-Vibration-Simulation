@@ -9,14 +9,16 @@ void ApplicationModel::set_is_hover_mode_active(bool value)
 {
 	m_is_hover_mode_active = value;
 	m_engine_data->update_graph_on_hover(value);
-
-	if (m_is_hover_mode_active)
-		m_engine_data->clear_selected_cells();
-	else
-		m_engine_data->clear_hovered_cell();
 }
 
-ApplicationModel::ApplicationModel()
+void ApplicationModel::set_is_limits_mode_active(bool value)
+{
+	m_is_limits_mode_active = value;
+	m_engine_data->set_is_limits_mode_active(value);
+}
+
+ApplicationModel::ApplicationModel():
+	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 }, [this]() { this->invoke_clear_color_changed(); })
 {
 	m_rotation_sensitivity = 1;
 	m_scroll_sensitivity = 0.05;
@@ -25,9 +27,7 @@ ApplicationModel::ApplicationModel()
 	m_camera = new Camera(max_camera_distance, glm::vec3(0));
 
 	m_is_hover_mode_active = true;
-
-	clear_color = glm::vec3(0);
-	m_cached_clear_color = clear_color;
+	m_is_limits_mode_active = false;
 }
 
 ApplicationModel::~ApplicationModel()
@@ -44,12 +44,11 @@ void ApplicationModel::load_cell_stats(const char* path)
 
 void ApplicationModel::update()
 {
-	if (!are_equal(m_cached_clear_color, clear_color)) {
-		m_cached_clear_color = clear_color;
-		on_clear_color_changed.invoke(clear_color);
-	}
+	engine_data()->check_for_changes();
 
-	m_engine_data->check_for_changes();
+	bool are_changes_pending = false;
+	
+	are_changes_pending |= m_color_variables.check_for_changes();
 }
 
 void ApplicationModel::rotate_camera(glm::vec2 mouse_delta)
