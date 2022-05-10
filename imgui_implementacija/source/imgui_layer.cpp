@@ -19,6 +19,9 @@ void ImGUILayer::draw_color_selection_widget()
 	draw_color_selection("Background Color", *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR));
 	
 	draw_color_selection("Default Color", *m_application_model->engine_data()->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
+	
+	if (m_application_model->is_hover_mode_active())
+		draw_color_selection("Hovered Cell Stats Color", *m_application_model->engine_data()->get_color(EngineData::ColorVariables::HOVERED_CELL_STATS_COLOR));
 
 	if (m_application_model->engine_data()->are_stats_loaded()) {
 		bool is_limits_mode_active = m_application_model->is_limits_mode_active();
@@ -177,13 +180,14 @@ void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 
 	if (num_of_selected_frequencies > 0) {
 		if (ImGui::Begin("Frequency Selection Evaluation Settings")) {
-			draw_limits_selection();
+			if (!m_application_model->is_limits_mode_active()) {
+				draw_limits_selection();
+				if (num_of_selected_frequencies > 1)
+					draw_function_selection();
+			}
 
 			if (ImGui::Button("Clear Selection"))
 				m_application_model->clear_frequenzy_selection();
-
-			if (num_of_selected_frequencies > 1)
-				draw_function_selection();
 
 			ImGui::End();
 		}
