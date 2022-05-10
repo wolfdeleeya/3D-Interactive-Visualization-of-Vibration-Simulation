@@ -10,6 +10,7 @@
 #include "gradient.h"
 #include "cell_value_functors.h"
 #include "variable_map.h"
+#include "signals.h"
 
 struct FrequenzyComparator {
 	std::vector<std::string> all_names;
@@ -41,6 +42,7 @@ private:
 
 	std::vector<std::string> m_frequenzy_names;
 	std::vector<std::string> m_selected_frequencies_names;
+	std::vector<std::string> m_frequencies_with_limits;
 
 	std::map<std::string, glm::vec2> m_frequenzy_limits;
 
@@ -80,6 +82,8 @@ public:
 	Event<unsigned int> on_cell_hovered;
 
 	Event<const GraphData&> on_graph_data_changed;
+
+	Signal on_limits_loaded;
 
 	EngineData(const glm::vec3& default_color);
 
@@ -124,6 +128,8 @@ public:
 	std::vector<std::string> frequenzy_names() { return m_frequenzy_names; }
 
 	std::vector<std::string> selected_frequencies() { return m_selected_frequencies_names; }
+
+	std::vector<std::string> frequencies_with_limits() { return m_frequencies_with_limits; }
 
 	bool is_valid_cell_hovered() { return m_hovered_cell != 0; }
 

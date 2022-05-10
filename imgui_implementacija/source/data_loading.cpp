@@ -168,8 +168,10 @@ namespace loader {
 		return result;
 	}
 	
-	std::map<std::string, glm::vec2> load_frequenzy_limits(const char* path)		//currently reads only primitive limits format
+	std::map<std::string, glm::vec2> load_frequenzy_limits(const char* path, std::vector<std::string>& frequencies_names)		//currently reads only primitive limits format
 	{
+		frequencies_names.clear();
+
 		std::map<std::string, glm::vec2> result;
 		std::ifstream file(path);
 
@@ -181,6 +183,9 @@ namespace loader {
 
 			std::getline(line_stream, string_part, ',');
 			std::string frq_name = string_part;
+
+			frequencies_names.push_back(frq_name);
+
 			glm::vec2 limit;
 
 			for (int i = 0; i < 2; ++i) {

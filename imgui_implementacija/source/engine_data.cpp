@@ -231,7 +231,9 @@ void EngineData::load_cell_stats(const char* path)
 
 void EngineData::load_frequenzy_limits(const char* path)
 {
-	m_frequenzy_limits = loader::load_frequenzy_limits(path);
+	m_frequenzy_limits = loader::load_frequenzy_limits(path, m_frequencies_with_limits);
+
+	on_limits_loaded.invoke();
 }
 
 void EngineData::on_cell_vertices_loaded(const char* path)		//used to set default color when stats are not yet loaded

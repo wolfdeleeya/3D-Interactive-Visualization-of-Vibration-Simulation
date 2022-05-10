@@ -155,23 +155,30 @@ void ImGUILayer::draw_frequency_selection_widget()
 
 	if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
 	{
-		std::unique_ptr<bool> selected(new bool[m_frequenzy_names.size()]);
+		bool is_limits_mode_active = m_application_model->is_limits_mode_active();
+		const std::vector<std::string>& frequency_names = is_limits_mode_active ? m_frequencies_with_limits : m_frequenzy_names;
 
-		for (int i = 0; i < m_frequenzy_names.size(); i++)
+		std::unique_ptr<bool> selected(new bool[frequency_names.size()]);
+
+		for (int i = 0; i < frequency_names.size(); i++)
 		{
-			selected.get()[i] = m_application_model->is_frequency_selected(m_frequenzy_names[i]);
+			selected.get()[i] = m_application_model->is_frequency_selected(frequency_names[i]);
 
 			ImGui::TableNextColumn();
-			ImGui::Selectable(m_frequenzy_names[i].c_str(), &selected.get()[i], 1);;
+			ImGui::Selectable(frequency_names[i].c_str(), &selected.get()[i], 1);;
 
-			if (m_application_model->is_frequency_selected(m_frequenzy_names[i]) != selected.get()[i]) {
-				m_application_model->select_frequency(m_frequenzy_names[i], selected.get()[i]);
+			if (m_application_model->is_frequency_selected(frequency_names[i]) != selected.get()[i]) {
+				m_application_model->select_frequency(frequency_names[i], selected.get()[i]);
 			}
 		}
 
 		ImGui::EndTable();
 	}
 	ImGui::End();
+}
+
+void ImGUILayer::draw_legend_bar_widget()
+{
 }
 
 void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
@@ -333,6 +340,7 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 	ImGui_ImplOpenGL3_Init("#version 130");
 
 	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
+	m_application_model->engine_data()->on_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
 	m_application_model->engine_data()->on_graph_data_changed.add_member_listener(&ImGUILayer::on_graph_changed, this);
 }
 

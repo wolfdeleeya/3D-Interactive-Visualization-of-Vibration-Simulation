@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 #include <vector>
 
 #include "application_model.h"
@@ -13,6 +13,8 @@ class ImGUILayer {
 private:
 	GLFWwindow* m_window;
 	std::vector<std::string> m_frequenzy_names;
+	std::vector<std::string> m_frequencies_with_limits;
+
 	ApplicationModel* m_application_model;
 
 	ImVec2 m_scene_view_position;
@@ -42,6 +44,8 @@ private:
 	void draw_main_bar();
 
 	void draw_frequency_selection_widget();
+
+	void draw_legend_bar_widget();
 
 	void draw_frequency_selection_evaluation_settings_widget();
 
@@ -78,6 +82,8 @@ public:
 	void cell_stats_loaded();
 
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
+
+	void frequency_limits_loaded() { m_frequencies_with_limits = m_application_model->engine_data()->frequencies_with_limits(); }
 
 	void on_graph_changed(const GraphData& gd) { m_graph_data = gd; }
 
