@@ -5,13 +5,29 @@
 
 const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_camera_distance = 5;
 
-ApplicationModel::ApplicationModel()
+void ApplicationModel::set_is_hover_mode_active(bool value)
+{
+	m_is_hover_mode_active = value;
+	m_engine_data->update_graph_on_hover(value);
+}
+
+void ApplicationModel::set_is_limits_mode_active(bool value)
+{
+	m_is_limits_mode_active = value;
+	m_engine_data->set_is_limits_mode_active(value);
+}
+
+ApplicationModel::ApplicationModel():
+	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 }, [this]() { this->invoke_clear_color_changed(); })
 {
 	m_rotation_sensitivity = 1;
 	m_scroll_sensitivity = 0.05;
 
 	m_engine_data = new EngineData(glm::vec3(0.55, 0.55, 0.55));
 	m_camera = new Camera(max_camera_distance, glm::vec3(0));
+
+	m_is_hover_mode_active = true;
+	m_is_limits_mode_active = false;
 }
 
 ApplicationModel::~ApplicationModel()
@@ -28,12 +44,11 @@ void ApplicationModel::load_cell_stats(const char* path)
 
 void ApplicationModel::update()
 {
-	if (!are_equal(m_cached_clear_color, clear_color)) {
-		m_cached_clear_color = clear_color;
-		on_clear_color_changed.invoke(clear_color);
-	}
+	engine_data()->check_for_changes();
 
-	m_engine_data->check_for_changes();
+	bool are_changes_pending = false;
+	
+	are_changes_pending |= m_color_variables.check_for_changes();
 }
 
 void ApplicationModel::rotate_camera(glm::vec2 mouse_delta)
@@ -88,8 +103,19 @@ void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set cam
 	on_view_mat_changed.invoke(m_camera->view_mat());
 }
 
-void ApplicationModel::select_cell(unsigned int cell_index)
+void ApplicationModel::handle_out_of_focus()
 {
-	m_selected_cell = cell_index;
-	on_cell_selected.invoke(cell_index);
+	m_engine_data->clear_hovered_cell();
+}
+
+void ApplicationModel::handle_mouse_dragged(glm::ivec2 mouse_delta)
+{
+	rotate_camera(mouse_delta);
+	m_engine_data->clear_hovered_cell();
+}
+
+void ApplicationModel::handle_mouse_click()
+{
+	if (is_cell_selection_mode_active())
+		engine_data()->handle_cell_selection();
 }

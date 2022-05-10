@@ -13,7 +13,7 @@ glm::vec3 Gradient::evaluate(float value)
 	return (1 - value) * color1 + value * color2;
 }
 
-bool Gradient::operator==(const Gradient& g)
+bool Gradient::operator==(const Gradient& g) const
 {
 	bool c1_equal = are_equal(this->color1, g.color1, COLOR_DIFF_TOLERANCE);
 

@@ -25,7 +25,7 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 
 	m_appliction_model->on_view_mat_changed.add_member_listener(&MeshManager::view_mat_changed, m_mesh_manager);
 	m_appliction_model->engine_data()->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
-	m_appliction_model->on_cell_selected.add_member_listener(&MeshManager::cell_selected, m_mesh_manager);
+	m_appliction_model->engine_data()->on_cell_hovered.add_member_listener(&MeshManager::cell_selected, m_mesh_manager);
 	m_appliction_model->on_clear_color_changed.add_member_listener(&MeshManager::set_current_clear_color, m_mesh_manager);
 
 	m_imgui_layer->on_scene_view_scale_changed.add_member_listener(&MeshManager::window_size_changed, m_mesh_manager);
@@ -37,6 +37,10 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineData::on_cell_vertices_loaded, m_appliction_model->engine_data());
 
 	m_imgui_layer->on_load_cell_stats.add_member_listener(&ApplicationModel::load_cell_stats, m_appliction_model);
+	m_imgui_layer->on_load_frequency_limits.add_member_listener(&EngineData::load_frequenzy_limits, m_appliction_model->engine_data());
+
+	m_mesh_manager->on_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_appliction_model->engine_data());		//notify engine data to recalculate colors if it's loaded before cells and vertices
+	m_mesh_manager->on_cell_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_appliction_model->engine_data());
 
 	m_appliction_model->refresh_camera();
 }
@@ -94,40 +98,43 @@ void App::scroll_callback(double x_offset, double y_offset)
 
 void App::mouse_moved_callback(double x_pos, double y_pos)
 {
-	glm::vec2 current_mouse_pos{ x_pos, y_pos };
+	m_current_mouse_pos = { x_pos, y_pos };
+	m_mouse_delta = m_current_mouse_pos - m_last_mouse_pos;
 
 	bool is_handled = m_imgui_layer->handle_mouse_pos(x_pos, y_pos);
-	if (is_handled) {
-		if (m_appliction_model->is_valid_cell_selected())
-			m_appliction_model->clear_selected_cell();
-	}
+	if (is_handled)
+		m_appliction_model->handle_out_of_focus();
 	else {
 		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_LEFT]) {
-			glm::vec2 mouse_delta = current_mouse_pos - m_last_mouse_pos;
-			m_appliction_model->rotate_camera(mouse_delta);
-			if (m_appliction_model->is_valid_cell_selected())
-				m_appliction_model->clear_selected_cell();
+			m_appliction_model->handle_mouse_dragged(m_mouse_delta);
 		}
 		else {
-			glm::ivec2 scene_view_space_mouse_pos = m_imgui_layer->get_scene_view_space_mouse_pos(m_last_mouse_pos);
+			glm::ivec2 scene_view_space_mouse_pos = m_imgui_layer->get_scene_view_space_mouse_pos(m_current_mouse_pos);
 			int scene_view_height = m_imgui_layer->scene_view_scale().y;
 			unsigned int selected_cell_index = m_mesh_manager->get_index_at_pos(scene_view_space_mouse_pos.x, scene_view_height - scene_view_space_mouse_pos.y);
-			m_appliction_model->select_cell(selected_cell_index);
+			m_appliction_model->engine_data()->set_hovered_cell(selected_cell_index);
 		}
 	}
-
-	m_last_mouse_pos = current_mouse_pos;
 }
 
 void App::mouse_button_callback(int button, bool is_pressed)
 {
 	bool is_handled = m_imgui_layer->handle_mouse_click(button, is_pressed);
 	m_mouse_button_state[button] = is_pressed;
+
+	if (!is_handled) {
+		if (button == GLFW_MOUSE_BUTTON_LEFT && is_pressed == false && int(glm::length(m_mouse_delta)) == 0)
+			m_appliction_model->handle_mouse_click();
+	}
 }
 
 void App::update() {
+	m_last_mouse_pos = m_current_mouse_pos;
+
 	glfwPollEvents();
-	
+
+	m_mouse_delta = m_current_mouse_pos - m_last_mouse_pos;
+
 	update_time();
 
 	m_appliction_model->update();

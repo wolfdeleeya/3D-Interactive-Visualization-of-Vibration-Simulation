@@ -6,7 +6,7 @@ struct Gradient {
 
 	glm::vec3 evaluate(float value);
 	
-	bool operator==(const Gradient& g);
+	bool operator==(const Gradient& g) const;
 
-	bool operator!=(const Gradient& g) { return !(*this == g); }
+	bool operator!=(const Gradient& g) const { return !(*this == g); }
 };

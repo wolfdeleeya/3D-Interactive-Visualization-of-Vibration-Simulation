@@ -1,6 +1,7 @@
 #pragma once
 
 #include "events.h"
+#include "signals.h"
 #include "mesh/abstract_mesh.h"
 
 class MeshManager {
@@ -21,6 +22,9 @@ private:
 	glm::vec3 m_current_clear_color;
 
 public:
+	Signal on_vertices_loaded,
+		on_cell_vertices_loaded;
+
 	MeshManager(const glm::ivec2& window_dimensions);
 
 	~MeshManager();

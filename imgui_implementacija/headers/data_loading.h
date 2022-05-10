@@ -26,4 +26,6 @@ namespace loader {
 		const std::map<unsigned int, unsigned int>& index_map);
 
 	std::map<unsigned int, cell_stats> load_cell_stats(const char* path, std::vector<std::string>& frequenzy_names);
+
+	std::map<std::string, glm::vec2> load_frequenzy_limits(const char* path, std::vector<std::string>& frequencies_names);
 }
