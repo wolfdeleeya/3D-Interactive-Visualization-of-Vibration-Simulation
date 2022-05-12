@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="headers\color_helper.h" />
+    <ClInclude Include="headers\graph_model.h" />
     <ClInclude Include="headers\graph_data.h" />
     <ClInclude Include="headers\implot_helper.h" />
     <ClInclude Include="headers\mesh\abstract_mesh.h" />

@@ -24,8 +24,8 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_imgui_layer = new ImGUILayer(m_appliction_model, m_window, "version 330 core", m_mesh_manager->scene_texture());
 
 	m_appliction_model->on_view_mat_changed.add_member_listener(&MeshManager::view_mat_changed, m_mesh_manager);
-	m_appliction_model->engine_data()->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
-	m_appliction_model->engine_data()->on_cell_hovered.add_member_listener(&MeshManager::cell_selected, m_mesh_manager);
+	m_appliction_model->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
+	m_appliction_model->on_cell_hovered.add_member_listener(&MeshManager::cell_selected, m_mesh_manager);
 	m_appliction_model->on_clear_color_changed.add_member_listener(&MeshManager::set_current_clear_color, m_mesh_manager);
 
 	m_imgui_layer->on_scene_view_scale_changed.add_member_listener(&MeshManager::window_size_changed, m_mesh_manager);
@@ -34,13 +34,14 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_imgui_layer->on_load_vertex_positions.add_member_listener(&ApplicationModel::on_vertex_positions_loaded, m_appliction_model);
 
 	m_imgui_layer->on_load_cell_vertices.add_member_listener(&MeshManager::load_cell_vertices, m_mesh_manager);
-	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineData::on_cell_vertices_loaded, m_appliction_model->engine_data());
+	m_imgui_layer->on_load_cell_vertices.add_member_listener(&ApplicationModel::load_cell_vertices, m_appliction_model);
 
 	m_imgui_layer->on_load_cell_stats.add_member_listener(&ApplicationModel::load_cell_stats, m_appliction_model);
-	m_imgui_layer->on_load_frequency_limits.add_member_listener(&EngineData::load_frequenzy_limits, m_appliction_model->engine_data());
 
-	m_mesh_manager->on_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_appliction_model->engine_data());		//notify engine data to recalculate colors if it's loaded before cells and vertices
-	m_mesh_manager->on_cell_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_appliction_model->engine_data());
+	m_imgui_layer->on_load_frequency_limits.add_member_listener(&ApplicationModel::load_frequency_limits, m_appliction_model);
+
+	m_mesh_manager->on_vertices_loaded.add_member_listener(&ApplicationModel::refresh_engine_cell_colors, m_appliction_model);		//notify engine data to recalculate colors if it's loaded before cells and vertices
+	m_mesh_manager->on_cell_vertices_loaded.add_member_listener(&ApplicationModel::refresh_engine_cell_colors, m_appliction_model);
 
 	m_appliction_model->refresh_camera();
 }
@@ -103,7 +104,7 @@ void App::mouse_moved_callback(double x_pos, double y_pos)
 
 	bool is_handled = m_imgui_layer->handle_mouse_pos(x_pos, y_pos);
 	if (is_handled)
-		m_appliction_model->handle_out_of_focus();
+		m_appliction_model->handle_scene_view_out_of_focus();
 	else {
 		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_LEFT]) {
 			m_appliction_model->handle_mouse_dragged(m_mouse_delta);
@@ -112,7 +113,7 @@ void App::mouse_moved_callback(double x_pos, double y_pos)
 			glm::ivec2 scene_view_space_mouse_pos = m_imgui_layer->get_scene_view_space_mouse_pos(m_current_mouse_pos);
 			int scene_view_height = m_imgui_layer->scene_view_scale().y;
 			unsigned int selected_cell_index = m_mesh_manager->get_index_at_pos(scene_view_space_mouse_pos.x, scene_view_height - scene_view_space_mouse_pos.y);
-			m_appliction_model->engine_data()->set_hovered_cell(selected_cell_index);
+			m_appliction_model->set_hovered_cell(selected_cell_index);
 		}
 	}
 }

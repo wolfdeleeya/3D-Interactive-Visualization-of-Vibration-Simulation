@@ -229,14 +229,14 @@ void EngineData::load_cell_stats(const char* path)
 	calculate_color();
 }
 
-void EngineData::load_frequenzy_limits(const char* path)
+void EngineData::load_frequency_limits(const char* path)
 {
 	m_frequenzy_limits = loader::load_frequenzy_limits(path, m_frequencies_with_limits);
 
 	on_limits_loaded.invoke();
 }
 
-void EngineData::on_cell_vertices_loaded(const char* path)		//used to set default color when stats are not yet loaded
+void EngineData::load_cell_vertices(const char* path)		//used to set default color when stats are not yet loaded
 {
 	if (m_cell_stats.size() != 0)
 		return;
@@ -286,7 +286,7 @@ void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 		on_graph_data_changed.invoke(generate_graph_data_selected_cells());
 }
 
-void EngineData::clear_selection()
+void EngineData::clear_frequency_selection()
 {
 	m_selected_frequencies_names.clear();
 

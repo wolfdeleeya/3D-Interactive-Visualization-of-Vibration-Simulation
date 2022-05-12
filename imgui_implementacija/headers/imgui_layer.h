@@ -83,7 +83,7 @@ public:
 
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
 
-	void frequency_limits_loaded() { m_frequencies_with_limits = m_application_model->engine_data()->frequencies_with_limits(); }
+	void frequency_limits_loaded() { m_frequencies_with_limits = m_application_model->frequencies_with_limits(); }
 
 	void on_graph_changed(const GraphData& gd) { m_graph_data = gd; }
 

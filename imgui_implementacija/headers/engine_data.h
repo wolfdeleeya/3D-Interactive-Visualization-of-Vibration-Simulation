@@ -57,7 +57,7 @@ private:
 	FrequenzyComparator m_frq_comparator;
 
 	bool m_update_graph_on_hover;
-	bool m_is_limits_mode_active;
+	bool m_is_limits_mode_active;	//nek application model promijeni functor koji racuna boju kada se mod rada promijeni
 
 	void calculate_color();
 
@@ -89,15 +89,15 @@ public:
 
 	void load_cell_stats(const char* path);
 
-	void load_frequenzy_limits(const char* path);
+	void load_frequency_limits(const char* path);
 
-	void on_cell_vertices_loaded(const char* path);
+	void load_cell_vertices(const char* path);
 
 	void check_for_changes();
 
 	void select_frequency(const std::string& f_name, bool is_selected);
 
-	void clear_selection();
+	void clear_frequency_selection();
 
 	void clear_hovered_cell();
 
