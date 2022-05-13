@@ -56,7 +56,6 @@ private:
 
 	FrequenzyComparator m_frq_comparator;
 
-	bool m_update_graph_on_hover;
 	bool m_is_limits_mode_active;	//nek application model promijeni functor koji racuna boju kada se mod rada promijeni
 
 	void calculate_color();
@@ -67,21 +66,16 @@ private:
 
 	glm::vec3 calculate_limits_color_for_cell(unsigned int cell_index);
 
-	GraphData generate_graph_data_selected_cells();
-
-	GraphData generate_graph_data_hovered_cell();
-
-	std::vector<std::pair<std::string, float>> get_empty_cell_values();
-
 public:
 	static const char* FUNCTION_NAMES[5];
 	static const char* LIMITS_NAMES[3];
 
+	Signal on_selected_frequencies_changed;
+	Signal on_selected_cells_changed;
+
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
 	Event<unsigned int> on_cell_hovered;
-
-	Event<const GraphData&> on_graph_data_changed;
 
 	Signal on_cell_stats_loaded,
 		   on_frequency_limits_loaded;
@@ -104,23 +98,27 @@ public:
 
 	void clear_selected_cells();
 
-	void handle_cell_selection();
+	void handle_mouse_click();
 
 	void set_hovered_cell(unsigned int cell_index);
 
-	std::vector<std::pair<std::string, float>> get_values_for_cell(unsigned int index);
-
-	void update_graph_on_hover(bool value);
+	std::vector<float> get_values_for_cell(unsigned int index);
 
 	void set_is_limits_mode_active(bool value);
 	
 	void refresh_color();
 
+	glm::vec3 get_color_for_selected_cell(unsigned int index, unsigned int num_of_cells);
+
 	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
 
 	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }
 
+	unsigned int hovered_cell() { return m_hovered_cell; }
+
 	unsigned int num_of_selected_frequencies() { return m_selected_frequencies_names.size(); }
+
+	unsigned int num_of_selected_cells() { return m_selected_cells.size(); }
 
 	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
 
@@ -136,9 +134,11 @@ public:
 
 	std::vector<std::string> frequencies_with_limits() { return m_frequencies_with_limits; }
 
+	std::vector<unsigned int> selected_cells() { return m_selected_cells; }
+
 	bool is_valid_cell_hovered() { return m_hovered_cell != 0; }
 
-	std::vector<std::pair<std::string, float>> get_hovered_cell_values() { return get_values_for_cell(m_hovered_cell); }
+	std::vector<float> get_hovered_cell_values() { return get_values_for_cell(m_hovered_cell); }
 
 	//variable getters
 	Gradient* get_gradient(GradientVariables e) { return m_gradient_variables.get(e); }

@@ -5,12 +5,6 @@
 
 const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_camera_distance = 5;
 
-void ApplicationModel::set_is_hover_mode_active(bool value)
-{
-	m_is_hover_mode_active = value;
-	on_hover_mode_toggled.invoke(value);
-}
-
 void ApplicationModel::set_is_limits_mode_active(bool value)
 {
 	m_is_limits_mode_active = value;
@@ -25,7 +19,6 @@ ApplicationModel::ApplicationModel():
 
 	m_camera = new Camera(max_camera_distance, glm::vec3(0));
 
-	m_is_hover_mode_active = true;
 	m_is_limits_mode_active = false;
 }
 
@@ -96,10 +89,4 @@ void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set cam
 void ApplicationModel::handle_mouse_dragged(const glm::ivec2& mouse_delta)
 {
 	rotate_camera(mouse_delta);
-}
-
-void ApplicationModel::handle_mouse_click()
-{
-	if (is_cell_selection_mode_active())
-		on_cell_select.invoke();
 }

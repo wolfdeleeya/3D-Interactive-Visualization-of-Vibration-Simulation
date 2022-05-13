@@ -57,7 +57,7 @@ struct GetterIdx {
 
 void MyImPlot::PlotBarGroups(const GraphData& gd)
 {
-    PlotBarGroups(&gd.item_labels[0], &gd.plot_data[0], gd.items, gd.groups, gd.size, &gd.colors[0]);
+    PlotBarGroups(&gd.item_labels[0], &gd.plot_data[0], gd.item_labels.size(), gd.group_labels.size(), gd.size, &gd.colors[0]);
 }
 
 void MyImPlot::PlotBarGroups(const char* const label_ids[], const int* values, int items, int groups, double width, const glm::vec3* item_colors)

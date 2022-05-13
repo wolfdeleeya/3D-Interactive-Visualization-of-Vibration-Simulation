@@ -7,7 +7,7 @@
 #include "nfd.h"
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "graph_data.h"
+#include "graph_manager.h"
 
 class ImGUILayer {
 private:
@@ -17,14 +17,14 @@ private:
 
 	ApplicationModel* m_application_model;
 	EngineData* m_engine_data;
+	GraphManager* m_graph_manager;
 
 	ImVec2 m_scene_view_position;
 	ImVec2 m_scene_view_scale;
+
 	unsigned int m_scene_view_texture;
 
 	bool m_is_hovering_scene_view;
-
-	GraphData m_graph_data;
 
 	void draw_color_selection_widget();
 
@@ -37,10 +37,6 @@ private:
 	void draw_general_info_widget();
 
 	void draw_fps_and_delta_time();
-	
-	void draw_color_selection(const char* color_variable_name, glm::vec3& color) {
-		ImGui::ColorEdit3(color_variable_name, glm::value_ptr(color));
-	}
 
 	void draw_main_bar();
 
@@ -59,6 +55,10 @@ private:
 	void draw_graph_tooltip();
 
 	bool is_window_resized(ImGuiWindow* window);
+
+	void draw_color_selection(const char* color_variable_name, glm::vec3& color) {
+		ImGui::ColorEdit3(color_variable_name, glm::value_ptr(color));
+	}
 
 public:
 	Event<bool> on_scene_view_focus_changed;
@@ -87,8 +87,6 @@ public:
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
 
 	void frequency_limits_loaded() { m_frequencies_with_limits = m_engine_data->frequencies_with_limits(); }
-
-	void on_graph_changed(const GraphData& gd) { m_graph_data = gd; }
 
 	ImVec2 scene_view_scale() { return m_scene_view_scale; }
 };

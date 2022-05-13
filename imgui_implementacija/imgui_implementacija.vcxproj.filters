@@ -117,7 +117,7 @@
     <ClInclude Include="headers\variable_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\graph_model.h">
+    <ClInclude Include="headers\graph_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -213,6 +213,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\implot_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graph_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

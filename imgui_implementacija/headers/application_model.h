@@ -18,8 +18,6 @@ private:
 	
 	float m_rotation_sensitivity;
 
-	bool m_is_hover_mode_active;
-
 	bool m_is_limits_mode_active;
 
 	std::vector<std::string> m_frequenzy_names;
@@ -29,12 +27,9 @@ private:
 	const static float min_camera_distance, max_camera_distance;
 
 public:
-	Signal on_cell_select;
-
 	Event<const glm::mat4&> on_view_mat_changed;
 	Event<const glm::vec3&> on_clear_color_changed;
-	Event<bool> on_limits_mode_toggled, 
-				on_hover_mode_toggled;
+	Event<bool> on_limits_mode_toggled;
 
 	ApplicationModel();
 
@@ -50,21 +45,9 @@ public:
 
 	void handle_mouse_dragged(const glm::ivec2& mouse_delta);
 
-	void handle_mouse_click();
-
-	void set_is_hover_mode_active(bool value);
-
 	void set_is_limits_mode_active(bool value);
 
-	void set_hover_mode_active() { set_is_hover_mode_active(true); }
-
-	void set_cell_selection_mode_active() { set_is_hover_mode_active(false); }
-
 	void refresh_camera() { on_view_mat_changed.invoke(m_camera->view_mat()); }
-
-	bool is_hover_mode_active() { return m_is_hover_mode_active; }
-
-	bool is_cell_selection_mode_active() { return !m_is_hover_mode_active; }
 
 	bool is_limits_mode_active() { return m_is_limits_mode_active; }
 

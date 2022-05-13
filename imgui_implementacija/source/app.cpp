@@ -24,21 +24,14 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_mesh_manager = new MeshManager({ init_width, init_height });
 	m_imgui_layer = new ImGUILayer(m_appliction_model, m_engine_data, m_window, "version 330 core", m_mesh_manager->scene_texture());
 
-	on_mouse_clicked.add_member_listener(&ApplicationModel::handle_mouse_click, m_appliction_model);
-
 	on_mouse_dragged.add_member_listener(&ApplicationModel::handle_mouse_dragged, m_appliction_model);
 	on_mouse_dragged.add_member_listener(&EngineData::handle_mouse_dragged, m_engine_data);
 
-	EngineData* d_engine_data = m_engine_data;
-
-	on_mouse_dragged.add_listener([d_engine_data](const glm::ivec2& x) { d_engine_data->clear_hovered_cell(); });
+	on_mouse_clicked.add_member_listener(&EngineData::handle_mouse_click, m_engine_data);
 
 	m_appliction_model->on_view_mat_changed.add_member_listener(&MeshManager::view_mat_changed, m_mesh_manager);
 	m_appliction_model->on_clear_color_changed.add_member_listener(&MeshManager::set_current_clear_color, m_mesh_manager);
 
-	m_appliction_model->on_cell_select.add_member_listener(&EngineData::handle_cell_selection, m_engine_data);
-
-	m_appliction_model->on_hover_mode_toggled.add_member_listener(&EngineData::update_graph_on_hover, m_engine_data);
 	m_appliction_model->on_limits_mode_toggled.add_member_listener(&EngineData::set_is_limits_mode_active, m_engine_data);
 
 	m_engine_data->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
@@ -126,7 +119,7 @@ void App::mouse_moved_callback(double x_pos, double y_pos)
 	if (!is_handled)
 	{
 		if (m_mouse_button_state[GLFW_MOUSE_BUTTON_LEFT]) {
-			m_appliction_model->handle_mouse_dragged(m_mouse_delta);
+			on_mouse_dragged.invoke(m_mouse_delta);
 		}
 		else {
 			glm::ivec2 scene_view_space_mouse_pos = m_imgui_layer->get_scene_view_space_mouse_pos(m_current_mouse_pos);
@@ -144,7 +137,7 @@ void App::mouse_button_callback(int button, bool is_pressed)
 
 	if (!is_handled) {
 		if (button == GLFW_MOUSE_BUTTON_LEFT && is_pressed == false && int(glm::length(m_mouse_delta)) == 0)
-			m_appliction_model->handle_mouse_click();
+			on_mouse_clicked.invoke();
 	}
 }
 

@@ -150,51 +150,6 @@ glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
 	}
 }
 
-GraphData EngineData::generate_graph_data_selected_cells()
-{
-	if(m_cell_stats.size() == 0)
-		return GraphData({}, *get_color(ColorVariables::HOVERED_CELL_STATS_COLOR));
-
-	std::vector<std::pair<std::string, std::vector<float>>> item_data;
-	std::vector<glm::vec3> colors;
-
-	unsigned int n_selected_cells = m_selected_cells.size();
-
-	for (int i = 0; i < n_selected_cells; ++i) {
-		colors.push_back(convert_hsv_to_rgb({ float(i + 1) / (n_selected_cells + 1), 1, 1 }));
-
-		std::pair<std::string, std::vector<float>> data_entry;
-		unsigned int cell_id = m_selected_cells[i];
-		data_entry.first = "CELL " + std::to_string(cell_id);
-
-		const auto& values = get_values_for_cell(cell_id);
-
-		for (const auto& pair : values)
-			data_entry.second.push_back(pair.second);		//ovo mijenjamo, trebamo odvojiti frequenzy name od same frekvencije, ako su vec poredane
-
-		item_data.push_back(data_entry);
-	}
-
-	return GraphData(m_selected_frequencies_names, item_data, colors);
-}
-
-GraphData EngineData::generate_graph_data_hovered_cell()
-{
-	if (m_hovered_cell == 0 || m_cell_stats.size() == 0)
-		return GraphData({}, *get_color(ColorVariables::HOVERED_CELL_STATS_COLOR));
-	return GraphData(get_hovered_cell_values(), *get_color(ColorVariables::HOVERED_CELL_STATS_COLOR));
-}
-
-std::vector<std::pair<std::string, float>> EngineData::get_empty_cell_values()
-{
-	std::vector<std::pair<std::string, float>> result;
-
-	for (const auto& name : m_selected_frequencies_names)
-		result.push_back({ name, 0 });
-
-	return result;
-}
-
 EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 	m_gradient_variables([](const Gradient& g1, const Gradient& g2) {return g1 == g2; }, GradientVariables::END, Gradient{ glm::vec3(1), glm::vec3(0) }, std::bind(&EngineData::calculate_color, this)),
 	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, glm::vec3(0), std::bind(&EngineData::calculate_color, this)),
@@ -209,7 +164,6 @@ EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 
 	m_color_variables.set_on_change_function(ColorVariables::HOVERED_CELL_STATS_COLOR, []() {});		//when when hovered cell stats color changed, do nothing IMGUI will handle graph coloring
 
-	m_update_graph_on_hover = true;
 	m_is_limits_mode_active = false;
 }
 
@@ -257,14 +211,10 @@ void EngineData::check_for_changes()
 {
 	bool are_changes_pending = false;
 
-
 	are_changes_pending |= m_gradient_variables.check_for_changes();
 	are_changes_pending |= m_color_variables.check_for_changes();
 	are_changes_pending |= m_uint_variables.check_for_changes();
 	are_changes_pending |= m_normal_mode_limits_variables.check_for_changes();
-
-	//if (are_changes_pending)
-	//	calculate_color();
 }
 
 void EngineData::select_frequency(const std::string& f_name, bool is_selected)
@@ -282,10 +232,7 @@ void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 
 	calculate_color();
 
-	if (m_update_graph_on_hover)
-		on_graph_data_changed.invoke(generate_graph_data_hovered_cell());
-	else
-		on_graph_data_changed.invoke(generate_graph_data_selected_cells());
+	on_selected_frequencies_changed.invoke();
 }
 
 void EngineData::clear_frequency_selection()
@@ -308,11 +255,11 @@ void EngineData::clear_selected_cells()
 		m_selected_cells.clear();
 		calculate_color();
 
-		on_graph_data_changed.invoke(generate_graph_data_selected_cells());
+		on_selected_cells_changed.invoke();
 	}
 }
 
-void EngineData::handle_cell_selection()
+void EngineData::handle_mouse_click()
 {
 	if (m_hovered_cell <= 0)
 		return;
@@ -326,40 +273,26 @@ void EngineData::handle_cell_selection()
 
 	calculate_color();
 
-	on_graph_data_changed.invoke(generate_graph_data_selected_cells());
+	on_selected_cells_changed.invoke();
 }
 
 void EngineData::set_hovered_cell(unsigned int cell_index)
 {
+	if (cell_index != m_hovered_cell)
+		on_cell_hovered.invoke(cell_index);
 	m_hovered_cell = cell_index;
-	on_cell_hovered.invoke(cell_index);
-
-	if (m_update_graph_on_hover)
-		on_graph_data_changed.invoke(generate_graph_data_hovered_cell());
 }
 
-std::vector<std::pair<std::string, float>> EngineData::get_values_for_cell(unsigned int index) 
+std::vector<float> EngineData::get_values_for_cell(unsigned int index) 
 {
-	std::vector<std::pair<std::string, float>> result;
+	std::vector<float> result;
 	
 	cell_stats stats = m_cell_stats.at(index);
 
 	for (const auto& name : m_selected_frequencies_names)
-		result.push_back({ name, stats.freq_map[name] });
+		result.push_back(stats.freq_map[name]);
 	
 	return result;
-}
-
-void EngineData::update_graph_on_hover(bool value)
-{
-	m_update_graph_on_hover = value;
-
-	if (m_update_graph_on_hover)
-		clear_selected_cells();
-	else
-		clear_hovered_cell();
-
-	on_graph_data_changed.invoke(m_update_graph_on_hover ? generate_graph_data_hovered_cell() : generate_graph_data_selected_cells());
 }
 
 void EngineData::set_is_limits_mode_active(bool value)
@@ -373,4 +306,10 @@ void EngineData::refresh_color()
 	if (!are_stats_loaded())
 		return;
 	calculate_color();
+}
+
+glm::vec3 EngineData::get_color_for_selected_cell(unsigned int index, unsigned int num_of_cells)
+{
+	glm::vec3 color = convert_hsv_to_rgb({ float(index + 1) / (num_of_cells + 1), 1, 1 });
+	return color;
 }

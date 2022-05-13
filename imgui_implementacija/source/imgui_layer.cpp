@@ -19,9 +19,6 @@ void ImGUILayer::draw_color_selection_widget()
 	draw_color_selection("Background Color", *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR));
 	
 	draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
-	
-	if (m_application_model->is_hover_mode_active())
-		draw_color_selection("Hovered Cell Stats Color", *m_engine_data->get_color(EngineData::ColorVariables::HOVERED_CELL_STATS_COLOR));
 
 	if (m_engine_data->are_stats_loaded()) {
 		bool is_limits_mode_active = m_application_model->is_limits_mode_active();
@@ -271,16 +268,8 @@ void ImGUILayer::draw_graph_tooltip()
 	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
 	
 	ImGui::Begin("Graph");
-	
-	bool is_hover_mode_active = m_application_model->is_hover_mode_active();
-	if (ImGui::Button((is_hover_mode_active ? "HOVER MODE" : "CELL SELECTION MODE")))		//if button is clicked flip the flag
-	{
-		m_application_model->set_is_hover_mode_active(!is_hover_mode_active);
-		is_hover_mode_active = !is_hover_mode_active;
-	}
 
-	if (!is_hover_mode_active) {
-		ImGui::SameLine();
+	if (m_engine_data->num_of_selected_cells() > 0) {
 		if(ImGui::Button("CLEAR SELECTED CELLS")) {
 			m_engine_data->clear_selected_cells();
 		}
@@ -292,18 +281,8 @@ void ImGUILayer::draw_graph_tooltip()
 	current_window->HasCloseButton = false;
 	current_window->WantCollapseToggle = false;
 
-	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
-		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+	m_graph_manager->draw_cell_plot();
 
-		if (m_graph_data.positions.size() > 0) {
-			ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], m_graph_data.groups, &m_graph_data.group_labels[0]);
-			ImPlot::PlotBarGroups(&m_graph_data.item_labels[0], &m_graph_data.plot_data[0], m_graph_data.items, m_graph_data.groups, m_graph_data.size, 0, 0);
-			MyImPlot::PlotBarGroups(m_graph_data);
-		}
-
-		ImPlot::EndPlot();
-	}
 	ImGui::EndChild();
 	ImGui::End();
 }
@@ -325,10 +304,12 @@ bool ImGUILayer::is_window_resized(ImGuiWindow* window)
 }
 
 ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
-	m_window(window), m_graph_data({}, {})
+	m_window(window)
 {
 	m_application_model = application_model;
 	m_engine_data = engine_data;
+	m_graph_manager = new GraphManager(application_model, engine_data);
+
 	m_is_hovering_scene_view = true;
 	m_scene_view_texture = scene_view_texture;
 
@@ -348,11 +329,12 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_d
 
 	m_engine_data->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
 	m_engine_data->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
-	m_engine_data->on_graph_data_changed.add_member_listener(&ImGUILayer::on_graph_changed, this);
 }
 
 ImGUILayer::~ImGUILayer()
 {
+	delete m_graph_manager;
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
