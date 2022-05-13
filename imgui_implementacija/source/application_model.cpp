@@ -8,54 +8,34 @@ const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_c
 void ApplicationModel::set_is_hover_mode_active(bool value)
 {
 	m_is_hover_mode_active = value;
-	m_engine_data->update_graph_on_hover(value);
+	on_hover_mode_toggled.invoke(value);
 }
 
 void ApplicationModel::set_is_limits_mode_active(bool value)
 {
 	m_is_limits_mode_active = value;
-	m_engine_data->set_is_limits_mode_active(value);
+	on_limits_mode_toggled.invoke(value);
 }
 
 ApplicationModel::ApplicationModel():
-	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 }, [this]() { this->invoke_clear_color_changed(); })
+	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 }, [this]() { invoke_clear_color_changed(); })
 {
 	m_rotation_sensitivity = 1;
 	m_scroll_sensitivity = 0.05;
 
-	m_engine_data = new EngineData(glm::vec3(0.55, 0.55, 0.55));
 	m_camera = new Camera(max_camera_distance, glm::vec3(0));
 
 	m_is_hover_mode_active = true;
 	m_is_limits_mode_active = false;
-
-	m_engine_data->on_cell_hovered.add_member_listener(&ApplicationModel::invoke_cell_hovered, this);
-	m_engine_data->on_colors_recalculated.add_member_listener(&ApplicationModel::invoke_colors_recalculated, this);
-	m_engine_data->on_graph_data_changed.add_member_listener(&ApplicationModel::invoke_graph_data_changed, this);
 }
 
 ApplicationModel::~ApplicationModel()
 {
-	delete m_engine_data;
 	delete m_camera;
-}
-
-void ApplicationModel::load_cell_stats(const char* path)
-{
-	m_engine_data->load_cell_stats(path);
-	on_cell_stats_loaded.invoke();
-}
-
-void ApplicationModel::load_frequency_limits(const char* path)
-{
-	m_engine_data->load_frequency_limits(path);
-	on_frequency_limits_loaded.invoke();
 }
 
 void ApplicationModel::update()
 {
-	m_engine_data->check_for_changes();
-
 	bool are_changes_pending = false;
 	
 	are_changes_pending |= m_color_variables.check_for_changes();
@@ -113,19 +93,13 @@ void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set cam
 	on_view_mat_changed.invoke(m_camera->view_mat());
 }
 
-void ApplicationModel::handle_scene_view_out_of_focus()
-{
-	m_engine_data->clear_hovered_cell();
-}
-
-void ApplicationModel::handle_mouse_dragged(glm::ivec2 mouse_delta)
+void ApplicationModel::handle_mouse_dragged(const glm::ivec2& mouse_delta)
 {
 	rotate_camera(mouse_delta);
-	m_engine_data->clear_hovered_cell();
 }
 
 void ApplicationModel::handle_mouse_click()
 {
 	if (is_cell_selection_mode_active())
-		m_engine_data->handle_cell_selection();
+		on_cell_select.invoke();
 }

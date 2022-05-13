@@ -18,15 +18,15 @@ void ImGUILayer::draw_color_selection_widget()
 
 	draw_color_selection("Background Color", *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR));
 	
-	draw_color_selection("Default Color", *m_application_model->get_engine_data_color(EngineData::ColorVariables::DEFAULT_COLOR));
+	draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
 	
 	if (m_application_model->is_hover_mode_active())
-		draw_color_selection("Hovered Cell Stats Color", *m_application_model->get_engine_data_color(EngineData::ColorVariables::HOVERED_CELL_STATS_COLOR));
+		draw_color_selection("Hovered Cell Stats Color", *m_engine_data->get_color(EngineData::ColorVariables::HOVERED_CELL_STATS_COLOR));
 
-	if (m_application_model->are_stats_loaded()) {
+	if (m_engine_data->are_stats_loaded()) {
 		bool is_limits_mode_active = m_application_model->is_limits_mode_active();
 
-		if (m_application_model->are_frequency_limits_loaded()) {
+		if (m_engine_data->are_frequenzy_limits_loaded()) {
 
 			if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "Normal Mode")) {
 				m_application_model->set_is_limits_mode_active(!is_limits_mode_active);
@@ -44,14 +44,14 @@ void ImGUILayer::draw_color_selection_widget()
 
 void ImGUILayer::draw_normal_color_selection()
 {
-	draw_gradient_selection("Normal Mode Gradient", *m_application_model->get_engine_data_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT));
+	draw_gradient_selection("Normal Mode Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT));
 }
 
 void ImGUILayer::draw_limits_mode_color_selection()
 {
-	draw_color_selection("Good Color", *m_application_model->get_engine_data_color(EngineData::ColorVariables::GOOD_LIMITS_COLOR));
-	draw_gradient_selection("Mid Gradient", *m_application_model->get_engine_data_gradient(EngineData::GradientVariables::LIMITS_MODE_MID_GRADIENT));
-	draw_gradient_selection("Bad Gradient", *m_application_model->get_engine_data_gradient(EngineData::GradientVariables::LIMITS_MODE_BAD_GRADIENT));
+	draw_color_selection("Good Color", *m_engine_data->get_color(EngineData::ColorVariables::GOOD_LIMITS_COLOR));
+	draw_gradient_selection("Mid Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_MID_GRADIENT));
+	draw_gradient_selection("Bad Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_BAD_GRADIENT));
 }
 
 void ImGUILayer::draw_engine_view()
@@ -71,7 +71,13 @@ void ImGUILayer::draw_engine_view()
 		}
 		ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
 
+		bool is_scene_view_in_focus = ImGui::IsItemHovered();
+
+		if (is_scene_view_in_focus != m_is_hovering_scene_view)
+			on_scene_view_focus_changed.invoke(is_scene_view_in_focus);
+
 		m_is_hovering_scene_view = ImGui::IsItemHovered();
+
 		ImGui::EndChild();
 	}
 	ImGui::End();
@@ -162,13 +168,13 @@ void ImGUILayer::draw_frequency_selection_widget()
 
 		for (int i = 0; i < frequency_names.size(); i++)
 		{
-			selected.get()[i] = m_application_model->is_frequency_selected(frequency_names[i]);
+			selected.get()[i] = m_engine_data->is_frequency_selected(frequency_names[i]);
 
 			ImGui::TableNextColumn();
 			ImGui::Selectable(frequency_names[i].c_str(), &selected.get()[i], 1);;
 
-			if (m_application_model->is_frequency_selected(frequency_names[i]) != selected.get()[i]) {
-				m_application_model->select_frequency(frequency_names[i], selected.get()[i]);
+			if (m_engine_data->is_frequency_selected(frequency_names[i]) != selected.get()[i]) {
+				m_engine_data->select_frequency(frequency_names[i], selected.get()[i]);
 			}
 		}
 
@@ -183,7 +189,7 @@ void ImGUILayer::draw_legend_bar_widget()
 
 void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 {
-	unsigned int num_of_selected_frequencies = m_application_model->num_of_selected_frequencies();
+	unsigned int num_of_selected_frequencies = m_engine_data->num_of_selected_frequencies();
 
 	if (num_of_selected_frequencies > 0) {
 		if (ImGui::Begin("Frequency Selection Evaluation Settings")) {
@@ -194,7 +200,7 @@ void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 			}
 
 			if (ImGui::Button("Clear Selection"))
-				m_application_model->clear_frequenzy_selection();
+				m_engine_data->clear_frequency_selection();
 
 			ImGui::End();
 		}
@@ -203,15 +209,15 @@ void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 
 void ImGUILayer::draw_limits_selection()
 {
-	int selected_mode = *m_application_model->get_engine_data_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS);
+	int selected_mode = *m_engine_data->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS);
 	unsigned int num_of_labels = sizeof(EngineData::LIMITS_NAMES) / sizeof(*EngineData::LIMITS_NAMES);
 
 	ImGui::ListBox("Limits Selection", &(selected_mode), EngineData::LIMITS_NAMES, num_of_labels, 2);
 
-	m_application_model->set_engine_data_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS, selected_mode);
+	m_engine_data->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS, selected_mode);
 
 	if (selected_mode == (int)EngineData::NormalModeLimitsVariables::USER_DEF) {
-		glm::vec2* user_limits = m_application_model->get_engine_data_normal_mode_limits(EngineData::NormalModeLimitsVariables::USER_DEF);
+		glm::vec2* user_limits = m_engine_data->get_normal_mode_limits(EngineData::NormalModeLimitsVariables::USER_DEF);
 		ImGui::DragFloat2("Custom Limits", glm::value_ptr(*user_limits), 1, -200, 200);
 	}
 }
@@ -249,12 +255,12 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 
 void ImGUILayer::draw_function_selection()
 {
-	int selected_function = (int) * m_application_model->get_engine_data_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION);
+	int selected_function = (int) *m_engine_data->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION);
 	unsigned int num_of_labels = sizeof(EngineData::FUNCTION_NAMES) / sizeof(*EngineData::FUNCTION_NAMES);
 
 	ImGui::ListBox("Function Selection", &(selected_function), EngineData::FUNCTION_NAMES, num_of_labels, 2);
 	
-	m_application_model->set_engine_data_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION, selected_function);
+	m_engine_data->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION, selected_function);
 }
 
 void ImGUILayer::draw_graph_tooltip()
@@ -276,7 +282,7 @@ void ImGUILayer::draw_graph_tooltip()
 	if (!is_hover_mode_active) {
 		ImGui::SameLine();
 		if(ImGui::Button("CLEAR SELECTED CELLS")) {
-			m_application_model->clear_selected_cells();
+			m_engine_data->clear_selected_cells();
 		}
 	}
 
@@ -318,10 +324,11 @@ bool ImGUILayer::is_window_resized(ImGuiWindow* window)
 	return false;
 }
 
-ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
+ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
 	m_window(window), m_graph_data({}, {})
 {
 	m_application_model = application_model;
+	m_engine_data = engine_data;
 	m_is_hovering_scene_view = true;
 	m_scene_view_texture = scene_view_texture;
 
@@ -339,9 +346,9 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
 
-	m_application_model->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
-	m_application_model->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
-	m_application_model->on_graph_data_changed.add_member_listener(&ImGUILayer::on_graph_changed, this);
+	m_engine_data->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
+	m_engine_data->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
+	m_engine_data->on_graph_data_changed.add_member_listener(&ImGUILayer::on_graph_changed, this);
 }
 
 ImGUILayer::~ImGUILayer()
@@ -426,7 +433,7 @@ bool ImGUILayer::handle_mouse_click(int button, bool down)
 
 void ImGUILayer::cell_stats_loaded()
 {
-	m_frequenzy_names = m_application_model->frequenzy_names();
+	m_frequenzy_names = m_engine_data->frequenzy_names();
 }
 
 glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)

@@ -4,6 +4,7 @@
 
 #include "mesh_manager.h"
 #include "application_model.h"
+#include "engine_data.h"
 #include "imgui_layer.h"
 #include "GLFW/glfw3.h"
 
@@ -11,6 +12,7 @@
 class App {
 private:
 	ApplicationModel* m_appliction_model;
+	EngineData* m_engine_data;
 	GLFWwindow* m_window;
 	MeshManager* m_mesh_manager;
 
@@ -29,6 +31,10 @@ private:
 public:
 	static float last_timestamp;
 	static float delta_time;
+
+	Event<const glm::ivec2&> on_mouse_dragged;
+	
+	Signal on_mouse_clicked;
 
 	App(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path);
 

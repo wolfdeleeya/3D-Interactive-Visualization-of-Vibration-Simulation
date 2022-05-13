@@ -16,6 +16,7 @@ private:
 	std::vector<std::string> m_frequencies_with_limits;
 
 	ApplicationModel* m_application_model;
+	EngineData* m_engine_data;
 
 	ImVec2 m_scene_view_position;
 	ImVec2 m_scene_view_scale;
@@ -60,6 +61,8 @@ private:
 	bool is_window_resized(ImGuiWindow* window);
 
 public:
+	Event<bool> on_scene_view_focus_changed;
+
 	Event<const char*> on_load_vertex_positions,
 		on_load_cell_vertices,
 		on_load_cell_stats,
@@ -67,7 +70,7 @@ public:
 
 	Event<const glm::ivec2&> on_scene_view_scale_changed;
 
-	ImGUILayer(ApplicationModel* application_model, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark = true);
+	ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark = true);
 	
 	~ImGUILayer();
 
@@ -83,7 +86,7 @@ public:
 
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
 
-	void frequency_limits_loaded() { m_frequencies_with_limits = m_application_model->frequencies_with_limits(); }
+	void frequency_limits_loaded() { m_frequencies_with_limits = m_engine_data->frequencies_with_limits(); }
 
 	void on_graph_changed(const GraphData& gd) { m_graph_data = gd; }
 

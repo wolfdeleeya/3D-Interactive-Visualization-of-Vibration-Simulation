@@ -83,7 +83,8 @@ public:
 
 	Event<const GraphData&> on_graph_data_changed;
 
-	Signal on_limits_loaded;
+	Signal on_cell_stats_loaded,
+		   on_frequency_limits_loaded;
 
 	EngineData(const glm::vec3& default_color);
 
@@ -114,6 +115,10 @@ public:
 	void set_is_limits_mode_active(bool value);
 	
 	void refresh_color();
+
+	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
+
+	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }
 
 	unsigned int num_of_selected_frequencies() { return m_selected_frequencies_names.size(); }
 

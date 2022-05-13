@@ -227,13 +227,15 @@ void EngineData::load_cell_stats(const char* path)
 	find_global_limits();
 
 	calculate_color();
+
+	on_cell_stats_loaded.invoke();
 }
 
 void EngineData::load_frequency_limits(const char* path)
 {
 	m_frequenzy_limits = loader::load_frequenzy_limits(path, m_frequencies_with_limits);
 
-	on_limits_loaded.invoke();
+	on_frequency_limits_loaded.invoke();
 }
 
 void EngineData::load_cell_vertices(const char* path)		//used to set default color when stats are not yet loaded
