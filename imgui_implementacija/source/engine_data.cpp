@@ -278,19 +278,24 @@ void EngineData::handle_mouse_click()
 
 void EngineData::set_hovered_cell(unsigned int cell_index)
 {
-	if (cell_index != m_hovered_cell)
-		on_cell_hovered.invoke(cell_index);
+	bool is_hovered_cell_changed = cell_index != m_hovered_cell;
 	m_hovered_cell = cell_index;
+	if (is_hovered_cell_changed)
+		on_cell_hovered.invoke(m_hovered_cell);
 }
 
 std::vector<float> EngineData::get_values_for_cell(unsigned int index) 
 {
 	std::vector<float> result;
 	
-	cell_stats stats = m_cell_stats.at(index);
+	if (m_cell_stats.find(index) != m_cell_stats.end()) {		//if cell exists
+		cell_stats stats = m_cell_stats.at(index);
 
-	for (const auto& name : m_selected_frequencies_names)
-		result.push_back(stats.freq_map[name]);
+		for (const auto& name : m_selected_frequencies_names)
+			result.push_back(stats.freq_map[name]);
+	} else
+		for (const auto& name : m_selected_frequencies_names)
+			result.push_back(0);
 	
 	return result;
 }

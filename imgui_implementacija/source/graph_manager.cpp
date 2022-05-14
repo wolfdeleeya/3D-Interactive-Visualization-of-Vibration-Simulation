@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "graph_manager.h"
 #include "implot_helper.h"
 
@@ -15,6 +17,9 @@ void GraphManager::update_cell_plot()
 {
 	if (!m_engine_data->are_stats_loaded())
 		return;
+	static int updated_count = 0;
+	++updated_count;
+	std::cout << "GRAPH UPDATED: " << updated_count << std::endl;
 
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
@@ -36,6 +41,7 @@ void GraphManager::update_cell_plot()
 	}
 
 	//add hovered cell to the list
+
 	colors.push_back(m_engine_data->get_color_for_selected_cell(n_selected_cells, n_selected_cells + 1));
 
 	std::pair<std::string, std::vector<float>> data_entry;

@@ -4,8 +4,8 @@
 GraphData::GraphData(const std::vector<std::string>& group_names, const std::vector<std::pair<std::string, std::vector<float>>>& item_data, const std::vector<glm::vec3>& colors) {
 	this->colors = colors;
 
-	unsigned int num_of_items = item_labels.size();
-	unsigned int num_of_groups = group_labels.size();
+	unsigned int num_of_items = item_data.size();
+	unsigned int num_of_groups = group_names.size();
 
 	item_labels.resize(num_of_items);
 
