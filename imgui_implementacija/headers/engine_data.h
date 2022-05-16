@@ -28,7 +28,7 @@ public:
 
 	enum class GradientVariables { NORMAL_MODE_GRADIENT, LIMITS_MODE_MID_GRADIENT, LIMITS_MODE_BAD_GRADIENT, END };
 
-	enum class ColorVariables { DEFAULT_COLOR, GOOD_LIMITS_COLOR, HOVERED_CELL_STATS_COLOR, END };
+	enum class ColorVariables { DEFAULT_COLOR, GOOD_LIMITS_COLOR, END };
 
 	enum class UnsignedIntVariables { NORMAL_MODE_LIMITS, NORMAL_MODE_FUNCTION, END };
 
@@ -56,15 +56,19 @@ private:
 
 	FrequenzyComparator m_frq_comparator;
 
-	bool m_is_limits_mode_active;	//nek application model promijeni functor koji racuna boju kada se mod rada promijeni
-
-	void calculate_color();
+	std::function<void(std::map<unsigned int, glm::vec3>&)> m_cell_coloring_function;
 
 	void find_local_limits();
 
 	void find_global_limits();
 
 	glm::vec3 calculate_limits_color_for_cell(unsigned int cell_index);
+
+	void normal_mode_coloring(std::map<unsigned int, glm::vec3>& color_map);
+
+	void default_coloring(std::map<unsigned int, glm::vec3>& color_map);
+
+	void limits_mode_coloring(std::map<unsigned int, glm::vec3>& color_map);
 
 public:
 	static const char* FUNCTION_NAMES[5];
@@ -81,6 +85,8 @@ public:
 		   on_frequency_limits_loaded;
 
 	EngineData(const glm::vec3& default_color);
+
+	void calculate_color();
 
 	void load_cell_stats(const char* path);
 
@@ -103,16 +109,18 @@ public:
 	void set_hovered_cell(unsigned int cell_index);
 
 	std::vector<float> get_values_for_cell(unsigned int index);
-
-	void set_is_limits_mode_active(bool value);
 	
-	void refresh_color();
-
 	glm::vec3 get_color_for_selected_cell(unsigned int index, unsigned int num_of_cells);
+
+	void set_normal_mode_coloring();
+
+	void set_limits_mode_coloring();
 
 	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
 
 	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }
+
+	void on_limits_mode_toggled(bool is_active) { is_active ? set_limits_mode_coloring() : set_normal_mode_coloring(); }
 
 	unsigned int hovered_cell() { return m_hovered_cell; }
 
@@ -121,8 +129,6 @@ public:
 	unsigned int num_of_selected_cells() { return m_selected_cells.size(); }
 
 	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
-
-	bool is_limits_mode_active() { return m_is_limits_mode_active; }
 
 	bool are_stats_loaded() { return m_cell_stats.size() > 0; }
 

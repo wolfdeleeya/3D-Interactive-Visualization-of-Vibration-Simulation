@@ -19,7 +19,6 @@ void GraphManager::update_cell_plot()
 		return;
 	static int updated_count = 0;
 	++updated_count;
-	std::cout << "GRAPH UPDATED: " << updated_count << std::endl;
 
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
@@ -53,11 +52,12 @@ void GraphManager::update_cell_plot()
 
 	item_data.push_back(data_entry);
 
-	m_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors);
+	m_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors, m_graph_data.size);	//inherit size of old graph
 }
 
 void GraphManager::draw_cell_plot()
 {
+	ImGui::DragFloat("Bar Width", &m_graph_data.size, 0.05, 0, 1);
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
 	unsigned int num_of_items = m_graph_data.item_labels.size();
 

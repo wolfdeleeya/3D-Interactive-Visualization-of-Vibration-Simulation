@@ -32,7 +32,7 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_appliction_model->on_view_mat_changed.add_member_listener(&MeshManager::view_mat_changed, m_mesh_manager);
 	m_appliction_model->on_clear_color_changed.add_member_listener(&MeshManager::set_current_clear_color, m_mesh_manager);
 
-	m_appliction_model->on_limits_mode_toggled.add_member_listener(&EngineData::set_is_limits_mode_active, m_engine_data);
+	m_appliction_model->on_limits_mode_toggled.add_member_listener(&EngineData::on_limits_mode_toggled, m_engine_data);
 
 	m_engine_data->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
 	m_engine_data->on_cell_hovered.add_member_listener(&MeshManager::cell_selected, m_mesh_manager);
@@ -51,8 +51,8 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 
 	m_imgui_layer->on_scene_view_focus_changed.add_member_listener(&EngineData::on_scene_view_focus_changed, m_engine_data);
 
-	m_mesh_manager->on_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_engine_data);		//notify engine data to recalculate colors if it's loaded before cells and vertices
-	m_mesh_manager->on_cell_vertices_loaded.add_member_listener(&EngineData::refresh_color, m_engine_data);
+	m_mesh_manager->on_vertices_loaded.add_member_listener(&EngineData::calculate_color, m_engine_data);		//notify engine data to recalculate colors if it's loaded before cells and vertices
+	m_mesh_manager->on_cell_vertices_loaded.add_member_listener(&EngineData::calculate_color, m_engine_data);
 
 	m_appliction_model->refresh_camera();
 }

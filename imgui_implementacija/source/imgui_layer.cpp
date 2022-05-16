@@ -14,29 +14,29 @@
 
 void ImGUILayer::draw_color_selection_widget()
 {
-	ImGui::Begin("Color Properties Selection");
+	if (ImGui::Begin("Color Properties Selection")) {
+		draw_color_selection("Background Color", *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR));
 
-	draw_color_selection("Background Color", *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR));
-	
-	draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
+		draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
 
-	if (m_engine_data->are_stats_loaded()) {
-		bool is_limits_mode_active = m_application_model->is_limits_mode_active();
+		if (m_engine_data->are_stats_loaded()) {
+			bool is_limits_mode_active = m_application_model->is_limits_mode_active();
 
-		if (m_engine_data->are_frequenzy_limits_loaded()) {
+			if (m_engine_data->are_frequenzy_limits_loaded()) {
 
-			if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "Normal Mode")) {
-				m_application_model->set_is_limits_mode_active(!is_limits_mode_active);
+				if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "Normal Mode")) {
+					m_application_model->set_is_limits_mode_active(!is_limits_mode_active);
+				}
 			}
+
+			if (is_limits_mode_active)
+				draw_limits_mode_color_selection();
+			else
+				draw_normal_color_selection();
 		}
 
-		if (is_limits_mode_active)
-			draw_limits_mode_color_selection();
-		else
-			draw_normal_color_selection();
+		ImGui::End();
 	}
-
-	ImGui::End();
 }
 
 void ImGUILayer::draw_normal_color_selection()
@@ -53,39 +53,41 @@ void ImGUILayer::draw_limits_mode_color_selection()
 
 void ImGUILayer::draw_engine_view()
 {
-	ImGui::Begin("Engine View");
-	{
-		ImGui::BeginChild("Engine Render");
-		m_scene_view_position = ImGui::GetWindowPos();
-		ImVec2 scene_scale = ImGui::GetWindowSize();
+	if(ImGui::Begin("Engine View")) {
+		if (ImGui::BeginChild("Engine Render")) {
+			m_scene_view_position = ImGui::GetWindowPos();
+			ImVec2 scene_scale = ImGui::GetWindowSize();
 
-		bool is_width_changed = abs(scene_scale.x - m_scene_view_scale.x) > 0;
-		bool is_height_changed = abs(scene_scale.y - m_scene_view_scale.y) > 0;
+			bool is_width_changed = abs(scene_scale.x - m_scene_view_scale.x) > 0;
+			bool is_height_changed = abs(scene_scale.y - m_scene_view_scale.y) > 0;
 
-		if ((is_width_changed || is_height_changed) && !is_window_resized(ImGui::GetCurrentWindow())) {
-			m_scene_view_scale = scene_scale;
-			on_scene_view_scale_changed.invoke({ scene_scale.x, scene_scale.y });
+			if ((is_width_changed || is_height_changed) && !is_window_resized(ImGui::GetCurrentWindow())) {
+				m_scene_view_scale = scene_scale;
+				on_scene_view_scale_changed.invoke({ scene_scale.x, scene_scale.y });
+			}
+			ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
+
+			bool is_scene_view_in_focus = ImGui::IsItemHovered();
+
+			if (is_scene_view_in_focus != m_is_hovering_scene_view)
+				on_scene_view_focus_changed.invoke(is_scene_view_in_focus);
+
+			m_is_hovering_scene_view = ImGui::IsItemHovered();
+
+			ImGui::EndChild();
 		}
-		ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
 
-		bool is_scene_view_in_focus = ImGui::IsItemHovered();
-
-		if (is_scene_view_in_focus != m_is_hovering_scene_view)
-			on_scene_view_focus_changed.invoke(is_scene_view_in_focus);
-
-		m_is_hovering_scene_view = ImGui::IsItemHovered();
-
-		ImGui::EndChild();
+		ImGui::End();
 	}
-	ImGui::End();
 }
 
 void ImGUILayer::draw_general_info_widget()
 {
-	ImGui::Begin("General Info");
-	draw_fps_and_delta_time();
+	if (ImGui::Begin("General Info")) {
+		draw_fps_and_delta_time();
 
-	ImGui::End();
+		ImGui::End();
+	}
 }
 
 void ImGUILayer::draw_fps_and_delta_time()
@@ -154,30 +156,30 @@ void ImGUILayer::draw_main_bar()
 
 void ImGUILayer::draw_frequency_selection_widget()
 {
-	ImGui::Begin("Frequency Selection");
-
-	if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
-	{
-		bool is_limits_mode_active = m_application_model->is_limits_mode_active();
-		const std::vector<std::string>& frequency_names = is_limits_mode_active ? m_frequencies_with_limits : m_frequenzy_names;
-
-		std::unique_ptr<bool> selected(new bool[frequency_names.size()]);
-
-		for (int i = 0; i < frequency_names.size(); i++)
+	if (ImGui::Begin("Frequency Selection")) {
+		if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
 		{
-			selected.get()[i] = m_engine_data->is_frequency_selected(frequency_names[i]);
+			bool is_limits_mode_active = m_application_model->is_limits_mode_active();
+			const std::vector<std::string>& frequency_names = is_limits_mode_active ? m_frequencies_with_limits : m_frequenzy_names;
 
-			ImGui::TableNextColumn();
-			ImGui::Selectable(frequency_names[i].c_str(), &selected.get()[i], 1);;
+			std::unique_ptr<bool> selected(new bool[frequency_names.size()]);
 
-			if (m_engine_data->is_frequency_selected(frequency_names[i]) != selected.get()[i]) {
-				m_engine_data->select_frequency(frequency_names[i], selected.get()[i]);
+			for (int i = 0; i < frequency_names.size(); i++)
+			{
+				selected.get()[i] = m_engine_data->is_frequency_selected(frequency_names[i]);
+
+				ImGui::TableNextColumn();
+				ImGui::Selectable(frequency_names[i].c_str(), &selected.get()[i], 1);;
+
+				if (m_engine_data->is_frequency_selected(frequency_names[i]) != selected.get()[i]) {
+					m_engine_data->select_frequency(frequency_names[i], selected.get()[i]);
+				}
 			}
-		}
 
-		ImGui::EndTable();
+			ImGui::EndTable();
+		}
+		ImGui::End();
 	}
-	ImGui::End();
 }
 
 void ImGUILayer::draw_legend_bar_widget()
@@ -267,24 +269,26 @@ void ImGUILayer::draw_graph_tooltip()
 	ImPlotContext* implot_context = ImPlot::GetCurrentContext();
 	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
 	
-	ImGui::Begin("Graph");
-
-	if (m_engine_data->num_of_selected_cells() > 0) {
-		if(ImGui::Button("CLEAR SELECTED CELLS")) {
-			m_engine_data->clear_selected_cells();
+	if (ImGui::Begin("Graph")) {
+		if (m_engine_data->num_of_selected_cells() > 0) {
+			if (ImGui::Button("CLEAR SELECTED CELLS")) {
+				m_engine_data->clear_selected_cells();
+			}
 		}
+
+		if (ImGui::BeginChild("Graph Child")) {
+			ImGuiWindow* current_window = imgui_context->CurrentWindow;
+
+			current_window->HasCloseButton = false;
+			current_window->WantCollapseToggle = false;
+
+			m_graph_manager->draw_cell_plot();
+
+			ImGui::EndChild();
+		}
+
+		ImGui::End();
 	}
-
-	ImGui::BeginChild("Graph Child");
-	ImGuiWindow* current_window = imgui_context->CurrentWindow;
-
-	current_window->HasCloseButton = false;
-	current_window->WantCollapseToggle = false;
-
-	m_graph_manager->draw_cell_plot();
-
-	ImGui::EndChild();
-	ImGui::End();
 }
 
 bool ImGUILayer::is_window_resized(ImGuiWindow* window)

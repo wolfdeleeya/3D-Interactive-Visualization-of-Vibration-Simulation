@@ -1,8 +1,9 @@
 #include "graph_data.h"
 #include "color_helper.h"
 
-GraphData::GraphData(const std::vector<std::string>& group_names, const std::vector<std::pair<std::string, std::vector<float>>>& item_data, const std::vector<glm::vec3>& colors) {
+GraphData::GraphData(const std::vector<std::string>& group_names, const std::vector<std::pair<std::string, std::vector<float>>>& item_data, const std::vector<glm::vec3>& colors, float size) {
 	this->colors = colors;
+	this->size = size;
 
 	unsigned int num_of_items = item_data.size();
 	unsigned int num_of_groups = group_names.size();
@@ -35,9 +36,6 @@ GraphData::GraphData(const std::vector<std::string>& group_names, const std::vec
 		for (int j = 0; j < num_of_groups; ++j)
 			plot_data.push_back(current_item_data[j]);
 	}
-
-	size = 0.5;
-
 }
 
 GraphData::GraphData(const GraphData& gd)
