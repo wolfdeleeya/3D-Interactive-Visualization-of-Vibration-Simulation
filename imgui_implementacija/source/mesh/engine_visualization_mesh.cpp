@@ -43,7 +43,7 @@ void EngineVisualizationMesh::setup_indices()
 		}
 	}
 
-	m_indeces = loader::triangulate_cell_indeces(m_cell_vertices, m_indeces_map);
+	m_indeces = data::triangulate_cell_indeces(m_cell_vertices, m_indeces_map);
 }
 
 void EngineVisualizationMesh::setup_vertex_data()

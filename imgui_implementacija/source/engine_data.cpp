@@ -16,6 +16,8 @@ const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineDa
 const char* EngineData::FUNCTION_NAMES[5] {"MIN", "MAX", "AVERAGE", "MEDIAN", "SPREAD"};
 const char* EngineData::LIMITS_NAMES[3] {"GLOBAL", "LOCAL", "USER DEFINED"};
 
+const char* EngineData::DEFAULT_PALLETE_PATH = "./Pallets/default_pallete.pal";
+
 void EngineData::find_local_limits()
 {
 	if (m_selected_frequencies_names.size() <= 0)
@@ -175,6 +177,8 @@ EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 	set_color(ColorVariables::DEFAULT_COLOR, color);
 
 	set_normal_mode_coloring();
+
+	load_selected_cells_color_pallete(DEFAULT_PALLETE_PATH);		//load default color pallete
 }
 
 void EngineData::calculate_color()
@@ -198,7 +202,7 @@ void EngineData::calculate_color()
 
 void EngineData::load_cell_stats(const char* path)
 {
-	m_cell_stats = loader::load_cell_stats(path, m_frequenzy_names);
+	m_cell_stats = data::load_cell_stats(path, m_frequenzy_names);
 
 	m_cell_indeces.clear();
 
@@ -216,7 +220,7 @@ void EngineData::load_cell_stats(const char* path)
 
 void EngineData::load_frequency_limits(const char* path)
 {
-	m_frequenzy_limits = loader::load_frequenzy_limits(path, m_frequencies_with_limits);
+	m_frequenzy_limits = data::load_frequenzy_limits(path, m_frequencies_with_limits);
 
 	on_frequency_limits_loaded.invoke();
 }
@@ -226,7 +230,7 @@ void EngineData::load_cell_vertices(const char* path)		//used to set default col
 	if (m_cell_stats.size() != 0)
 		return;
 
-	const auto& cell_vertices = loader::load_cells(path);
+	const auto& cell_vertices = data::load_cells(path);
 	
 	m_cell_indeces.clear();
 	
@@ -345,4 +349,20 @@ void EngineData::set_limits_mode_coloring()
 {
 	m_cell_coloring_function = std::bind(&EngineData::limits_mode_coloring, this, std::placeholders::_1);
 	calculate_color();
+}
+
+bool EngineData::load_selected_cells_color_pallete(const char* path)
+{
+	std::vector<data::pallete> loaded_palletes = data::load_selected_cells_pallete(path);
+
+	if (loaded_palletes.size() > 0) {		//if palletes are loaded, save them, invoke the signal and return true
+		m_selected_cells_palletes = loaded_palletes;
+		m_currently_selected_cell_pallet = 0;
+
+		on_selected_cells_palletes_loaded.invoke();
+		
+		return true;
+	}
+	else                                    // else if palletes are empty, return false	
+		return false;
 }

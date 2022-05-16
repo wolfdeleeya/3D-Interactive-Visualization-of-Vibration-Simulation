@@ -58,7 +58,7 @@ void ApplicationModel::move_camera_distance(float y_offset)
 
 void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set camera to point at average position of vertices
 {
-	const auto& vertices = loader::load_vertices(path);
+	const auto& vertices = data::load_vertices(path);
 	
 	float min_x, max_x, min_y, max_y, min_z, max_z;		//calculate bounding box
 

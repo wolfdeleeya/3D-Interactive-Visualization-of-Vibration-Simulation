@@ -32,7 +32,7 @@ void EngineLineMesh::setup_indices()
 				m_indeces_map[index] = current_index++;
 	}
 
-	m_indeces = loader::create_line_faces(m_cell_vertices, m_indeces_map);
+	m_indeces = data::create_line_faces(m_cell_vertices, m_indeces_map);
 }
 
 void EngineLineMesh::setup_vertex_data()

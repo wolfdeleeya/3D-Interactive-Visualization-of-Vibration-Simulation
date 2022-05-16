@@ -45,9 +45,11 @@ private:
 	std::vector<std::string> m_frequencies_with_limits;
 
 	std::map<std::string, glm::vec2> m_frequenzy_limits;
-
 	std::vector<unsigned int> m_selected_cells;
+	std::vector<data::pallete> m_selected_cells_palletes;
+
 	unsigned int m_hovered_cell;
+	unsigned int m_currently_selected_cell_pallet;
 
 	VariableMap<GradientVariables, Gradient> m_gradient_variables;
 	VariableMap<ColorVariables, glm::vec3> m_color_variables;
@@ -74,15 +76,18 @@ public:
 	static const char* FUNCTION_NAMES[5];
 	static const char* LIMITS_NAMES[3];
 
+	static const char* DEFAULT_PALLETE_PATH;
+
 	Signal on_selected_frequencies_changed;
 	Signal on_selected_cells_changed;
+	Signal on_selected_cells_palletes_loaded;
 
 	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
 
 	Event<unsigned int> on_cell_hovered;
 
 	Signal on_cell_stats_loaded,
-		   on_frequency_limits_loaded;
+		on_frequency_limits_loaded;
 
 	EngineData(const glm::vec3& default_color);
 
@@ -116,6 +121,8 @@ public:
 
 	void set_limits_mode_coloring();
 
+	bool load_selected_cells_color_pallete(const char* path);
+
 	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
 
 	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }
@@ -133,6 +140,8 @@ public:
 	bool are_stats_loaded() { return m_cell_stats.size() > 0; }
 
 	bool are_frequenzy_limits_loaded() { return m_frequenzy_limits.size() > 0; }
+
+	std::vector<data::pallete> selected_cells_palletes() { return m_selected_cells_palletes; }
 
 	std::vector<std::string> frequenzy_names() { return m_frequenzy_names; }
 

@@ -14,7 +14,9 @@ struct cell_stats {
 	std::map<std::string, float> freq_map;
 };
 
-namespace loader {
+namespace data {
+	typedef std::pair<std::string, std::vector<glm::vec3>> pallete;
+
 	std::map<unsigned int, glm::vec3> load_vertices(const char* path);
 
 	std::map<unsigned int, std::vector<unsigned int>> load_cells(const char* path);
@@ -28,4 +30,6 @@ namespace loader {
 	std::map<unsigned int, cell_stats> load_cell_stats(const char* path, std::vector<std::string>& frequenzy_names);
 
 	std::map<std::string, glm::vec2> load_frequenzy_limits(const char* path, std::vector<std::string>& frequencies_names);
+
+	std::vector<pallete> load_selected_cells_pallete(const char* path);
 }

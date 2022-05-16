@@ -22,6 +22,8 @@ private:
 	ImVec2 m_scene_view_position;
 	ImVec2 m_scene_view_scale;
 
+	std::vector<std::pair<std::string, unsigned int>> m_selected_cells_palletes_textures;
+
 	unsigned int m_scene_view_texture;
 
 	bool m_is_hovering_scene_view;
@@ -56,6 +58,8 @@ private:
 
 	bool is_window_resized(ImGuiWindow* window);
 
+	void delete_selected_cells_palletes();
+
 	void draw_color_selection(const char* color_variable_name, glm::vec3& color) {
 		ImGui::ColorEdit3(color_variable_name, glm::value_ptr(color));
 	}
@@ -85,6 +89,8 @@ public:
 	void cell_stats_loaded();
 
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
+
+	void selected_cells_palletes_loaded();
 
 	void frequency_limits_loaded() { m_frequencies_with_limits = m_engine_data->frequencies_with_limits(); }
 

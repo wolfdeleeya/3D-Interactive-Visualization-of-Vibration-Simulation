@@ -6,7 +6,7 @@
 
 #include "data_loading.h"
 
-namespace loader {
+namespace data {
 	std::map<unsigned int, glm::vec3> load_vertices(const char* path) {
 		std::map<unsigned int, glm::vec3> result;
 		std::ifstream file(path);
@@ -194,6 +194,48 @@ namespace loader {
 			}
 
 			result.insert({ frq_name, limit });
+		}
+
+		return result;
+	}
+
+	std::vector<pallete> load_selected_cells_pallete(const char* path)
+	{
+		std::vector<pallete> result;
+
+		try {
+			std::ifstream file(path);
+			std::string line;
+
+			while (std::getline(file, line)) {
+				if (line.size() > 0 || line[0] == '#')			//if it's an empty line or comment - skip
+					continue;
+				else if (line[0] == 'p') {						//if it's pallete name line - save
+					std::stringstream line_stream(line);
+					std::string pallete_name;
+					line_stream >> pallete_name >> pallete_name;	//ignore first 'p' and get the pallete name
+					result.push_back({ pallete_name, {} });
+				}
+				else {											//read color and save it to the latest pallete
+					glm::vec3 color;
+
+					std::stringstream line_stream(line);
+					std::string string_part;
+
+					for (int i = 0; i < 3; ++i) {
+						std::getline(line_stream, string_part, ',');
+						color[i] = std::stof(string_part);
+					}
+
+					color /= 255.f;								//divide color by 255 to bring it to [0, 1] range
+
+					result[result.size() - 1].second.push_back(color);
+				}
+			}
+			
+		}
+		catch (const std::exception& e) {
+			result.clear();		//clear so that an empty vector is returned indicating error
 		}
 
 		return result;

@@ -86,7 +86,7 @@ void MeshManager::view_mat_changed(const glm::mat4& view)
 
 void MeshManager::load_vertex_positions(const char* path)
 {
-	const auto& vertex_positions = loader::load_vertices(path);
+	const auto& vertex_positions = data::load_vertices(path);
 	for (AbstractMesh* mesh : m_meshes)
 		mesh->set_vertex_positions(vertex_positions);
 
@@ -95,7 +95,7 @@ void MeshManager::load_vertex_positions(const char* path)
 
 void MeshManager::load_cell_vertices(const char* path)
 {
-	const auto& cell_vertices = loader::load_cells(path);
+	const auto& cell_vertices = data::load_cells(path);
 	for (AbstractMesh* mesh : m_meshes)
 		mesh->set_cell_vertices(cell_vertices);
 

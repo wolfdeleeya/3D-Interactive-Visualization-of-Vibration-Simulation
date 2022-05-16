@@ -307,6 +307,18 @@ bool ImGUILayer::is_window_resized(ImGuiWindow* window)
 	return false;
 }
 
+void ImGUILayer::refresh_selected_cells_palletes()
+{
+}
+
+void ImGUILayer::delete_selected_cells_palletes()
+{
+	for (auto& pair : m_selected_cells_palletes_textures)
+		glDeleteTextures(1, &pair.second);
+
+	m_selected_cells_palletes_textures.clear();
+}
+
 ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
 	m_window(window)
 {
@@ -333,11 +345,13 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_d
 
 	m_engine_data->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
 	m_engine_data->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
+	m_engine_data->on_selected_cells_palletes_loaded.add_member_listener(&ImGUILayer::selected_cells_palletes_loaded, this);
 }
 
 ImGUILayer::~ImGUILayer()
 {
 	delete m_graph_manager;
+	delete_selected_cells_palletes();
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -428,6 +442,13 @@ glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_po
 	int y = mouse_pos.y - m_scene_view_position.y;
 
 	return glm::ivec2(x, y);
+}
+
+void ImGUILayer::selected_cells_palletes_loaded()
+{
+	delete_selected_cells_palletes();
+
+	const auto& palletes = m_engine_data->selected_cells_palletes();
 }
 
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)
