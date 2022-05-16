@@ -146,21 +146,27 @@ public:
 
 	std::vector<float> get_hovered_cell_values() { return get_values_for_cell(m_hovered_cell); }
 
-	//variable getters
+	//variable getters, pointer is returned, so they can be used with imgui
 	Gradient* get_gradient(GradientVariables e) { return m_gradient_variables.get(e); }
 
+	//variable getters, pointer is returned, so they can be used with imgui
 	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }
 
+	//variable getters, pointer is returned, so they can be used with imgui
 	unsigned int* get_uint(UnsignedIntVariables e) { return m_uint_variables.get(e); }
 
+	//variable getters, pointer is returned, so they can be used with imgui
 	glm::vec2* get_normal_mode_limits(NormalModeLimitsVariables e) { return m_normal_mode_limits_variables.get(e); }
 
 	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
 	void set_gradient(GradientVariables e, const Gradient& g) { m_gradient_variables.set(e, g); }
 
+	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
 	void set_color(ColorVariables e, const glm::vec3& c) { m_color_variables.set(e, c); }
 
+	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
 	void set_uint(UnsignedIntVariables e, unsigned int i) { m_uint_variables.set(e, i); }
 
+	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
 	void set_normal_mode_limits(NormalModeLimitsVariables e, const glm::vec2& l) { m_normal_mode_limits_variables.set(e, l); }
 };

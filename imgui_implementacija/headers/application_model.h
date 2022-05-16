@@ -20,8 +20,6 @@ private:
 
 	bool m_is_limits_mode_active;
 
-	std::vector<std::string> m_frequenzy_names;
-
 	VariableMap<ColorVariables, glm::vec3> m_color_variables;
 
 	const static float min_camera_distance, max_camera_distance;
