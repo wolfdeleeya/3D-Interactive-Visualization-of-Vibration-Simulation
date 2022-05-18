@@ -3,6 +3,8 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <io.h>
+#include <cstdlib>
 
 #include "data_loading.h"
 
@@ -208,7 +210,7 @@ namespace data {
 			std::string line;
 
 			while (std::getline(file, line)) {
-				if (line.size() > 0 || line[0] == '#')			//if it's an empty line or comment - skip
+				if (line.size() == 0 || line[0] == '#')			//if it's an empty line or comment - skip
 					continue;
 				else if (line[0] == 'p') {						//if it's pallete name line - save
 					std::stringstream line_stream(line);
@@ -236,6 +238,7 @@ namespace data {
 		}
 		catch (const std::exception& e) {
 			result.clear();		//clear so that an empty vector is returned indicating error
+			std::cerr << e.what() << std::endl;
 		}
 
 		return result;

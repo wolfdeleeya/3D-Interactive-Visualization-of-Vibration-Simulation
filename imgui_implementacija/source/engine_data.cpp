@@ -16,7 +16,7 @@ const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineDa
 const char* EngineData::FUNCTION_NAMES[5] {"MIN", "MAX", "AVERAGE", "MEDIAN", "SPREAD"};
 const char* EngineData::LIMITS_NAMES[3] {"GLOBAL", "LOCAL", "USER DEFINED"};
 
-const char* EngineData::DEFAULT_PALLETE_PATH = "./Pallets/default_pallete.pal";
+const char* EngineData::DEFAULT_PALLETE_PATH = "./Palletes/default_pallete.txt";
 
 void EngineData::find_local_limits()
 {
@@ -165,6 +165,16 @@ void EngineData::limits_mode_coloring(std::map<unsigned int, glm::vec3>& color_m
 	}
 }
 
+void EngineData::add_selected_cell(unsigned int cell_index)
+{
+	m_selected_cells.push_back(m_hovered_cell);
+}
+
+void EngineData::remove_selected_cell_at(unsigned int index)
+{
+	m_selected_cells.erase(m_selected_cells.begin() + index);
+}
+
 EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 	m_gradient_variables([](const Gradient& g1, const Gradient& g2) {return g1 == g2; }, GradientVariables::END, Gradient{ glm::vec3(1), glm::vec3(0) }, std::bind(&EngineData::calculate_color, this)),
 	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, glm::vec3(0), std::bind(&EngineData::calculate_color, this)),
@@ -178,7 +188,11 @@ EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 
 	set_normal_mode_coloring();
 
-	load_selected_cells_color_pallete(DEFAULT_PALLETE_PATH);		//load default color pallete
+	if (!load_selected_cells_color_pallete(DEFAULT_PALLETE_PATH))		//load default color pallete 
+	{
+		std::cerr << "DEFAULT SELECTED CELLS PALLETE MISSING!\n";
+		exit(-1);
+	}
 }
 
 void EngineData::calculate_color()
@@ -190,7 +204,7 @@ void EngineData::calculate_color()
 	unsigned int n_selected_cells = m_selected_cells.size();
 
 	for (int i = 0; i < n_selected_cells; ++i)
-		color_map[m_selected_cells[i]] = get_color_for_selected_cell(i, n_selected_cells);
+		color_map[m_selected_cells[i]] = get_color_for_selected_cell(i);
 
 	if (n_selected_frequencies == 0)
 		default_coloring(color_map);
@@ -299,10 +313,12 @@ void EngineData::handle_mouse_click()
 
 	const auto& hovered_it = std::find(m_selected_cells.begin(), m_selected_cells.end(), m_hovered_cell);
 	
-	if (hovered_it != m_selected_cells.end())		
-		m_selected_cells.erase(hovered_it);			//if it's already selected, erase it from selection		
+	if (hovered_it != m_selected_cells.end()) {
+		unsigned int index = hovered_it - m_selected_cells.begin();
+		remove_selected_cell_at(index);
+	}
 	else
-		m_selected_cells.push_back(m_hovered_cell);	//else select it
+		add_selected_cell(m_hovered_cell);
 
 	calculate_color();
 
@@ -333,9 +349,10 @@ std::vector<float> EngineData::get_values_for_cell(unsigned int index)
 	return result;
 }
 
-glm::vec3 EngineData::get_color_for_selected_cell(unsigned int index, unsigned int num_of_cells)
+glm::vec3 EngineData::get_color_for_selected_cell(unsigned int index)
 {
-	glm::vec3 color = convert_hsv_to_rgb({ float(index + 1) / (num_of_cells + 1), 1, 1 });
+	data::pallete& current_pallete = m_selected_cells_palletes[m_current_selected_cell_pallet];
+	glm::vec3 color = current_pallete.second[index % current_pallete.second.size()];			//temp fix
 	return color;
 }
 
@@ -357,7 +374,7 @@ bool EngineData::load_selected_cells_color_pallete(const char* path)
 
 	if (loaded_palletes.size() > 0) {		//if palletes are loaded, save them, invoke the signal and return true
 		m_selected_cells_palletes = loaded_palletes;
-		m_currently_selected_cell_pallet = 0;
+		m_current_selected_cell_pallet = 0;
 
 		on_selected_cells_palletes_loaded.invoke();
 		

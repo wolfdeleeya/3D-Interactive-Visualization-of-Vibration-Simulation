@@ -307,10 +307,6 @@ bool ImGUILayer::is_window_resized(ImGuiWindow* window)
 	return false;
 }
 
-void ImGUILayer::refresh_selected_cells_palletes()
-{
-}
-
 void ImGUILayer::delete_selected_cells_palletes()
 {
 	for (auto& pair : m_selected_cells_palletes_textures)

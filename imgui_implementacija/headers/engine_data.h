@@ -48,8 +48,11 @@ private:
 	std::vector<unsigned int> m_selected_cells;
 	std::vector<data::pallete> m_selected_cells_palletes;
 
+	std::vector<unsigned int> m_selected_cells_color_indeces;
+	std::vector<bool> m_selected_cells_color_taken_status;
+
 	unsigned int m_hovered_cell;
-	unsigned int m_currently_selected_cell_pallet;
+	unsigned int m_current_selected_cell_pallet;
 
 	VariableMap<GradientVariables, Gradient> m_gradient_variables;
 	VariableMap<ColorVariables, glm::vec3> m_color_variables;
@@ -72,6 +75,9 @@ private:
 
 	void limits_mode_coloring(std::map<unsigned int, glm::vec3>& color_map);
 
+	void add_selected_cell(unsigned int cell_index);
+
+	void remove_selected_cell_at(unsigned int index);
 public:
 	static const char* FUNCTION_NAMES[5];
 	static const char* LIMITS_NAMES[3];
@@ -115,7 +121,7 @@ public:
 
 	std::vector<float> get_values_for_cell(unsigned int index);
 	
-	glm::vec3 get_color_for_selected_cell(unsigned int index, unsigned int num_of_cells);
+	glm::vec3 get_color_for_selected_cell(unsigned int index);
 
 	void set_normal_mode_coloring();
 

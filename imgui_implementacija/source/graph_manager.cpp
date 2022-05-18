@@ -28,7 +28,7 @@ void GraphManager::update_cell_plot()
 	unsigned int n_selected_cells = selected_cells.size();
 
 	for (int i = 0; i < n_selected_cells; ++i) {
-		colors.push_back(m_engine_data->get_color_for_selected_cell(i, n_selected_cells));
+		colors.push_back(m_engine_data->get_color_for_selected_cell(i));
 
 		std::pair<std::string, std::vector<float>> data_entry;
 		unsigned int cell_id = selected_cells[i];
@@ -41,7 +41,7 @@ void GraphManager::update_cell_plot()
 
 	//add hovered cell to the list
 
-	colors.push_back(m_engine_data->get_color_for_selected_cell(n_selected_cells, n_selected_cells + 1));
+	colors.push_back(m_engine_data->get_color_for_selected_cell(n_selected_cells));
 
 	std::pair<std::string, std::vector<float>> data_entry;
 
