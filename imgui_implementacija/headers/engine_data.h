@@ -48,9 +48,10 @@ private:
 	std::vector<unsigned int> m_selected_cells;
 	std::vector<data::pallete> m_selected_cells_palletes;
 
-	std::vector<unsigned int> m_selected_cells_color_indeces;
-	std::vector<bool> m_selected_cells_color_taken_status;
+	//int because negative values will be used for indicating that color is not used
 
+	std::vector<int> m_selected_cells_color_indeces;
+	
 	unsigned int m_hovered_cell;
 	unsigned int m_current_selected_cell_pallet;
 
@@ -78,6 +79,11 @@ private:
 	void add_selected_cell(unsigned int cell_index);
 
 	void remove_selected_cell_at(unsigned int index);
+
+	void set_selected_cells_color_pallete(unsigned int pallete_index);
+	
+	data::pallete& current_pallete() { return m_selected_cells_palletes[m_current_selected_cell_pallet]; }
+
 public:
 	static const char* FUNCTION_NAMES[5];
 	static const char* LIMITS_NAMES[3];
@@ -128,6 +134,8 @@ public:
 	void set_limits_mode_coloring();
 
 	bool load_selected_cells_color_pallete(const char* path);
+
+	void set_next_selected_cells_pallete();
 
 	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
 

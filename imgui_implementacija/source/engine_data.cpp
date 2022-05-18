@@ -167,12 +167,48 @@ void EngineData::limits_mode_coloring(std::map<unsigned int, glm::vec3>& color_m
 
 void EngineData::add_selected_cell(unsigned int cell_index)
 {
-	m_selected_cells.push_back(m_hovered_cell);
+	//if the number of selected cells is greater or equal replace the last one with the new one
+	// -> it will be colored as the last one because colors save only "local" cell indeces
+	if (m_selected_cells.size() >= current_pallete().second.size()) {
+		m_selected_cells[m_selected_cells.size() - 1] = cell_index;
+	}
+	//else add new index and find the first color that is not taken and assign "local" index of new cell to that color
+	else {
+		m_selected_cells.push_back(cell_index);
+		
+		int color_index = 0;
+		
+		while (m_selected_cells_color_indeces[color_index] >= 0)
+			++color_index;
+
+		m_selected_cells_color_indeces[color_index] = m_selected_cells.size() - 1;
+	}
+
 }
 
 void EngineData::remove_selected_cell_at(unsigned int index)
 {
+	//erase cell at given "local" index from selected cells list
 	m_selected_cells.erase(m_selected_cells.begin() + index);
+	
+	//find color with given "local" index
+	
+	for (int i = 0; i < m_selected_cells_color_indeces.size(); ++i) {
+		if (m_selected_cells_color_indeces[i] == index)
+			m_selected_cells_color_indeces[i] = -1;
+		else if (m_selected_cells_color_indeces[i] > index)
+			--m_selected_cells_color_indeces[i];
+	}
+
+	//set "local" index of the found color to -1 (empty)
+	//m_selected_cells_color_indeces[color_index] = -1;
+}
+
+void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
+{
+	m_current_selected_cell_pallet = pallete_index;
+	unsigned int num_of_colors = m_selected_cells_palletes[m_current_selected_cell_pallet].second.size();
+	m_selected_cells_color_indeces = std::vector<int>(num_of_colors, -1);
 }
 
 EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
@@ -351,8 +387,11 @@ std::vector<float> EngineData::get_values_for_cell(unsigned int index)
 
 glm::vec3 EngineData::get_color_for_selected_cell(unsigned int index)
 {
-	data::pallete& current_pallete = m_selected_cells_palletes[m_current_selected_cell_pallet];
-	glm::vec3 color = current_pallete.second[index % current_pallete.second.size()];			//temp fix
+	unsigned int color_index = 0;
+
+	while (m_selected_cells_color_indeces[color_index] != index) ++color_index;
+
+	glm::vec3 color = current_pallete().second[color_index];
 	return color;
 }
 
@@ -374,7 +413,8 @@ bool EngineData::load_selected_cells_color_pallete(const char* path)
 
 	if (loaded_palletes.size() > 0) {		//if palletes are loaded, save them, invoke the signal and return true
 		m_selected_cells_palletes = loaded_palletes;
-		m_current_selected_cell_pallet = 0;
+		
+		set_selected_cells_color_pallete(0);
 
 		on_selected_cells_palletes_loaded.invoke();
 		
@@ -382,4 +422,10 @@ bool EngineData::load_selected_cells_color_pallete(const char* path)
 	}
 	else                                    // else if palletes are empty, return false	
 		return false;
+}
+
+void EngineData::set_next_selected_cells_pallete()
+{
+	unsigned int index_to_set = (m_current_selected_cell_pallet + 1) % m_selected_cells_palletes.size();
+	set_selected_cells_color_pallete(index_to_set);
 }
