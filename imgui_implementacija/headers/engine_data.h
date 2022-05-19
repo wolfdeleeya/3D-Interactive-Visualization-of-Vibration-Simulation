@@ -98,6 +98,8 @@ public:
 
 	Event<unsigned int> on_cell_hovered;
 
+	Event<unsigned int> on_selected_cells_pallete_changed;
+
 	Signal on_cell_stats_loaded,
 		on_frequency_limits_loaded;
 

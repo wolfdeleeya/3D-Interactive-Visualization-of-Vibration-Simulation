@@ -191,24 +191,77 @@ void EngineData::remove_selected_cell_at(unsigned int index)
 	//erase cell at given "local" index from selected cells list
 	m_selected_cells.erase(m_selected_cells.begin() + index);
 	
-	//find color with given "local" index
-	
+	//find color with given "local" index and set it to -1, or find greater indeces and decrease them by 1
 	for (int i = 0; i < m_selected_cells_color_indeces.size(); ++i) {
-		if (m_selected_cells_color_indeces[i] == index)
+		if (m_selected_cells_color_indeces[i] == index)				//it the color's index is equal to given index, set "local" index of the found color to -1 (empty)
 			m_selected_cells_color_indeces[i] = -1;
-		else if (m_selected_cells_color_indeces[i] > index)
+		//else if the color's local index is greater decrease it so that the "local" indeces don't go out of range
+		else if (m_selected_cells_color_indeces[i] > (int)index)	//we need to cast index to int or the comparison will be skewed
 			--m_selected_cells_color_indeces[i];
 	}
-
-	//set "local" index of the found color to -1 (empty)
-	//m_selected_cells_color_indeces[color_index] = -1;
 }
 
 void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
 {
 	m_current_selected_cell_pallet = pallete_index;
-	unsigned int num_of_colors = m_selected_cells_palletes[m_current_selected_cell_pallet].second.size();
-	m_selected_cells_color_indeces = std::vector<int>(num_of_colors, -1);
+	
+	unsigned int num_of_available_colors = m_selected_cells_palletes[m_current_selected_cell_pallet].second.size();
+	unsigned int num_of_selected_cells = m_selected_cells.size();
+
+	//if no cell is selected, just resize color_indeces vector and set each color to -1 (empty)
+	if (num_of_selected_cells == 0) {								
+		m_selected_cells_color_indeces = std::vector<int>(num_of_available_colors, -1);
+	}
+	else {
+		unsigned int num_of_colors_in_last_pallete = m_selected_cells_color_indeces.size();
+
+		//if number of colors is greater than number of colors in the last pallete,
+		//append color_indeces with -1 up to the size difference between current color_indeces and new number of colors
+		if (num_of_available_colors > num_of_colors_in_last_pallete) {
+			unsigned int colors_to_add = num_of_available_colors - num_of_colors_in_last_pallete;
+			
+			while (colors_to_add > 0) {
+				m_selected_cells_color_indeces.push_back(-1);
+				--colors_to_add;
+			}
+		}
+		//if number of colors is lesser than number of selected cells
+		//fill the color_indeces with ordered "local" indeces up to number of available colors,
+		else if (num_of_available_colors < num_of_selected_cells) {
+			unsigned int index = 0;
+
+			while (index < m_selected_cells_color_indeces.size()) {
+				//if color's index is greater than or equal to the number of available colors remove the selected cell 
+				if (m_selected_cells_color_indeces[index] >= num_of_available_colors) {
+					remove_selected_cell_at(m_selected_cells_color_indeces[index]);
+					m_selected_cells_color_indeces.erase(m_selected_cells_color_indeces.begin() + index);
+				}
+				//else, increase index by one and check the next color
+				else
+					++index;
+			}
+		}
+		//if number of colors is greater than number of selected cells, but lesser than number of colors in pallete,
+		//remove -1's (empty colors) up to the size difference
+		else if (num_of_available_colors < num_of_colors_in_last_pallete) {
+			unsigned int num_of_colors_to_remove = num_of_colors_in_last_pallete - num_of_available_colors;
+			unsigned int index = 0;
+
+			while (num_of_colors_to_remove > 0) {
+				//if color is "empty" remove it and decrease num_of_colors_to_remove
+				if (m_selected_cells_color_indeces[index] == -1) {
+					m_selected_cells_color_indeces.erase(m_selected_cells_color_indeces.begin() + index);
+					--num_of_colors_to_remove;
+				}
+				//else if it's non-empty color, increase index by one and check the next color
+				else
+					++index;
+			}
+		}
+	}
+
+	calculate_color();
+	on_selected_cells_pallete_changed.invoke(m_current_selected_cell_pallet);
 }
 
 EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),

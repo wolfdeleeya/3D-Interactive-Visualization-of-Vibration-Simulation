@@ -3,12 +3,14 @@
 #include "graph_manager.h"
 #include "implot_helper.h"
 
-GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data): m_graph_data({}, {}, {})
+GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data) : m_graph_data({}, {}, {})
 {
 	m_application_model = application_model;
 	m_engine_data = engine_data;
 
 	m_engine_data->on_cell_hovered.add_listener([this](unsigned int id) { this->update_cell_plot(); });
+	m_engine_data->on_selected_cells_pallete_changed.add_listener([this](unsigned int pallete_index) {this->update_cell_plot(); });
+
 	m_engine_data->on_selected_cells_changed.add_member_listener(&GraphManager::update_cell_plot, this);
 	m_engine_data->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_cell_plot, this);
 }

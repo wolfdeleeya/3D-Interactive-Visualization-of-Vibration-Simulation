@@ -19,6 +19,10 @@ void ImGUILayer::draw_color_selection_widget()
 
 		draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
 
+		if (ImGui::Button("Set Next Selected Cells Color Pallete")) {
+			m_engine_data->set_next_selected_cells_pallete();
+		}
+
 		if (m_engine_data->are_stats_loaded()) {
 			bool is_limits_mode_active = m_application_model->is_limits_mode_active();
 
