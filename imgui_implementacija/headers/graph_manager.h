@@ -9,6 +9,7 @@ private:
 	ApplicationModel* m_application_model;
 	EngineData* m_engine_data;
 	GraphData m_graph_data;
+	glm::vec3 m_hovered_cell_graph_color;
 
 public:
 

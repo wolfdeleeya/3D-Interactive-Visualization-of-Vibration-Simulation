@@ -26,6 +26,8 @@ private:
 
 	unsigned int m_scene_view_texture;
 
+	unsigned int m_current_pallete_texture_index;
+
 	bool m_is_hovering_scene_view;
 
 	void draw_color_selection_widget();
@@ -59,6 +61,10 @@ private:
 	bool is_window_resized(ImGuiWindow* window);
 
 	void delete_selected_cells_palletes();
+
+	static unsigned int generate_texture_from_pallete(const data::pallete& p);
+
+	void draw_textured_button(const char* button_text, unsigned int texture_id, const ImVec2& button_size, std::function<void(void)> button_callback);
 
 	void draw_color_selection(const char* color_variable_name, glm::vec3& color) {
 		ImGui::ColorEdit3(color_variable_name, glm::value_ptr(color));

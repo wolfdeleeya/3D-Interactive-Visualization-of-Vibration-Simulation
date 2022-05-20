@@ -43,16 +43,16 @@ void GraphManager::update_cell_plot()
 
 	//add hovered cell to the list
 
-	//colors.push_back(m_engine_data->get_color_for_selected_cell(n_selected_cells));
+	colors.push_back(m_hovered_cell_graph_color);
 
-	//std::pair<std::string, std::vector<float>> data_entry;
+	std::pair<std::string, std::vector<float>> data_entry;
 
-	//unsigned int hovered_cell_id = m_engine_data->hovered_cell();
+	unsigned int hovered_cell_id = m_engine_data->hovered_cell();
 
-	//data_entry.first = "CELL " + std::to_string(hovered_cell_id);
-	//data_entry.second = m_engine_data->get_hovered_cell_values();
+	data_entry.first = "CELL " + std::to_string(hovered_cell_id);
+	data_entry.second = m_engine_data->get_hovered_cell_values();
 
-	//item_data.push_back(data_entry);
+	item_data.push_back(data_entry);
 
 	m_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors, m_graph_data.size);	//inherit size of old graph
 }
@@ -60,6 +60,8 @@ void GraphManager::update_cell_plot()
 void GraphManager::draw_cell_plot()
 {
 	ImGui::DragFloat("Bar Width", &m_graph_data.size, 0.05, 0, 1);
+	ImGui::ColorEdit3("Hovered Cell Graph Color", glm::value_ptr(m_hovered_cell_graph_color));
+
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
 	unsigned int num_of_items = m_graph_data.item_labels.size();
 

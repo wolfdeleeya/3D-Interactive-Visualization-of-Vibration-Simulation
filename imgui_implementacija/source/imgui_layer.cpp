@@ -19,6 +19,12 @@ void ImGUILayer::draw_color_selection_widget()
 
 		draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
 
+		auto& current_pallete_data = m_selected_cells_palletes_textures[m_current_pallete_texture_index];
+
+		EngineData* engine_data = m_engine_data;
+		draw_textured_button(current_pallete_data.first.c_str(), current_pallete_data.second, { 32, 32 }, 
+			[engine_data]() {engine_data->set_next_selected_cells_pallete(); });
+
 		if (ImGui::Button("Set Next Selected Cells Color Pallete")) {
 			m_engine_data->set_next_selected_cells_pallete();
 		}
@@ -252,7 +258,7 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 		ImU32 col_a = ImGui::GetColorU32(IM_COL32(c1.r * 255, c1.g * 255, c1.b * 255, 255));
 		ImU32 col_b = ImGui::GetColorU32(IM_COL32(c2.r * 255, c2.g * 255, c2.b * 255, 255));
 		draw_list->AddRectFilledMultiColor(p0, p1, col_a, col_b, col_b, col_a);
-		ImGui::InvisibleButton("##gradient1", gradient_size);
+		ImGui::InvisibleButton("gradient", gradient_size);
 	}
 }
 
@@ -317,6 +323,43 @@ void ImGUILayer::delete_selected_cells_palletes()
 		glDeleteTextures(1, &pair.second);
 
 	m_selected_cells_palletes_textures.clear();
+}
+
+unsigned int ImGUILayer::generate_texture_from_pallete(const data::pallete& p)
+{
+	unsigned int texture_id;
+	//generate texture for pixel buffering
+	glGenTextures(1, &texture_id);
+
+	std::vector<unsigned char> data;
+
+	//save pallete colors as vector of unsigned bytes
+	for (const glm::vec3& color : p.second)
+		for (int i = 0; i < 3; ++i)
+			data.push_back(255 * color[i]);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+
+	//set min and mag fiters to nearest to not look blurry in ui
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, p.second.size(), 1, 0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return texture_id;
+}
+
+void ImGUILayer::draw_textured_button(const char* button_text, unsigned int texture_id, const ImVec2& button_size, std::function<void(void)> button_callback)
+{
+	ImVec2 size = button_size;                     // Size of the image we want to make visible
+	ImVec2 uv0 = ImVec2(0, 0);                        // UV coordinates for lower-left
+	ImVec2 uv1 = ImVec2(1, 1);								// UV coordinates for (32,32) in our texture
+	ImVec4 bg_col = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);         // Black background
+	ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);       // No tint
+	if (ImGui::ImageButton(&texture_id, size, uv0, uv1, -1, bg_col, tint_col))	//-1 padding - use default padding
+		button_callback();
 }
 
 ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
@@ -449,6 +492,13 @@ void ImGUILayer::selected_cells_palletes_loaded()
 	delete_selected_cells_palletes();
 
 	const auto& palletes = m_engine_data->selected_cells_palletes();
+
+	m_selected_cells_palletes_textures.resize(palletes.size());
+
+	for (int i = 0; i < palletes.size(); ++i) {
+		m_selected_cells_palletes_textures[i].first = palletes[i].first;
+		m_selected_cells_palletes_textures[i].second = generate_texture_from_pallete(palletes[i]);
+	}
 }
 
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)

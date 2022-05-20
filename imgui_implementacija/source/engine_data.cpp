@@ -226,15 +226,20 @@ void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
 			}
 		}
 		//if number of colors is lesser than number of selected cells
-		//fill the color_indeces with ordered "local" indeces up to number of available colors,
+		//
 		else if (num_of_available_colors < num_of_selected_cells) {
 			unsigned int index = 0;
+			unsigned int num_of_empty_colors_to_remove = num_of_colors_in_last_pallete - num_of_selected_cells;
 
 			while (index < m_selected_cells_color_indeces.size()) {
 				//if color's index is greater than or equal to the number of available colors remove the selected cell 
-				if (m_selected_cells_color_indeces[index] >= num_of_available_colors) {
+				if (m_selected_cells_color_indeces[index] >= (int) num_of_available_colors) {
 					remove_selected_cell_at(m_selected_cells_color_indeces[index]);
 					m_selected_cells_color_indeces.erase(m_selected_cells_color_indeces.begin() + index);
+				}
+				else if (m_selected_cells_color_indeces[index] == -1 && num_of_empty_colors_to_remove > 0) {
+					m_selected_cells_color_indeces.erase(m_selected_cells_color_indeces.begin() + index);
+					--num_of_empty_colors_to_remove;
 				}
 				//else, increase index by one and check the next color
 				else
