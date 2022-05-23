@@ -151,11 +151,15 @@ public:
 
 	unsigned int num_of_selected_cells() { return m_selected_cells.size(); }
 
+	unsigned int current_selected_cells_pallete_index() { return m_current_selected_cell_pallet; }
+
 	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
 
 	bool are_stats_loaded() { return m_cell_stats.size() > 0; }
 
 	bool are_frequenzy_limits_loaded() { return m_frequenzy_limits.size() > 0; }
+
+	bool are_selected_cells_palletes_loaded() { return m_selected_cells_palletes.size() > 0; }
 
 	std::vector<data::pallete> selected_cells_palletes() { return m_selected_cells_palletes; }
 

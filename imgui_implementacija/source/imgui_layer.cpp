@@ -19,11 +19,13 @@ void ImGUILayer::draw_color_selection_widget()
 
 		draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
 
-		auto& current_pallete_data = m_selected_cells_palletes_textures[m_current_pallete_texture_index];
+		unsigned int current_selected_cells_pallete_index = m_engine_data->current_selected_cells_pallete_index();
+
+		auto& current_pallete_data = m_selected_cells_palletes_textures[current_selected_cells_pallete_index];
 
 		EngineData* engine_data = m_engine_data;
 		draw_textured_button(current_pallete_data.first.c_str(), current_pallete_data.second, { 32, 32 }, 
-			[engine_data]() {engine_data->set_next_selected_cells_pallete(); });
+			[engine_data]() {engine_data->set_next_selected_cells_pallete(); }); CHECK_OPENGL;
 
 		if (ImGui::Button("Set Next Selected Cells Color Pallete")) {
 			m_engine_data->set_next_selected_cells_pallete();
@@ -338,15 +340,15 @@ unsigned int ImGUILayer::generate_texture_from_pallete(const data::pallete& p)
 		for (int i = 0; i < 3; ++i)
 			data.push_back(255 * color[i]);
 
-	glBindTexture(GL_TEXTURE_2D, texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id); CHECK_OPENGL;
 
 	//set min and mag fiters to nearest to not look blurry in ui
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); CHECK_OPENGL;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); CHECK_OPENGL;
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, p.second.size(), 1, 0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, p.second.size(), 1, 0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]); CHECK_OPENGL;
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0); CHECK_OPENGL;
 
 	return texture_id;
 }
@@ -358,8 +360,11 @@ void ImGUILayer::draw_textured_button(const char* button_text, unsigned int text
 	ImVec2 uv1 = ImVec2(1, 1);								// UV coordinates for (32,32) in our texture
 	ImVec4 bg_col = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);         // Black background
 	ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);       // No tint
-	if (ImGui::ImageButton(&texture_id, size, uv0, uv1, -1, bg_col, tint_col))	//-1 padding - use default padding
+	if (ImGui::ImageButton((void*) texture_id, size, uv0, uv1, -1, bg_col, tint_col))	//-1 padding - use default padding
 		button_callback();
+
+	ImGui::SameLine();
+	ImGui::Text(button_text);
 }
 
 ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
@@ -389,6 +394,9 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_d
 	m_engine_data->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
 	m_engine_data->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
 	m_engine_data->on_selected_cells_palletes_loaded.add_member_listener(&ImGUILayer::selected_cells_palletes_loaded, this);
+
+	if (m_engine_data->are_selected_cells_palletes_loaded())
+		selected_cells_palletes_loaded();
 }
 
 ImGUILayer::~ImGUILayer()

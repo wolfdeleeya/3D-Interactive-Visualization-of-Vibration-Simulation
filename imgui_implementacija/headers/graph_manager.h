@@ -11,6 +11,10 @@ private:
 	GraphData m_graph_data;
 	glm::vec3 m_hovered_cell_graph_color;
 
+	void draw_bar_graph();
+
+	void draw_line_graph();
+
 public:
 
 	GraphManager(ApplicationModel* application_model, EngineData* engine_data);
@@ -22,4 +26,6 @@ public:
 	void draw_cell_plot();
 
 	void draw_legend();
+
+	void ShowDemo_FilledLinePlots();
 };

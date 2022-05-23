@@ -26,8 +26,6 @@ private:
 
 	unsigned int m_scene_view_texture;
 
-	unsigned int m_current_pallete_texture_index;
-
 	bool m_is_hovering_scene_view;
 
 	void draw_color_selection_widget();

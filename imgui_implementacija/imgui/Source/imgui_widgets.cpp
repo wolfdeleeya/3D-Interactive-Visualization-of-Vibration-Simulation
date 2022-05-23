@@ -89,6 +89,9 @@ Index of this file:
 // Data
 //-------------------------------------------------------------------------
 
+
+#include "debug.h"
+
 // Widgets
 static const float          DRAGDROP_HOLD_TO_OPEN_TIMER = 0.70f;    // Time for drag-hold to activate items accepting the ImGuiButtonFlags_PressedOnDragDropHold button behavior.
 static const float          DRAG_MOUSE_THRESHOLD_FACTOR = 0.50f;    // Multiplier for the default value of io.MouseDragThreshold to make DragFloat/DragInt react faster to mouse drags.
@@ -1023,11 +1026,11 @@ void ImGui::Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2&
     if (border_col.w > 0.0f)
     {
         window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(border_col), 0.0f);
-        window->DrawList->AddImage(user_texture_id, bb.Min + ImVec2(1, 1), bb.Max - ImVec2(1, 1), uv0, uv1, GetColorU32(tint_col));
+        window->DrawList->AddImage(user_texture_id, bb.Min + ImVec2(1, 1), bb.Max - ImVec2(1, 1), uv0, uv1, GetColorU32(tint_col)); CHECK_OPENGL;
     }
     else
     {
-        window->DrawList->AddImage(user_texture_id, bb.Min, bb.Max, uv0, uv1, GetColorU32(tint_col));
+        window->DrawList->AddImage(user_texture_id, bb.Min, bb.Max, uv0, uv1, GetColorU32(tint_col)); CHECK_OPENGL;
     }
 }
 
@@ -1064,18 +1067,18 @@ bool ImGui::ImageButtonEx(ImGuiID id, ImTextureID texture_id, const ImVec2& size
 // frame_padding > 0: set framing size
 bool ImGui::ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 {
-    ImGuiContext& g = *GImGui;
-    ImGuiWindow* window = g.CurrentWindow;
+    ImGuiContext& g = *GImGui; CHECK_OPENGL;
+    ImGuiWindow* window = g.CurrentWindow; CHECK_OPENGL;
     if (window->SkipItems)
-        return false;
+        return false; CHECK_OPENGL;
 
     // Default to using texture ID as ID. User can still push string/integer prefixes.
-    PushID((void*)(intptr_t)user_texture_id);
-    const ImGuiID id = window->GetID("#image");
+    PushID((void*)(intptr_t)user_texture_id); CHECK_OPENGL;
+    const ImGuiID id = window->GetID("#image"); CHECK_OPENGL;
     PopID();
 
     const ImVec2 padding = (frame_padding >= 0) ? ImVec2((float)frame_padding, (float)frame_padding) : g.Style.FramePadding;
-    return ImageButtonEx(id, user_texture_id, size, uv0, uv1, padding, bg_col, tint_col);
+    return ImageButtonEx(id, user_texture_id, size, uv0, uv1, padding, bg_col, tint_col); CHECK_OPENGL;
 }
 
 bool ImGui::Checkbox(const char* label, bool* v)

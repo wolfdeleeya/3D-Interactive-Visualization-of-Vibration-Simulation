@@ -3,6 +3,14 @@
 #include "graph_manager.h"
 #include "implot_helper.h"
 
+void GraphManager::draw_bar_graph()
+{
+}
+
+void GraphManager::draw_line_graph()
+{
+}
+
 GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data) : m_graph_data({}, {}, {})
 {
 	m_application_model = application_model;
@@ -59,9 +67,6 @@ void GraphManager::update_cell_plot()
 
 void GraphManager::draw_cell_plot()
 {
-	ImGui::DragFloat("Bar Width", &m_graph_data.size, 0.05, 0, 1);
-	ImGui::ColorEdit3("Hovered Cell Graph Color", glm::value_ptr(m_hovered_cell_graph_color));
-
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
 	unsigned int num_of_items = m_graph_data.item_labels.size();
 
@@ -77,4 +82,63 @@ void GraphManager::draw_cell_plot()
 
 		ImPlot::EndPlot();
 	}
+
+	ImGui::DragFloat("Bar Width", &m_graph_data.size, 0.05, 0, 1);
+	ImGui::ColorEdit3("Hovered Cell Graph Color", glm::value_ptr(m_hovered_cell_graph_color));
+
+    ShowDemo_FilledLinePlots();
+}
+
+void GraphManager::ShowDemo_FilledLinePlots() {
+    static double xs1[101], ys1[101], ys2[101], ys3[101];
+    srand(0);
+    for (int i = 0; i < 101; ++i) {
+        xs1[i] = (float)i;
+        ys1[i] = 400 + rand() % 50;
+        ys2[i] = 275 + rand() % 75;
+        ys3[i] = 150 + rand() % 75;
+    }
+    static bool show_lines = true;
+    static bool show_fills = true;
+    static float fill_ref = 0;
+    static int shade_mode = 0;
+    ImGui::Checkbox("Lines", &show_lines); ImGui::SameLine();
+    ImGui::Checkbox("Fills", &show_fills);
+    if (show_fills) {
+        ImGui::SameLine();
+        if (ImGui::RadioButton("To -INF", shade_mode == 0))
+            shade_mode = 0;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("To +INF", shade_mode == 1))
+            shade_mode = 1;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("To Ref", shade_mode == 2))
+            shade_mode = 2;
+        if (shade_mode == 2) {
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(100);
+            ImGui::DragFloat("##Ref", &fill_ref, 1, -100, 500);
+        }
+    }
+
+    if (ImPlot::BeginPlot("Stock Prices")) {
+        ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+        ImPlot::SetupAxesLimits(0, 100, 0, 500);
+        unsigned int num_of_groups = m_graph_data.group_labels.size();
+        ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
+
+        if (show_fills) {
+            ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
+            ImPlot::PlotShaded("Stock 1", xs1, ys1, num_of_groups, shade_mode == 0 ? -INFINITY : shade_mode == 1 ? INFINITY : fill_ref);
+            ImPlot::PlotShaded("Stock 2", xs1, ys2, num_of_groups, shade_mode == 0 ? -INFINITY : shade_mode == 1 ? INFINITY : fill_ref);
+            ImPlot::PlotShaded("Stock 3", xs1, ys3, num_of_groups, shade_mode == 0 ? -INFINITY : shade_mode == 1 ? INFINITY : fill_ref);
+            ImPlot::PopStyleVar();
+        }
+        if (show_lines) {
+            ImPlot::PlotLine("Stock 1", xs1, ys1, num_of_groups);
+            ImPlot::PlotLine("Stock 2", xs1, ys2, num_of_groups);
+            ImPlot::PlotLine("Stock 3", xs1, ys3, num_of_groups);
+        }
+        ImPlot::EndPlot();
+    }
 }
