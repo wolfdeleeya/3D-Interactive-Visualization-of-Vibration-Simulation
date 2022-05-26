@@ -9,7 +9,7 @@
 struct GraphData {
 	std::vector<char*> item_labels;
 	std::vector<char*> group_labels;
-	std::vector<ImS32> plot_data;
+	std::vector<double> plot_data;
 	std::vector<double> positions;
 	std::vector<glm::vec3> colors;
 	

@@ -76,7 +76,6 @@ void GraphManager::draw_cell_plot()
 
 		if (m_graph_data.positions.size() > 0) {
 			ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
-			ImPlot::PlotBarGroups(&m_graph_data.item_labels[0], &m_graph_data.plot_data[0], num_of_items, num_of_groups, m_graph_data.size, 0, 0);
 			MyImPlot::PlotBarGroups(m_graph_data);
 		}
 
@@ -90,6 +89,9 @@ void GraphManager::draw_cell_plot()
 }
 
 void GraphManager::ShowDemo_FilledLinePlots() {
+
+    if (m_graph_data.plot_data.size() == 0)
+        return;
     static double xs1[101], ys1[101], ys2[101], ys3[101];
     srand(0);
     for (int i = 0; i < 101; ++i) {
@@ -122,22 +124,17 @@ void GraphManager::ShowDemo_FilledLinePlots() {
     }
 
     if (ImPlot::BeginPlot("Stock Prices")) {
+        ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
         ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
         ImPlot::SetupAxesLimits(0, 100, 0, 500);
+
         unsigned int num_of_groups = m_graph_data.group_labels.size();
+        unsigned int num_of_items = m_graph_data.item_labels.size();
+
         ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
 
-        if (show_fills) {
-            ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
-            ImPlot::PlotShaded("Stock 1", xs1, ys1, num_of_groups, shade_mode == 0 ? -INFINITY : shade_mode == 1 ? INFINITY : fill_ref);
-            ImPlot::PlotShaded("Stock 2", xs1, ys2, num_of_groups, shade_mode == 0 ? -INFINITY : shade_mode == 1 ? INFINITY : fill_ref);
-            ImPlot::PlotShaded("Stock 3", xs1, ys3, num_of_groups, shade_mode == 0 ? -INFINITY : shade_mode == 1 ? INFINITY : fill_ref);
-            ImPlot::PopStyleVar();
-        }
-        if (show_lines) {
-            ImPlot::PlotLine("Stock 1", xs1, ys1, num_of_groups);
-            ImPlot::PlotLine("Stock 2", xs1, ys2, num_of_groups);
-            ImPlot::PlotLine("Stock 3", xs1, ys3, num_of_groups);
+        for (int i = 0; i < num_of_items; ++i) {
+            ImPlot::PlotLine(m_graph_data.item_labels[i], &m_graph_data.positions[0], &m_graph_data.plot_data[0 + i * num_of_groups], num_of_groups);
         }
         ImPlot::EndPlot();
     }
