@@ -139,11 +139,11 @@ public:
 
 	void set_next_selected_cells_pallete();
 
+	void on_limits_mode_toggled(bool is_active);
+
 	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
 
 	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }
-
-	void on_limits_mode_toggled(bool is_active) { is_active ? set_limits_mode_coloring() : set_normal_mode_coloring(); }
 
 	unsigned int hovered_cell() { return m_hovered_cell; }
 

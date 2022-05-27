@@ -15,4 +15,8 @@ void MyImPlot::PlotBarGroups(const GraphData& gd)
 
 void MyImPlot::PlotLine(const GraphData& gd, unsigned int line_index)
 {
+	unsigned int num_of_groups = gd.group_labels.size();
+	const glm::vec3& color = gd.colors[line_index];
+	ImU32 packed_color = ImGui::GetColorU32({ color.r, color.g, color.b, 1 });
+	ImPlot::PlotLineCustomColor(gd.item_labels[line_index], &gd.positions[0], &gd.plot_data[0 + line_index * num_of_groups], packed_color, num_of_groups);
 }

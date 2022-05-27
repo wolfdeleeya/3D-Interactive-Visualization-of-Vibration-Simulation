@@ -134,7 +134,7 @@ void GraphManager::ShowDemo_FilledLinePlots() {
         ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
 
         for (int i = 0; i < num_of_items; ++i) {
-            ImPlot::PlotLine(m_graph_data.item_labels[i], &m_graph_data.positions[0], &m_graph_data.plot_data[0 + i * num_of_groups], num_of_groups);
+            MyImPlot::PlotLine(m_graph_data, i);
         }
         ImPlot::EndPlot();
     }

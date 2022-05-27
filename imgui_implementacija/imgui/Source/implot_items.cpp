@@ -1003,6 +1003,52 @@ namespace ImPlot {
         return PlotLineEx(label_id, getter);
     }
 
+
+    template <typename T>
+    void PlotLineCustomColor(const char* label_id, const T* xs, const T* ys, ImU32 packed_color, int count, int offset, int stride) {
+        GetterXY<GetterIdx<T>, GetterIdx<T>> getter(GetterIdx<T>(xs, count, offset, stride), GetterIdx<T>(ys, count, offset, stride), count);
+        
+        if (BeginItem(label_id, ImPlotCol_Line)) {
+            if (FitThisFrame()) {
+                for (int i = 0; i < getter.Count; ++i) {
+                    ImPlotPoint p = getter(i);
+                    FitPoint(p);
+                }
+            }
+            GetCurrentItem()->Color = packed_color; //has to be set or the legend won't be updated
+            const ImPlotNextItemData& s = GetItemData();
+            ImDrawList& DrawList = *GetPlotDrawList();
+
+
+            if (getter.Count > 1 && s.RenderLine) {
+                const ImU32 col_line = packed_color;
+                switch (GetCurrentScale()) {
+                case ImPlotScale_LinLin: RenderLineStrip(getter, TransformerLinLin(), DrawList, s.LineWeight, col_line); break;
+                case ImPlotScale_LogLin: RenderLineStrip(getter, TransformerLogLin(), DrawList, s.LineWeight, col_line); break;
+                case ImPlotScale_LinLog: RenderLineStrip(getter, TransformerLinLog(), DrawList, s.LineWeight, col_line); break;
+                case ImPlotScale_LogLog: RenderLineStrip(getter, TransformerLogLog(), DrawList, s.LineWeight, col_line); break;
+                }
+            }
+            // render markers
+            if (s.Marker != ImPlotMarker_None) {
+                // uncomment lines below to render markers over plot rect border
+                // PopPlotClipRect();
+                // PushPlotClipRect(s.MarkerSize);
+                const ImU32 col_line = ImGui::GetColorU32(s.Colors[ImPlotCol_MarkerOutline]);
+                const ImU32 col_fill = ImGui::GetColorU32(s.Colors[ImPlotCol_MarkerFill]);
+                switch (GetCurrentScale()) {
+                case ImPlotScale_LinLin: RenderMarkers(getter, TransformerLinLin(), DrawList, s.Marker, s.MarkerSize, s.RenderMarkerLine, col_line, s.MarkerWeight, s.RenderMarkerFill, col_fill); break;
+                case ImPlotScale_LogLin: RenderMarkers(getter, TransformerLogLin(), DrawList, s.Marker, s.MarkerSize, s.RenderMarkerLine, col_line, s.MarkerWeight, s.RenderMarkerFill, col_fill); break;
+                case ImPlotScale_LinLog: RenderMarkers(getter, TransformerLinLog(), DrawList, s.Marker, s.MarkerSize, s.RenderMarkerLine, col_line, s.MarkerWeight, s.RenderMarkerFill, col_fill); break;
+                case ImPlotScale_LogLog: RenderMarkers(getter, TransformerLogLog(), DrawList, s.Marker, s.MarkerSize, s.RenderMarkerLine, col_line, s.MarkerWeight, s.RenderMarkerFill, col_fill); break;
+                }
+            }
+            EndItem();
+        }
+    }
+
+    template IMPLOT_API void PlotLineCustomColor<double>(const char* label_id, const double* xs, const double* ys, ImU32 packed_color, int count, int offset, int stride);
+
     //-----------------------------------------------------------------------------
     // PLOT SCATTER
     //-----------------------------------------------------------------------------
@@ -1328,12 +1374,16 @@ namespace ImPlot {
                     FitPoint(ImPlotPoint(p2.x + half_width, p2.y));
                 }
             }
+            ImU32 packed_color = ImGui::GetColorU32({ c[0], c[1], c[2], 1 });
+            GetCurrentItem()->Color = packed_color;
             const ImPlotNextItemData& s = GetItemData();
             ImDrawList& DrawList = *GetPlotDrawList();
 
-            ImU32 col_fill = ImGui::GetColorU32({c[0], c[1], c[2], 1});
-
-            
+            ImU32 col_line = packed_color;
+            ImU32 col_fill = packed_color;
+            bool  rend_line = s.RenderLine;
+            if (s.RenderFill && col_line == col_fill)
+                rend_line = false;
             for (int i = 0; i < getter1.Count; ++i) {
                 ImPlotPoint p1 = getter1(i);
                 ImPlotPoint p2 = getter2(i);
@@ -1350,6 +1400,8 @@ namespace ImPlot {
                 // b.x = IM_ROUND(b.x);
                 if (s.RenderFill)
                     DrawList.AddRectFilled(a, b, col_fill);
+                if (rend_line)
+                    DrawList.AddRect(a, b, col_line, 0, ImDrawFlags_RoundCornersAll, s.LineWeight);
             }
             EndItem();
         }

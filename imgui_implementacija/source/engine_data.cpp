@@ -379,6 +379,7 @@ void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 void EngineData::clear_frequency_selection()
 {
 	m_selected_frequencies_names.clear();
+	on_selected_frequencies_changed.invoke();
 
 	calculate_color();
 }
@@ -394,9 +395,9 @@ void EngineData::clear_selected_cells()
 	if (m_selected_cells.size() > 0)
 	{
 		m_selected_cells.clear();
-		calculate_color();
-
 		on_selected_cells_changed.invoke();
+
+		calculate_color();
 	}
 }
 
@@ -486,4 +487,10 @@ void EngineData::set_next_selected_cells_pallete()
 {
 	unsigned int index_to_set = (m_current_selected_cell_pallet + 1) % m_selected_cells_palletes.size();
 	set_selected_cells_color_pallete(index_to_set);
+}
+
+void EngineData::on_limits_mode_toggled(bool is_active)
+{
+	clear_frequency_selection();
+	is_active ? set_limits_mode_coloring() : set_normal_mode_coloring();
 }
