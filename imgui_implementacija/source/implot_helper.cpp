@@ -7,9 +7,9 @@ template IMPLOT_API void ImPlot::PlotBarGroupsCustomColors<double, glm::vec<3, f
 (const char* const label_ids[], const double* values, const glm::vec3* colors, int items,
     int groups, double width, double shift, ImPlotBarGroupsFlags flags);
 
-void MyImPlot::PlotBarGroups(const GraphData& gd)
+void MyImPlot::PlotBarGroups(const GraphData& gd, float bar_width)
 {
-    ImPlot::PlotBarGroupsCustomColors(&gd.item_labels[0], &gd.plot_data[0], &gd.colors[0], gd.item_labels.size(), gd.group_labels.size(), gd.size);
+    ImPlot::PlotBarGroupsCustomColors(&gd.item_labels[0], &gd.plot_data[0], &gd.colors[0], gd.item_labels.size(), gd.group_labels.size(), bar_width);
 }
 
 

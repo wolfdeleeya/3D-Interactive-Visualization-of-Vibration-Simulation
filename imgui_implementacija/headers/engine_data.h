@@ -4,7 +4,7 @@
 #include <memory>
 #include <array>
 
-#include "graph_data.h"
+#include "graph/graph_data.h"
 #include "events.h"
 #include "data_loading.h"
 #include "gradient.h"

@@ -108,7 +108,7 @@
     <ClInclude Include="headers\color_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\graph_data.h">
+    <ClInclude Include="headers\graph\graph_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\implot_helper.h">
@@ -117,7 +117,7 @@
     <ClInclude Include="headers\variable_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\graph_manager.h">
+    <ClInclude Include="headers\graph\graph_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -206,13 +206,13 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graph_data.cpp">
+    <ClCompile Include="source\graph\graph_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\implot_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graph_manager.cpp">
+    <ClCompile Include="source\graph\graph_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\Source\implot_items.cpp">

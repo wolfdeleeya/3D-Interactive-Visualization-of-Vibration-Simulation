@@ -1,17 +1,31 @@
 #include <iostream>
 
-#include "graph_manager.h"
+#include "graph/graph_manager.h"
 #include "implot_helper.h"
 
 void GraphManager::draw_bar_graph()
 {
+    unsigned int num_of_groups = m_graph_data.group_labels.size();
+    unsigned int num_of_items = m_graph_data.item_labels.size();
+
+    if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
+        ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
+        ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+
+        if (m_graph_data.positions.size() > 0) {
+            ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
+            MyImPlot::PlotBarGroups(m_graph_data);
+        }
+
+        ImPlot::EndPlot();
+    }
 }
 
 void GraphManager::draw_line_graph()
 {
 }
 
-GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data) : m_graph_data({}, {}, {})
+GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data) : m_graph_data({}, {}, {}), m_cached_relative_graph_data({}, {}, {})
 {
 	m_application_model = application_model;
 	m_engine_data = engine_data;
@@ -62,30 +76,20 @@ void GraphManager::update_cell_plot()
 
 	item_data.push_back(data_entry);
 
-	m_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors, m_graph_data.size);	//inherit size of old graph
+	m_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors);
 }
 
 void GraphManager::draw_cell_plot()
 {
-	unsigned int num_of_groups = m_graph_data.group_labels.size();
-	unsigned int num_of_items = m_graph_data.item_labels.size();
 
-	if (ImPlot::BeginPlot("Selected Cell Frequencies")) {
-		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
-
-		if (m_graph_data.positions.size() > 0) {
-			ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
-			MyImPlot::PlotBarGroups(m_graph_data);
-		}
-
-		ImPlot::EndPlot();
-	}
-
-	ImGui::DragFloat("Bar Width", &m_graph_data.size, 0.05, 0, 1);
-	ImGui::ColorEdit3("Hovered Cell Graph Color", glm::value_ptr(m_hovered_cell_graph_color));
 
     ShowDemo_FilledLinePlots();
+}
+
+void GraphManager::draw_graph_settings_widget()
+{
+    ImGui::ColorEdit3("Hovered Cell Graph Color", glm::value_ptr(m_hovered_cell_graph_color));
+    m_graph_settings[(unsigned int)m_current_render_mode]->draw();
 }
 
 void GraphManager::ShowDemo_FilledLinePlots() {

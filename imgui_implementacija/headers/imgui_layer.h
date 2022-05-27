@@ -7,7 +7,7 @@
 #include "nfd.h"
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "graph_manager.h"
+#include "graph/graph_manager.h"
 
 class ImGUILayer {
 private:

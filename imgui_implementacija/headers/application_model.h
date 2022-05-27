@@ -5,7 +5,7 @@
 #include "events.h"
 #include "signals.h"
 #include "glm/gtc/type_ptr.hpp"
-#include "graph_data.h"
+#include "graph/graph_data.h"
 #include "variable_map.h"
 
 class ApplicationModel {
