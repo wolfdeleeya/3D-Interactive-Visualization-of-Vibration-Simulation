@@ -120,6 +120,9 @@
     <ClInclude Include="headers\graph\graph_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\graph\graph_settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\Source\imgui.cpp">
@@ -216,6 +219,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\Source\implot_items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graph\graph_settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

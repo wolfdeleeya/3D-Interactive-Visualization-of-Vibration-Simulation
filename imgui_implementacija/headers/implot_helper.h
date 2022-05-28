@@ -6,6 +6,6 @@
 
 namespace MyImPlot {
 	void PlotBarGroups(const GraphData& gd, float bar_width);
-	void PlotBars(const GraphData& gd, unsigned int index);
+	void PlotBars(const GraphData& gd, unsigned int index, float bar_width);
 	void PlotLine(const GraphData& gd, unsigned int line_index);
 }

@@ -12,6 +12,11 @@ void MyImPlot::PlotBarGroups(const GraphData& gd, float bar_width)
     ImPlot::PlotBarGroupsCustomColors(&gd.item_labels[0], &gd.plot_data[0], &gd.colors[0], gd.item_labels.size(), gd.group_labels.size(), bar_width);
 }
 
+void MyImPlot::PlotBars(const GraphData& gd, unsigned int index, float bar_width)
+{
+	//ImPlot::PlotBarsCustomColor()
+}
+
 
 void MyImPlot::PlotLine(const GraphData& gd, unsigned int line_index)
 {

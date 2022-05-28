@@ -428,7 +428,7 @@ void EngineData::set_hovered_cell(unsigned int cell_index)
 		on_cell_hovered.invoke(m_hovered_cell);
 }
 
-std::vector<float> EngineData::get_values_for_cell(unsigned int index) 
+std::vector<float> EngineData::get_values_for_cell(unsigned int index) const
 {
 	std::vector<float> result;
 	
@@ -444,11 +444,11 @@ std::vector<float> EngineData::get_values_for_cell(unsigned int index)
 	return result;
 }
 
-glm::vec3 EngineData::get_color_for_selected_cell(unsigned int index)
+glm::vec3 EngineData::get_color_for_selected_cell(unsigned int local_index) const
 {
 	unsigned int color_index = 0;
 
-	while (m_selected_cells_color_indeces[color_index] != index) ++color_index;
+	while (m_selected_cells_color_indeces[color_index] != local_index) ++color_index;
 
 	glm::vec3 color = current_pallete().second[color_index];
 	return color;

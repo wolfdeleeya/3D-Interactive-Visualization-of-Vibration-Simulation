@@ -82,7 +82,7 @@ private:
 
 	void set_selected_cells_color_pallete(unsigned int pallete_index);
 	
-	data::pallete& current_pallete() { return m_selected_cells_palletes[m_current_selected_cell_pallet]; }
+	const data::pallete& current_pallete() const { return m_selected_cells_palletes[m_current_selected_cell_pallet]; }
 
 public:
 	static const char* FUNCTION_NAMES[5];
@@ -127,9 +127,10 @@ public:
 
 	void set_hovered_cell(unsigned int cell_index);
 
-	std::vector<float> get_values_for_cell(unsigned int index);
+	std::vector<float> get_values_for_cell(unsigned int index) const;
 	
-	glm::vec3 get_color_for_selected_cell(unsigned int index);
+	//get color for "local" selected cell index
+	glm::vec3 get_color_for_selected_cell(unsigned int local_index) const;
 
 	void set_normal_mode_coloring();
 
@@ -145,47 +146,47 @@ public:
 
 	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }
 
-	unsigned int hovered_cell() { return m_hovered_cell; }
+	unsigned int hovered_cell() const { return m_hovered_cell; }
 
-	unsigned int num_of_selected_frequencies() { return m_selected_frequencies_names.size(); }
+	unsigned int num_of_selected_frequencies() const { return m_selected_frequencies_names.size(); }
 
-	unsigned int num_of_selected_cells() { return m_selected_cells.size(); }
+	unsigned int num_of_selected_cells() const { return m_selected_cells.size(); }
 
-	unsigned int current_selected_cells_pallete_index() { return m_current_selected_cell_pallet; }
+	unsigned int current_selected_cells_pallete_index() const { return m_current_selected_cell_pallet; }
 
-	bool is_frequency_selected(const std::string& f_name) { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
+	bool is_frequency_selected(const std::string& f_name) const { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
 
-	bool are_stats_loaded() { return m_cell_stats.size() > 0; }
+	bool are_stats_loaded() const { return m_cell_stats.size() > 0; }
 
-	bool are_frequenzy_limits_loaded() { return m_frequenzy_limits.size() > 0; }
+	bool are_frequenzy_limits_loaded() const { return m_frequenzy_limits.size() > 0; }
 
-	bool are_selected_cells_palletes_loaded() { return m_selected_cells_palletes.size() > 0; }
+	bool are_selected_cells_palletes_loaded() const { return m_selected_cells_palletes.size() > 0; }
 
-	std::vector<data::pallete> selected_cells_palletes() { return m_selected_cells_palletes; }
+	std::vector<data::pallete> selected_cells_palletes() const { return m_selected_cells_palletes; }
 
-	std::vector<std::string> frequenzy_names() { return m_frequenzy_names; }
+	std::vector<std::string> frequenzy_names() const { return m_frequenzy_names; }
 
-	std::vector<std::string> selected_frequencies() { return m_selected_frequencies_names; }
+	std::vector<std::string> selected_frequencies() const { return m_selected_frequencies_names; }
 
-	std::vector<std::string> frequencies_with_limits() { return m_frequencies_with_limits; }
+	std::vector<std::string> frequencies_with_limits() const { return m_frequencies_with_limits; }
 
-	std::vector<unsigned int> selected_cells() { return m_selected_cells; }
+	std::vector<unsigned int> selected_cells() const { return m_selected_cells; }
 
-	bool is_valid_cell_hovered() { return m_hovered_cell != 0; }
+	bool is_valid_cell_hovered() const { return m_hovered_cell != 0; }
 
-	std::vector<float> get_hovered_cell_values() { return get_values_for_cell(m_hovered_cell); }
-
-	//variable getters, pointer is returned, so they can be used with imgui
-	Gradient* get_gradient(GradientVariables e) { return m_gradient_variables.get(e); }
+	std::vector<float> get_hovered_cell_values() const { return get_values_for_cell(m_hovered_cell); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }
+	Gradient* get_gradient(GradientVariables e) const { return m_gradient_variables.get(e); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	unsigned int* get_uint(UnsignedIntVariables e) { return m_uint_variables.get(e); }
+	glm::vec3* get_color(ColorVariables e) const { return m_color_variables.get(e); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	glm::vec2* get_normal_mode_limits(NormalModeLimitsVariables e) { return m_normal_mode_limits_variables.get(e); }
+	unsigned int* get_uint(UnsignedIntVariables e) const { return m_uint_variables.get(e); }
+
+	//variable getters, pointer is returned, so they can be used with imgui
+	glm::vec2* get_normal_mode_limits(NormalModeLimitsVariables e) const { return m_normal_mode_limits_variables.get(e); }
 
 	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
 	void set_gradient(GradientVariables e, const Gradient& g) { m_gradient_variables.set(e, g); }

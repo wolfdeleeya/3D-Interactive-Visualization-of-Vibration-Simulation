@@ -148,6 +148,7 @@
     <ClInclude Include="headers\color_helper.h" />
     <ClInclude Include="headers\graph\graph_manager.h" />
     <ClInclude Include="headers\graph\graph_data.h" />
+    <ClInclude Include="headers\graph\graph_settings.h" />
     <ClInclude Include="headers\implot_helper.h" />
     <ClInclude Include="headers\mesh\abstract_mesh.h" />
     <ClInclude Include="headers\camera.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="source\color_helper.cpp" />
     <ClCompile Include="source\graph\graph_data.cpp" />
     <ClCompile Include="source\graph\graph_manager.cpp" />
+    <ClCompile Include="source\graph\graph_settings.cpp" />
     <ClCompile Include="source\implot_helper.cpp" />
     <ClCompile Include="source\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
