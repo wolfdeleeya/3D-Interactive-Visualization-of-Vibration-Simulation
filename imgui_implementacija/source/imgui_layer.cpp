@@ -274,7 +274,7 @@ void ImGUILayer::draw_function_selection()
 	m_engine_data->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION, selected_function);
 }
 
-void ImGUILayer::draw_graph_tooltip()
+void ImGUILayer::draw_graph_widget()
 {
 	ImGui::SetNextWindowSize({500, 330});
 
@@ -299,6 +299,14 @@ void ImGUILayer::draw_graph_tooltip()
 			ImGui::EndChild();
 		}
 
+		ImGui::End();
+	}
+}
+
+void ImGUILayer::draw_graph_settings_widget()
+{
+	if (ImGui::Begin("Graph Settings")) {
+		m_graph_manager->draw_graph_settings();
 		ImGui::End();
 	}
 }
@@ -419,7 +427,8 @@ void ImGUILayer::update()
 
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-	draw_graph_tooltip();
+	draw_graph_widget();
+	draw_graph_settings_widget();
 
 	draw_general_info_widget();
 

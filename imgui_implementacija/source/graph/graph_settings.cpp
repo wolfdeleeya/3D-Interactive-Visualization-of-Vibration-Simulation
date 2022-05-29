@@ -20,18 +20,23 @@ void RelativeComparisonSettings::draw()
 
     if (ImGui::TreeNode("Pick Referant Selected Cell"))
     {
-        static int selected = -1;
-        for (int i = 0; i < num_of_selected_cells; ++i)
+        static unsigned int selected = 0;
+        for (unsigned int i = 0; i < num_of_selected_cells; ++i)
         {
+            unsigned int current_cell_index = selected_cells_indeces[i];
             std::string cell_label = "Cell ";
-            cell_label += selected_cells_indeces[i];
+            cell_label += std::to_string(current_cell_index);
 
             glm::vec3 color = m_engine_data->get_color_for_selected_cell(i);
             ImU32 packed_color = ImGui::GetColorU32({ color.r, color.g, color.b, 1 });
             
-            if (ImGui::SelectableCustomColor(cell_label.c_str(), selected == i, packed_color, packed_color)) {
-                selected = i;
-                on_referent_cell_changed.invoke(selected_cells_indeces[i]);
+            if (ImGui::SelectableCustomColor(cell_label.c_str(), selected == current_cell_index, packed_color, packed_color)) {
+                //if it's already selected - deselect it!
+                if (selected == current_cell_index)
+                    selected = 0;
+                else
+                    selected = current_cell_index;
+                on_referent_cell_changed.invoke(selected);
             }
         }
         ImGui::TreePop();

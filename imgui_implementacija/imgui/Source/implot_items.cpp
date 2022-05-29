@@ -1361,9 +1361,8 @@ namespace ImPlot {
         }
     }
 
-    //COL4 is a data type that can represent 3D colors as an array -> c[0] = red, c[1] = green, c[2] = blue, c[3] = alpha.
-    template <typename Getter1, typename Getter2, typename COL4>
-    void PlotBarsExCustomColor(const char* label_id, const Getter1& getter1, const Getter2 getter2, const COL4& c, double width) {
+    template <typename Getter1, typename Getter2>
+    void PlotBarsExCustomColor(const char* label_id, const Getter1& getter1, const Getter2 getter2, ImU32 c, double width) {
         if (BeginItem(label_id, ImPlotCol_Fill)) {
             const double half_width = width / 2;
             if (FitThisFrame()) {
@@ -1374,13 +1373,13 @@ namespace ImPlot {
                     FitPoint(ImPlotPoint(p2.x + half_width, p2.y));
                 }
             }
-            ImU32 packed_color = ImGui::GetColorU32({ c[0], c[1], c[2], 1 });
-            GetCurrentItem()->Color = packed_color;
+            GetCurrentItem()->Color = c;
             const ImPlotNextItemData& s = GetItemData();
             ImDrawList& DrawList = *GetPlotDrawList();
 
-            ImU32 col_line = packed_color;
-            ImU32 col_fill = packed_color;
+            ImU32 col_line = c;
+            ImU32 col_fill = c;
+
             bool  rend_line = s.RenderLine;
             if (s.RenderFill && col_line == col_fill)
                 rend_line = false;
@@ -1414,8 +1413,8 @@ namespace ImPlot {
         PlotBarsEx(label_id, getter1, getter2, width);
     }
 
-    template <typename T, typename COL4>
-    void PlotBarsCustomColor(const char* label_id, const T* values, const COL4& color, int count, double width, double shift, int offset, int stride) {
+    template <typename T>
+    void PlotBarsCustomColor(const char* label_id, const T* values, ImU32 color, int count, double width, double shift, int offset, int stride) {
         GetterXY<GetterLin, GetterIdx<T>> getter1(GetterLin(1.0, shift), GetterIdx<T>(values, count, offset, stride), count);
         GetterXY<GetterLin, GetterRef>    getter2(GetterLin(1.0, shift), GetterRef(0), count);
         PlotBarsExCustomColor(label_id, getter1, getter2, color, width);
@@ -1431,6 +1430,8 @@ namespace ImPlot {
     template IMPLOT_API void PlotBars<ImU64>(const char* label_id, const ImU64* values, int count, double width, double shift, int offset, int stride);
     template IMPLOT_API void PlotBars<float>(const char* label_id, const float* values, int count, double width, double shift, int offset, int stride);
     template IMPLOT_API void PlotBars<double>(const char* label_id, const double* values, int count, double width, double shift, int offset, int stride);
+
+    template IMPLOT_API void PlotBarsCustomColor<double>(const char* label_id, const double* values, ImU32 color, int count, double width, double shift, int offset, int stride);
 
     template <typename T>
     void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double width, int offset, int stride) {
@@ -1587,7 +1588,7 @@ namespace ImPlot {
         }
     }
 
-    template <typename T, typename COL4> void PlotBarGroupsCustomColors(const char* const label_ids[], const T* values, const COL4* colors, int items, int groups, double width, double shift, ImPlotBarGroupsFlags flags) {
+    template <typename T> void PlotBarGroupsCustomColors(const char* const label_ids[], const T* values, const ImU32* colors, int items, int groups, double width, double shift, ImPlotBarGroupsFlags flags) {
         if (ImHasFlag(flags, ImPlotBarGroupsFlags_Stacked)) {
             SetupLock();
             GImPlot->TempDouble1.resize(4 * groups);
@@ -1627,8 +1628,8 @@ namespace ImPlot {
             }
         }
     }
-    template IMPLOT_API void PlotBarGroupsCustomColors<double, glm::vec3>
-        (const char* const label_ids[], const double* values, const glm::vec3* colors, int items,
+    template IMPLOT_API void PlotBarGroupsCustomColors<double>
+        (const char* const label_ids[], const double* values, const ImU32* colors, int items,
             int groups, double width, double shift, ImPlotBarGroupsFlags flags);
 
     template IMPLOT_API void PlotBarGroups<ImS8>(const char* const label_ids[], const ImS8* values, int items, int groups, double width, double shift, ImPlotBarGroupsFlags flags);

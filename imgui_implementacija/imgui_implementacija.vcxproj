@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="headers\color_helper.h" />
+    <ClInclude Include="headers\custom_imgui_widgets.h" />
     <ClInclude Include="headers\graph\graph_manager.h" />
     <ClInclude Include="headers\graph\graph_data.h" />
     <ClInclude Include="headers\graph\graph_settings.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="imgui\Source\implot_demo.cpp" />
     <ClCompile Include="imgui\Source\implot_items.cpp" />
     <ClCompile Include="source\color_helper.cpp" />
+    <ClCompile Include="source\custom_imgui_widgets.cpp" />
     <ClCompile Include="source\graph\graph_data.cpp" />
     <ClCompile Include="source\graph\graph_manager.cpp" />
     <ClCompile Include="source\graph\graph_settings.cpp" />

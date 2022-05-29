@@ -128,7 +128,7 @@ void EngineData::normal_mode_coloring(std::map<unsigned int, glm::vec3>& color_m
 			auto& cell_stats = m_cell_stats[index];
 
 			std::vector<float> values;
-			for (int i = 0; i < n_selected_frequencies; ++i)
+			for (unsigned int i = 0; i < n_selected_frequencies; ++i)
 				values.push_back(cell_stats.freq_map[m_selected_frequencies_names[i]]);
 
 			float value = (*CELL_FUNCTIONS[*get_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION)])(values);
@@ -297,7 +297,7 @@ void EngineData::calculate_color()
 
 	unsigned int n_selected_cells = m_selected_cells.size();
 
-	for (int i = 0; i < n_selected_cells; ++i)
+	for (unsigned int i = 0; i < n_selected_cells; ++i)
 		color_map[m_selected_cells[i]] = get_color_for_selected_cell(i);
 
 	if (n_selected_frequencies == 0)

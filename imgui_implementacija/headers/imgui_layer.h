@@ -54,7 +54,9 @@ private:
 
 	void draw_function_selection();
 
-	void draw_graph_tooltip();
+	void draw_graph_widget();
+
+	void draw_graph_settings_widget();
 
 	bool is_window_resized(ImGuiWindow* window);
 

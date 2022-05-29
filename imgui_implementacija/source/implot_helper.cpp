@@ -2,19 +2,20 @@
 #include "implot.h"
 #include "implot_internal.h"
 
-
-template IMPLOT_API void ImPlot::PlotBarGroupsCustomColors<double, glm::vec<3, float>>
-(const char* const label_ids[], const double* values, const glm::vec3* colors, int items,
-    int groups, double width, double shift, ImPlotBarGroupsFlags flags);
-
 void MyImPlot::PlotBarGroups(const GraphData& gd, float bar_width)
 {
-    ImPlot::PlotBarGroupsCustomColors(&gd.item_labels[0], &gd.plot_data[0], &gd.colors[0], gd.item_labels.size(), gd.group_labels.size(), bar_width);
+	std::vector<ImU32> colors;//quick-fix ->TODO: REPLACE glm::vec3 for colors in GraphData with ImU32
+	for (const auto& c : gd.colors)
+		colors.push_back(ImGui::GetColorU32({ c.r, c.g, c.b, 1 }));
+    ImPlot::PlotBarGroupsCustomColors(&gd.item_labels[0], &gd.plot_data[0], &colors[0], gd.item_labels.size(), gd.group_labels.size(), bar_width);
 }
 
 void MyImPlot::PlotBars(const GraphData& gd, unsigned int index, float bar_width)
 {
-	//ImPlot::PlotBarsCustomColor()
+	unsigned int num_of_groups = gd.group_labels.size();
+	const glm::vec3& color = gd.colors[index];
+	ImU32 packed_color = ImGui::GetColorU32({ color.r, color.g, color.b, 1 });
+	ImPlot::PlotBarsCustomColor(gd.item_labels[index], &gd.plot_data[0 + index * num_of_groups], packed_color, num_of_groups, bar_width);
 }
 
 

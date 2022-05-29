@@ -17,9 +17,9 @@ public:
 	VariableMap(std::function<bool(const V&, const V&)> comparator, const E& end_enum, 
 		const V& default_value, const std::function<void(void)>& default_on_change_function);
 
-	bool check_for_changes() const;
+	bool check_for_changes();
 
-	V* get(const E& e) const { return &m_values.at(e); }
+	V* get(const E& e) { return &m_values.at(e); }
 	
 	void set(const E& e, const V& v) { m_values[e] = v; }
 
@@ -42,7 +42,7 @@ inline VariableMap<E, V>::VariableMap(std::function<bool(const V&, const V&)> co
 }
 
 template<typename E, typename V>
-inline bool VariableMap<E, V>::check_for_changes() const
+inline bool VariableMap<E, V>::check_for_changes()
 {
 	bool are_changes_pending = false;
 	unsigned int num_of_values = (unsigned int)m_end_enum;

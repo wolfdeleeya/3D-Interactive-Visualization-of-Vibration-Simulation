@@ -154,6 +154,8 @@ public:
 
 	unsigned int current_selected_cells_pallete_index() const { return m_current_selected_cell_pallet; }
 
+	unsigned int selected_cell_index(unsigned int local_index) const { return m_selected_cells[local_index]; }
+
 	bool is_frequency_selected(const std::string& f_name) const { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
 
 	bool are_stats_loaded() const { return m_cell_stats.size() > 0; }
@@ -177,16 +179,16 @@ public:
 	std::vector<float> get_hovered_cell_values() const { return get_values_for_cell(m_hovered_cell); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	Gradient* get_gradient(GradientVariables e) const { return m_gradient_variables.get(e); }
+	Gradient* get_gradient(GradientVariables e) { return m_gradient_variables.get(e); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	glm::vec3* get_color(ColorVariables e) const { return m_color_variables.get(e); }
+	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	unsigned int* get_uint(UnsignedIntVariables e) const { return m_uint_variables.get(e); }
+	unsigned int* get_uint(UnsignedIntVariables e) { return m_uint_variables.get(e); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	glm::vec2* get_normal_mode_limits(NormalModeLimitsVariables e) const { return m_normal_mode_limits_variables.get(e); }
+	glm::vec2* get_normal_mode_limits(NormalModeLimitsVariables e) { return m_normal_mode_limits_variables.get(e); }
 
 	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
 	void set_gradient(GradientVariables e, const Gradient& g) { m_gradient_variables.set(e, g); }

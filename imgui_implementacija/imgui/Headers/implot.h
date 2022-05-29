@@ -68,10 +68,6 @@
 // Macro for templated plotting functions; keeps header clean.
 #define IMPLOT_TMP template <typename T> IMPLOT_API
 
-// Macro for defining template functions with custom colors, where COL4 represents data type that can store colors with 4 components,
-// each of which can be accessed with [] operator.
-#define IMPLOT_TMP_COL template <typename T, typename COL4> IMPLOT_API
-
 //-----------------------------------------------------------------------------
 // [SECTION] Enums and Types
 //-----------------------------------------------------------------------------
@@ -728,7 +724,7 @@ IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int cou
 IMPLOT_API void PlotBarsG(const char* label_id, ImPlotGetter getter, void* data, int count, double bar_width);
 
 // Plots a vertical bar graph with custom colors for each bar.
-IMPLOT_TMP_COL void PlotBarsCustomColor(const char* label_id, const T* values, const COL4& color, int count, double width = 0.67, double shift = 0, int offset = 0, int stride = sizeof(T));
+IMPLOT_TMP void PlotBarsCustomColor(const char* label_id, const T* values, ImU32 color, int count, double width = 0.67, double shift = 0, int offset = 0, int stride = sizeof(T));
 
 // Plots a horizontal bar graph. #bar_height and #y0 are in Y units.
 IMPLOT_TMP void PlotBarsH(const char* label_id, const T* values, int count, double bar_height=0.67, double y0=0, int offset=0, int stride=sizeof(T));
@@ -739,7 +735,7 @@ IMPLOT_API void PlotBarsHG(const char* label_id, ImPlotGetter getter, void* data
 IMPLOT_TMP void PlotBarGroups(const char* const label_ids[], const T* values, int item_count, int group_count, double group_width=0.67, double x0=0, ImPlotBarGroupsFlags flags=ImPlotBarGroupsFlags_None);
 
 // Plots a group of vertical bars with custom set colors. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements. 
-IMPLOT_TMP_COL void PlotBarGroupsCustomColors(const char* const label_ids[], const T* values, const COL4* colors, int item_count, int group_count, double group_width = 0.67, double x0 = 0, ImPlotBarGroupsFlags flags = ImPlotBarGroupsFlags_None);
+IMPLOT_TMP void PlotBarGroupsCustomColors(const char* const label_ids[], const T* values, const ImU32* colors, int item_count, int group_count, double group_width = 0.67, double x0 = 0, ImPlotBarGroupsFlags flags = ImPlotBarGroupsFlags_None);
 
 // Plots a group of horizontal bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements.
 IMPLOT_TMP void PlotBarGroupsH(const char* const label_ids[], const T* values, int item_count, int group_count, double group_height=0.67, double y0=0, ImPlotBarGroupsFlags flags=ImPlotBarGroupsFlags_None);
