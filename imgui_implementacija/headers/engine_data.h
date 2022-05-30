@@ -142,6 +142,8 @@ public:
 
 	void on_limits_mode_toggled(bool is_active);
 
+	glm::vec2 get_current_normal_mode_limits();
+
 	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
 
 	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }

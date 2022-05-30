@@ -66,6 +66,10 @@ void ImGUILayer::draw_limits_mode_color_selection()
 void ImGUILayer::draw_engine_view()
 {
 	if(ImGui::Begin("Engine View")) {
+		if (ImGui::BeginChild("##Colormap")) {
+			m_graph_manager->draw_legend();
+		}
+		ImGui::SameLine();
 		if (ImGui::BeginChild("Engine Render")) {
 			m_scene_view_position = ImGui::GetWindowPos();
 			ImVec2 scene_scale = ImGui::GetWindowSize();
@@ -194,10 +198,6 @@ void ImGUILayer::draw_frequency_selection_widget()
 	}
 }
 
-void ImGUILayer::draw_legend_bar_widget()
-{
-}
-
 void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 {
 	unsigned int num_of_selected_frequencies = m_engine_data->num_of_selected_frequencies();
@@ -307,6 +307,14 @@ void ImGUILayer::draw_graph_settings_widget()
 {
 	if (ImGui::Begin("Graph Settings")) {
 		m_graph_manager->draw_graph_settings();
+		ImGui::End();
+	}
+}
+
+void ImGUILayer::draw_colormap_legend_widget()
+{
+	if (ImGui::Begin("##Color Map Legend")) {
+		m_graph_manager->draw_legend();
 		ImGui::End();
 	}
 }

@@ -58,6 +58,8 @@ private:
 
 	void draw_graph_settings_widget();
 
+	void draw_colormap_legend_widget();
+
 	bool is_window_resized(ImGuiWindow* window);
 
 	void delete_selected_cells_palletes();

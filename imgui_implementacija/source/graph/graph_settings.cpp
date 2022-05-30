@@ -10,7 +10,7 @@ void SubplotsComparisonSettings::draw()
 
 	//if the number of selected cells is greater than 1, than the grid of subplots will have more than 1 subplot
 	if (num_of_selected_cells > 1)
-		ImGui::DragInt("Number Of Colums", &num_of_columns, 1, 1, num_of_selected_cells);
+		ImGui::DragInt("Number Of Colums", &num_of_columns, 0.1, 1, num_of_selected_cells);
 }
 
 void RelativeComparisonSettings::draw()

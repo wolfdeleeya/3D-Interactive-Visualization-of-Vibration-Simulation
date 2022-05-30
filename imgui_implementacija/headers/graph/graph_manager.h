@@ -30,6 +30,8 @@ private:
 
 	glm::vec3 m_hovered_cell_graph_color;
 
+	std::function<void(void)> m_colormap_legend_plot_function;
+
 	unsigned int m_current_referent_cell_index;
 
 	static const std::vector<const char*> RENDER_MODE_LABELS;
@@ -47,12 +49,14 @@ private:
 
 	void draw_relative_comparison();
 
+	void draw_limits_mode_colormap_legend();
+
+	void draw_normal_mode_colormap_legend();
 
 	void set_render_mode(RenderMode mode) { m_current_render_mode = mode; }
 
 	void set_comparison_mode(ComparisonMode mode) { m_current_comparison_mode = mode; }
 public:
-
 	GraphManager(ApplicationModel* application_model, EngineData* engine_data);
 
 	~GraphManager();
@@ -63,11 +67,7 @@ public:
 
 	void referant_cell_changed(unsigned int new_referant_cell_index);
 
-	void update_legend();
-
 	void draw_cell_plot();
-
-	void draw_legend();
 
 	void switch_render_mode();
 
@@ -75,5 +75,10 @@ public:
 
 	void draw_graph_settings();
 
-	void ShowDemo_FilledLinePlots();
+	void draw_legend() { m_colormap_legend_plot_function(); }
+
+	void limits_mode_toggled(bool is_active) 
+	{
+		m_colormap_legend_plot_function = std::bind((is_active ? &GraphManager::draw_limits_mode_colormap_legend : &GraphManager::draw_normal_mode_colormap_legend), this);
+	}
 };

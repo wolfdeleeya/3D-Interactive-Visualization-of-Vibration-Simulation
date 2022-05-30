@@ -494,3 +494,9 @@ void EngineData::on_limits_mode_toggled(bool is_active)
 	clear_frequency_selection();
 	is_active ? set_limits_mode_coloring() : set_normal_mode_coloring();
 }
+
+glm::vec2 EngineData::get_current_normal_mode_limits()
+{
+	unsigned int current_limits_index = *get_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS);
+	return *get_normal_mode_limits((NormalModeLimitsVariables)current_limits_index);
+}

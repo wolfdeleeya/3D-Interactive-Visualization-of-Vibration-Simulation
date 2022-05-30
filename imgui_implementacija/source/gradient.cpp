@@ -3,7 +3,7 @@
 
 const double Gradient::COLOR_DIFF_TOLERANCE = 0.01;
 
-glm::vec3 Gradient::evaluate(float value)
+glm::vec3 Gradient::evaluate(float value) const
 {
 	if (value < 0)
 		value = 0;
@@ -11,6 +11,12 @@ glm::vec3 Gradient::evaluate(float value)
 		value = 1;
 
 	return (1 - value) * color1 + value * color2;
+}
+
+ImU32 Gradient::evaluate_packed(float value) const
+{
+	glm::vec3 color = evaluate(value);
+	return ImGui::GetColorU32({ color.r, color.g, color.b, 1 });
 }
 
 bool Gradient::operator==(const Gradient& g) const

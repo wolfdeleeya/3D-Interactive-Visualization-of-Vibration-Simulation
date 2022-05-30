@@ -39,7 +39,7 @@ void GraphManager::draw_default_comparison()
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
 	unsigned int num_of_items = m_graph_data.item_labels.size();
 
-	if (ImPlot::BeginPlot("Selected Cell Frequencies - Default Display")) {
+	if (ImPlot::BeginPlot("Selected Cell Frequencies - Default Display", { -1, -1 })) {
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
 
@@ -91,7 +91,7 @@ void GraphManager::draw_relative_comparison()
 	unsigned int num_of_groups = m_cached_relative_graph_data.group_labels.size();
 	unsigned int num_of_items = m_cached_relative_graph_data.item_labels.size();
 
-	if (ImPlot::BeginPlot("Selected Cell Frequencies - Relative Display")) {
+	if (ImPlot::BeginPlot("Selected Cell Frequencies - Relative Display", {-1, -1})) {
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
 
@@ -104,6 +104,24 @@ void GraphManager::draw_relative_comparison()
 
 		ImPlot::EndPlot();
 	}
+}
+
+void GraphManager::draw_limits_mode_colormap_legend()
+{
+	unsigned int num_of_selected_frequencies = m_engine_data->num_of_selected_frequencies();
+
+	Gradient mid_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_MID_GRADIENT);
+	Gradient bad_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_BAD_GRADIENT);
+
+	MyImPlot::ColormapScale("Limits Mode Mid Colormap", mid_gradient, 0, num_of_selected_frequencies, num_of_selected_frequencies, { 0, -1 }, false);
+	ImGui::SameLine(),
+	MyImPlot::ColormapScale("Limits Mode Bad Colormap", bad_gradient, 0, num_of_selected_frequencies, num_of_selected_frequencies, { 0, -1 }, false);
+}
+
+void GraphManager::draw_normal_mode_colormap_legend()
+{
+	glm::vec2 limits = m_engine_data->get_current_normal_mode_limits();
+	MyImPlot::ColormapScale("Normal Mode Colormap", *(m_engine_data->get_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT)), limits.x, limits.y, 3, { 0, -1 }, true);
 }
 
 GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data) : m_graph_data({}, {}, {}), m_cached_relative_graph_data({}, {}, {})
@@ -123,6 +141,7 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engi
 	m_engine_data->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_cell_plot, this); 
 	m_engine_data->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_relative_plot, this);
 
+	m_application_model->on_limits_mode_toggled.add_listener(std::bind(&GraphManager::limits_mode_toggled, this, std::placeholders::_1));
 
 	m_render_graph_settings = {
 		new BarGraphSettings(0.5),
@@ -151,6 +170,8 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engi
 
 	set_render_mode(RenderMode::BARS);
 	set_comparison_mode(ComparisonMode::DEFAULT);
+
+	m_colormap_legend_plot_function = std::bind(&GraphManager::draw_normal_mode_colormap_legend, this);
 
 	m_hovered_cell_graph_color = { 0.835, 0.662, 0.427 };
 }
@@ -204,7 +225,6 @@ void GraphManager::update_cell_plot()
 
 	m_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors);
 }
-
 
 void GraphManager::update_relative_plot()
 {
@@ -267,7 +287,6 @@ void GraphManager::referant_cell_changed(unsigned int new_referant_cell_index)
 	update_relative_plot();
 }
 
-
 void GraphManager::draw_cell_plot()
 {
 	comparison_plot_function current_comparison_plot_function = m_comparison_plot_functions[(unsigned int)m_current_comparison_mode];
@@ -303,56 +322,4 @@ void GraphManager::draw_graph_settings()
 	m_render_graph_settings[(unsigned int)m_current_render_mode]->draw();
 
 	m_comparison_graph_settings[(unsigned int)m_current_comparison_mode]->draw();
-}
-
-void GraphManager::ShowDemo_FilledLinePlots() {
-
-	if (m_graph_data.plot_data.size() == 0)
-		return;
-	static double xs1[101], ys1[101], ys2[101], ys3[101];
-	srand(0);
-	for (int i = 0; i < 101; ++i) {
-		xs1[i] = (float)i;
-		ys1[i] = 400 + rand() % 50;
-		ys2[i] = 275 + rand() % 75;
-		ys3[i] = 150 + rand() % 75;
-	}
-	static bool show_lines = true;
-	static bool show_fills = true;
-	static float fill_ref = 0;
-	static int shade_mode = 0;
-	ImGui::Checkbox("Lines", &show_lines); ImGui::SameLine();
-	ImGui::Checkbox("Fills", &show_fills);
-	if (show_fills) {
-		ImGui::SameLine();
-		if (ImGui::RadioButton("To -INF", shade_mode == 0))
-			shade_mode = 0;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("To +INF", shade_mode == 1))
-			shade_mode = 1;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("To Ref", shade_mode == 2))
-			shade_mode = 2;
-		if (shade_mode == 2) {
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(100);
-			ImGui::DragFloat("##Ref", &fill_ref, 1, -100, 500);
-		}
-	}
-
-	if (ImPlot::BeginPlot("Stock Prices")) {
-		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
-		ImPlot::SetupAxesLimits(0, 100, 0, 500);
-
-		unsigned int num_of_groups = m_graph_data.group_labels.size();
-		unsigned int num_of_items = m_graph_data.item_labels.size();
-
-		ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
-
-		for (unsigned int i = 0; i < num_of_items; ++i) {
-			MyImPlot::PlotLine(m_graph_data, i);
-		}
-		ImPlot::EndPlot();
-	}
 }
