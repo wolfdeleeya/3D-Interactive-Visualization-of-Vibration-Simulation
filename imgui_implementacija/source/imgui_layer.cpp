@@ -66,9 +66,8 @@ void ImGUILayer::draw_limits_mode_color_selection()
 void ImGUILayer::draw_engine_view()
 {
 	if(ImGui::Begin("Engine View")) {
-		if (ImGui::BeginChild("##Colormap")) {
-			m_graph_manager->draw_legend();
-		}
+		m_graph_manager->draw_legend();
+
 		ImGui::SameLine();
 		if (ImGui::BeginChild("Engine Render")) {
 			m_scene_view_position = ImGui::GetWindowPos();
@@ -90,8 +89,8 @@ void ImGUILayer::draw_engine_view()
 
 			m_is_hovering_scene_view = ImGui::IsItemHovered();
 
-			ImGui::EndChild();
 		}
+		ImGui::EndChild();
 
 		ImGui::End();
 	}
