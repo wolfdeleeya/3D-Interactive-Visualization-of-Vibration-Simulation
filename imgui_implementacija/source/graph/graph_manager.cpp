@@ -121,7 +121,7 @@ void GraphManager::draw_limits_mode_colormap_legend()
 void GraphManager::draw_normal_mode_colormap_legend()
 {
 	glm::vec2 limits = m_engine_data->get_current_normal_mode_limits();
-	MyImPlot::ColormapScale("Normal Mode Colormap", *(m_engine_data->get_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT)), limits.x, limits.y, 3, { 0, -1 }, true);
+	MyImPlot::ColormapScale("Normal Mode Colormap", *(m_engine_data->get_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT)), limits.x, limits.y, 10, { 0, -1 }, true);
 }
 
 GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data) : m_graph_data({}, {}, {}), m_cached_relative_graph_data({}, {}, {})

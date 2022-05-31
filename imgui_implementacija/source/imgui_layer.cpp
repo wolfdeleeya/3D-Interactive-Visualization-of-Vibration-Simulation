@@ -239,8 +239,8 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 
 	ImGui::Text(gradient_name);
 
-	glm::vec3& c1 = g.color1;
-	glm::vec3& c2 = g.color2;
+	glm::vec3* c1 = g.color1_ptr();
+	glm::vec3* c2 = g.color2_ptr();
 
 	std::string c1_name(gradient_name);
 	c1_name += " Color 1";
@@ -248,16 +248,20 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 	std::string c2_name(gradient_name);
 	c2_name += " Color 2";
 
-	draw_color_selection(c1_name.c_str(), c1);
-	draw_color_selection(c2_name.c_str(), c2);
+	draw_color_selection(c1_name.c_str(), *c1);
+	draw_color_selection(c2_name.c_str(), *c2);
+
+	if (ImGui::Button(g.get_current_interpolation_mode_name()))
+		g.set_next_interpolation_mode();
+		
 
 	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
 	ImVec2 gradient_size = ImVec2(ImGui::CalcItemWidth(), ImGui::GetFrameHeight());
 	{
 		ImVec2 p0 = ImGui::GetCursorScreenPos();
 		ImVec2 p1 = ImVec2(p0.x + gradient_size.x, p0.y + gradient_size.y);
-		ImU32 col_a = ImGui::GetColorU32(IM_COL32(c1.r * 255, c1.g * 255, c1.b * 255, 255));
-		ImU32 col_b = ImGui::GetColorU32(IM_COL32(c2.r * 255, c2.g * 255, c2.b * 255, 255));
+		ImU32 col_a = ImGui::GetColorU32(IM_COL32(c1->r * 255, c1->g * 255, c1->b * 255, 255));
+		ImU32 col_b = ImGui::GetColorU32(IM_COL32(c2->r * 255, c2->g * 255, c2->b * 255, 255));
 		draw_list->AddRectFilledMultiColor(p0, p1, col_a, col_b, col_b, col_a);
 		ImGui::InvisibleButton("gradient", gradient_size);
 	}
