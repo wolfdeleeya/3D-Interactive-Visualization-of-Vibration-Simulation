@@ -1,9 +1,9 @@
 #pragma once
 
-#include "abstract_mesh.h"
+#include "abstract_engine_mesh.h"
 #include "data_loading.h"
 
-class EngineLineMesh : public AbstractMesh {
+class EngineLineMesh : public AbstractEngineMesh {
 private:
 	static const char* VERTEX_SHADER, * FRAGMENT_SHADER;
 

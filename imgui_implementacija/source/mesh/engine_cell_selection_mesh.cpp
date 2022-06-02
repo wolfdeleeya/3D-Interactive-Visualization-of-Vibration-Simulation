@@ -107,7 +107,7 @@ void EngineCellSelectionMesh::setup_vertex_data()
 }
 
 EngineCellSelectionMesh::EngineCellSelectionMesh(const glm::ivec2& window_dimensions, const glm::ivec2& framebuffer_dimensions):
-	AbstractMesh(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER, window_dimensions)
+	AbstractEngineMesh(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER, window_dimensions)
 {
 	glGenFramebuffers(1, &m_FBO);
 

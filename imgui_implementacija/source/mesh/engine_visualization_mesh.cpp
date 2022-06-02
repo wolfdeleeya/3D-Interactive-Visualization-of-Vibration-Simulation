@@ -104,7 +104,7 @@ void EngineVisualizationMesh::load_color_data()
 }
 
 EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) :
-	AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
+	AbstractEngineMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
 {
 	glGenBuffers(1, &m_VBO_color);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "abstract_mesh.h"
+#include "abstract_engine_mesh.h"
 #include "data_loading.h"
 
 struct vertex {
@@ -8,7 +8,7 @@ struct vertex {
 	unsigned int cell_index;
 };
 
-class EngineVisualizationMesh : public AbstractMesh {
+class EngineVisualizationMesh : public AbstractEngineMesh {
 private:
 	static const char* VERTEX_SHADER, * FRAGMENT_SHADER;
 
@@ -47,5 +47,5 @@ public:
 
 	void set_target_FBO(unsigned int target_FBO) { m_target_FBO = target_FBO; }
 
-	void on_cell_selected(unsigned int cell_index) { m_shader.set_value(SELECTED_CELL_PAR_NAME, cell_index); }
+	void cell_hovered(unsigned int cell_index) { m_shader.set_value(SELECTED_CELL_PAR_NAME, cell_index); }
 };

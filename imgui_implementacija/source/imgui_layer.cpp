@@ -89,6 +89,9 @@ void ImGUILayer::draw_engine_view()
 
 			m_is_hovering_scene_view = ImGui::IsItemHovered();
 
+			ImVec2 p = m_scene_view_position;
+			glm::vec3 text_color = glm::vec3(1) - *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR);
+			ImGui::GetWindowDrawList()->AddText(ImGui::GetDefaultFont(), 15, m_scene_view_position, ImGui::GetColorU32({text_color.r, text_color.g, text_color.b, 1}), m_selected_frequencies_text.c_str());
 		}
 		ImGui::EndChild();
 
@@ -251,20 +254,12 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 	draw_color_selection(c1_name.c_str(), *c1);
 	draw_color_selection(c2_name.c_str(), *c2);
 
-	if (ImGui::Button(g.get_current_interpolation_mode_name()))
-		g.set_next_interpolation_mode();
-		
+	std::string interpolation_name = g.get_current_interpolation_mode_name();
+	interpolation_name += "##";
+	interpolation_name += gradient_name;	//have to add this in order to get identical button labels
 
-	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
-	ImVec2 gradient_size = ImVec2(ImGui::CalcItemWidth(), ImGui::GetFrameHeight());
-	{
-		ImVec2 p0 = ImGui::GetCursorScreenPos();
-		ImVec2 p1 = ImVec2(p0.x + gradient_size.x, p0.y + gradient_size.y);
-		ImU32 col_a = ImGui::GetColorU32(IM_COL32(c1->r * 255, c1->g * 255, c1->b * 255, 255));
-		ImU32 col_b = ImGui::GetColorU32(IM_COL32(c2->r * 255, c2->g * 255, c2->b * 255, 255));
-		draw_list->AddRectFilledMultiColor(p0, p1, col_a, col_b, col_b, col_a);
-		ImGui::InvisibleButton("gradient", gradient_size);
-	}
+	if (ImGui::Button(interpolation_name.c_str()))
+		g.set_next_interpolation_mode();
 }
 
 void ImGUILayer::draw_function_selection()
@@ -413,6 +408,7 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_d
 	m_engine_data->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
 	m_engine_data->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
 	m_engine_data->on_selected_cells_palletes_loaded.add_member_listener(&ImGUILayer::selected_cells_palletes_loaded, this);
+	m_engine_data->on_selected_frequencies_changed.add_member_listener(&ImGUILayer::selected_frequencies_changed, this);
 
 	if (m_engine_data->are_selected_cells_palletes_loaded())
 		selected_cells_palletes_loaded();
@@ -527,6 +523,14 @@ void ImGUILayer::selected_cells_palletes_loaded()
 		m_selected_cells_palletes_textures[i].first = palletes[i].first;
 		m_selected_cells_palletes_textures[i].second = generate_texture_from_pallete(palletes[i]);
 	}
+}
+
+void ImGUILayer::selected_frequencies_changed()
+{
+	m_selected_frequencies_text = "SELECTED FREQUENCIES:\n";
+
+	for (const std::string& frq : m_engine_data->selected_frequencies())
+		m_selected_frequencies_text += (frq + "\n");
 }
 
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)

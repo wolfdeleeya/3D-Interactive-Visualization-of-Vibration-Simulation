@@ -1,13 +1,13 @@
 #pragma once
 
-#include "abstract_mesh.h"
+#include "abstract_engine_mesh.h"
 
 struct cell_select_vertex {
 	glm::vec3 position;
 	unsigned int cell_index;
 };
 
-class EngineCellSelectionMesh: public AbstractMesh {
+class EngineCellSelectionMesh: public AbstractEngineMesh {
 private:
 	unsigned int m_FBO;
 	unsigned int m_RBO_color, m_RBO_depth;

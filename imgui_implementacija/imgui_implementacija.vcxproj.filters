@@ -126,6 +126,12 @@
     <ClInclude Include="headers\custom_imgui_widgets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\mesh\axis_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mesh\abstract_engine_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\Source\imgui.cpp">
@@ -230,6 +236,12 @@
     <ClCompile Include="source\custom_imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\mesh\abstract_engine_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh\axis_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="shaders\engine_shader.frag" />
@@ -239,5 +251,7 @@
     <CopyFileToFolders Include="shaders\engine_cell_selection_shader.frag" />
     <CopyFileToFolders Include="shaders\engine_cell_selection_shader.vert" />
     <CopyFileToFolders Include="palletes\default_pallete.txt" />
+    <CopyFileToFolders Include="shaders\axis_shader.frag" />
+    <CopyFileToFolders Include="shaders\axis_shader.vert" />
   </ItemGroup>
 </Project>

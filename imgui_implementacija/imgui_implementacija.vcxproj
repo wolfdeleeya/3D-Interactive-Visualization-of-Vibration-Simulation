@@ -151,6 +151,7 @@
     <ClInclude Include="headers\graph\graph_data.h" />
     <ClInclude Include="headers\graph\graph_settings.h" />
     <ClInclude Include="headers\implot_helper.h" />
+    <ClInclude Include="headers\mesh\abstract_engine_mesh.h" />
     <ClInclude Include="headers\mesh\abstract_mesh.h" />
     <ClInclude Include="headers\camera.h" />
     <ClInclude Include="headers\cell_value_functors.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="headers\debug.h" />
     <ClInclude Include="headers\debug_layer.h" />
     <ClInclude Include="headers\engine_data.h" />
+    <ClInclude Include="headers\mesh\axis_mesh.h" />
     <ClInclude Include="headers\mesh\engine_cell_selection_mesh.h" />
     <ClInclude Include="headers\mesh\engine_lines_mesh.h" />
     <ClInclude Include="headers\mesh\engine_visualization_mesh.h" />
@@ -197,6 +199,7 @@
     <ClCompile Include="source\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\mesh\abstract_engine_mesh.cpp" />
     <ClCompile Include="source\mesh\abstract_mesh.cpp" />
     <ClCompile Include="source\application_model.cpp" />
     <ClCompile Include="source\camera.cpp" />
@@ -213,6 +216,7 @@
     <ClCompile Include="imgui\Source\imgui_widgets.cpp" />
     <ClCompile Include="source\data_loading.cpp" />
     <ClCompile Include="source\imgui_layer.cpp" />
+    <ClCompile Include="source\mesh\axis_mesh.cpp" />
     <ClCompile Include="source\mesh\engine_cell_selection_mesh.cpp" />
     <ClCompile Include="source\mesh\engine_lines_mesh.cpp" />
     <ClCompile Include="source\mesh\engine_visualization_mesh.cpp" />
@@ -278,6 +282,16 @@
   <ItemGroup>
     <CopyFileToFolders Include="palletes\default_pallete.txt">
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\palletes</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="shaders\axis_shader.frag">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\Shaders</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\axis_shader.vert">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\Shaders</DestinationFolders>
     </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

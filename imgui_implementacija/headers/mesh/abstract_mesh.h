@@ -10,17 +10,11 @@ private:
 	static const char* PROJECTION_PAR_NAME;
 protected:
 	Shader m_shader;
-	unsigned int m_VBO, m_VAO, m_EBO;
+	unsigned int m_VBO, m_VAO;
 
 	glm::ivec2 m_window_dimensions;
 
-	std::map<unsigned int, std::vector<unsigned int>> m_cell_vertices;
-	std::map<unsigned int, glm::vec3> m_vertex_positions;
-
-	std::vector<unsigned int> m_indeces;
-
 	virtual void setup_buffers() = 0;
-	virtual void setup_indices() = 0;
 	virtual void setup_vertex_data() = 0;
 
 public:
@@ -32,10 +26,6 @@ public:
 	
 	void update_window_size(const glm::ivec2& window_dimensions);
 
-	void set_cell_vertices(const std::map<unsigned int, std::vector<unsigned int>>& cell_vertices);
-
-	void set_vertex_positions(const std::map<unsigned int, glm::vec3>& vertex_positions);
-
 	template <typename T>
 	bool set_value(const std::string& name, T value);
 
@@ -44,8 +34,6 @@ public:
 	void set_view(const glm::mat4& view_mat) { set_value(VIEW_PAR_NAME, view_mat); }
 
 	void set_projection(const glm::mat4& projection_mat) { set_value(PROJECTION_PAR_NAME, projection_mat); }
-
-	bool is_empty() { return m_cell_vertices.size() == 0 || m_vertex_positions.size() == 0; }
 };
 
 template<typename T>

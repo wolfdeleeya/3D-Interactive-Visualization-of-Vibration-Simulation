@@ -57,7 +57,7 @@ void EngineLineMesh::load_model_data()
 	}
 }
 
-EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) : AbstractMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) 
+EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) : AbstractEngineMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) 
 {
 	m_target_FBO = target_FBO;
 	setup_buffers(); 

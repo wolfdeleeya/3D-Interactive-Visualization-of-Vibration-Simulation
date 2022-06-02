@@ -35,7 +35,7 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_appliction_model->on_limits_mode_toggled.add_member_listener(&EngineData::on_limits_mode_toggled, m_engine_data);
 
 	m_engine_data->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
-	m_engine_data->on_cell_hovered.add_member_listener(&MeshManager::cell_selected, m_mesh_manager);
+	m_engine_data->on_cell_hovered.add_member_listener(&MeshManager::cell_hovered, m_mesh_manager);
 
 	m_imgui_layer->on_scene_view_scale_changed.add_member_listener(&MeshManager::window_size_changed, m_mesh_manager);
 

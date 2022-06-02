@@ -23,20 +23,24 @@ MeshManager::MeshManager(const glm::ivec2& window_dimensions)
 	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(window_dimensions, { 200, 200 });
 	EngineLineMesh* elm = new EngineLineMesh(window_dimensions, m_scene_view_MS_FBO);
 
-	on_cell_selected.add_member_listener(&EngineVisualizationMesh::on_cell_selected, evm);
+	m_axis_mesh = new AxisMesh(window_dimensions, m_scene_view_MS_FBO);
+
+	on_cell_hovered.add_member_listener(&EngineVisualizationMesh::cell_hovered, evm);
 	on_colors_recalculated.add_member_listener(&EngineVisualizationMesh::set_colors, evm);
 
 	m_index_selection_function = std::bind(&EngineCellSelectionMesh::get_index_at_pos, ecm, std::placeholders::_1, std::placeholders::_2);
 
-	m_meshes.push_back(evm);
-	m_meshes.push_back(ecm);
-	m_meshes.push_back(elm);
+	m_engine_meshes.push_back(evm);
+	m_engine_meshes.push_back(ecm);
+	m_engine_meshes.push_back(elm);
 }
 
 MeshManager::~MeshManager()
 {
-	for (AbstractMesh* mesh : m_meshes)
+	for (AbstractEngineMesh* mesh : m_engine_meshes)
 		delete mesh;
+
+	delete m_axis_mesh;
 
 	glDeleteFramebuffers(1, &m_scene_view_FBO);
 	glDeleteFramebuffers(1, &m_scene_view_MS_FBO);
@@ -80,14 +84,16 @@ void MeshManager::setup_scene_view_framebuffer(const glm::ivec2& scene_view_dime
 
 void MeshManager::view_mat_changed(const glm::mat4& view)
 {
-	for (AbstractMesh* mesh : m_meshes)
+	for (AbstractMesh* mesh : m_engine_meshes)
 		mesh->set_view(view);
+
+	m_axis_mesh->set_view(view);
 }
 
 void MeshManager::load_vertex_positions(const char* path)
 {
 	const auto& vertex_positions = data::load_vertices(path);
-	for (AbstractMesh* mesh : m_meshes)
+	for (AbstractEngineMesh* mesh : m_engine_meshes)
 		mesh->set_vertex_positions(vertex_positions);
 
 	on_vertices_loaded.invoke();
@@ -96,7 +102,7 @@ void MeshManager::load_vertex_positions(const char* path)
 void MeshManager::load_cell_vertices(const char* path)
 {
 	const auto& cell_vertices = data::load_cells(path);
-	for (AbstractMesh* mesh : m_meshes)
+	for (AbstractEngineMesh* mesh : m_engine_meshes)
 		mesh->set_cell_vertices(cell_vertices);
 
 	on_cell_vertices_loaded.invoke();
@@ -108,8 +114,10 @@ void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
 	
 	setup_scene_view_framebuffer(window_dimensions);
 	
-	for (AbstractMesh* mesh : m_meshes)
+	for (AbstractEngineMesh* mesh : m_engine_meshes)
 		mesh->update_window_size(window_dimensions);
+
+	m_axis_mesh->update_window_size(window_dimensions);
 }
 
 unsigned int MeshManager::get_index_at_pos(GLint x, GLint y)
@@ -126,7 +134,9 @@ void MeshManager::render()
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
 
-	for (AbstractMesh* mesh : m_meshes)
+	m_axis_mesh->render();
+
+	for (AbstractEngineMesh* mesh : m_engine_meshes)
 		mesh->render(); 
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_scene_view_MS_FBO); 
