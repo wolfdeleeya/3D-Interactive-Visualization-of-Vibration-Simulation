@@ -30,7 +30,7 @@ void MyImPlot::PlotLine(const GraphData& gd, unsigned int line_index)
 namespace MyImPlot {
     static inline void DefaultFormatter(double value, char* buff, int size, void* data) {
         char* fmt = (char*)data;
-        ImFormatString(buff, size, fmt, value);
+        ImFormatString(buff, size, fmt, (int)value);
     }
 
     void RenderColorBar(const Gradient& gradient, unsigned int num_of_points, ImDrawList& DrawList, const ImRect& bounds, bool reversed, bool continuous) {
@@ -77,7 +77,8 @@ void MyImPlot::ColormapScale(const char* label, const Gradient& gradient, double
 
     ImPlotRange range(scale_min, scale_max);
     gp.CTicks.Reset();
-    ImPlot::AddTicksDefault(range, frame_size.y, true, gp.CTicks, DefaultFormatter, (void*)"%g");
+    //ImPlot::AddTicksDefault(range, frame_size.y, true, gp.CTicks, DefaultFormatter, (void*)"%d");
+    AddTicks(scale_min, scale_max, num_of_color_points, gp.CTicks);
 
     const float txt_off = gp.Style.LabelPadding.x;
     const float pad_right = txt_off + gp.CTicks.MaxSize.x + (label_size.x > 0 ? txt_off + label_size.y : 0);
@@ -123,4 +124,20 @@ void MyImPlot::ColormapScale(const char* label, const Gradient& gradient, double
 
     DrawList.AddRect(bb_grad.Min, bb_grad.Max, ImPlot::GetStyleColorU32(ImPlotCol_PlotBorder));
     ImGui::PopClipRect();
+}
+
+void MyImPlot::AddTicks(double min, double max, unsigned int num_of_ticks, ImPlotTickCollection& ticks)
+{
+    double interval = (max - min) / num_of_ticks;
+    for (double tick_val = min; tick_val < max + interval; tick_val += interval) {
+            ImPlotTick tick(tick_val, false, true);
+            tick.TextOffset = ticks.TextBuffer.size();
+            
+            std::string label = std::to_string((long)tick_val);
+            const char* label_c = label.c_str();
+
+            ticks.TextBuffer.append(label_c, label_c + label.size() + 1);
+            tick.LabelSize = ImGui::CalcTextSize(label_c);
+            ticks.Append(tick);
+    }
 }

@@ -58,9 +58,9 @@ void ImGUILayer::draw_normal_color_selection()
 
 void ImGUILayer::draw_limits_mode_color_selection()
 {
-	draw_color_selection("Good Color", *m_engine_data->get_color(EngineData::ColorVariables::GOOD_LIMITS_COLOR));
-	draw_gradient_selection("Mid Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_MID_GRADIENT));
-	draw_gradient_selection("Bad Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_BAD_GRADIENT));
+	draw_color_selection("Safe Zone Color", *m_engine_data->get_color(EngineData::ColorVariables::GOOD_LIMITS_COLOR));
+	draw_gradient_selection("Risky Zone Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_RISKY_GRADIENT));
+	draw_gradient_selection("Dangerous Zone Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT));
 }
 
 void ImGUILayer::draw_engine_view()
@@ -225,7 +225,7 @@ void ImGUILayer::draw_limits_selection()
 	int selected_mode = *m_engine_data->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS);
 	unsigned int num_of_labels = sizeof(EngineData::LIMITS_NAMES) / sizeof(*EngineData::LIMITS_NAMES);
 
-	ImGui::ListBox("Limits Selection", &(selected_mode), EngineData::LIMITS_NAMES, num_of_labels, 2);
+	ImGui::ListBox("Limits Selection", &(selected_mode), EngineData::LIMITS_NAMES, num_of_labels);
 
 	m_engine_data->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS, selected_mode);
 
@@ -258,6 +258,8 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 	interpolation_name += "##";
 	interpolation_name += gradient_name;	//have to add this in order to get identical button labels
 
+	ImGui::Text("Gradient sampling method:");
+	ImGui::SameLine();
 	if (ImGui::Button(interpolation_name.c_str()))
 		g.set_next_interpolation_mode();
 }
@@ -267,7 +269,7 @@ void ImGUILayer::draw_function_selection()
 	int selected_function = (int) *m_engine_data->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION);
 	unsigned int num_of_labels = sizeof(EngineData::FUNCTION_NAMES) / sizeof(*EngineData::FUNCTION_NAMES);
 
-	ImGui::ListBox("Function Selection", &(selected_function), EngineData::FUNCTION_NAMES, num_of_labels, 2);
+	ImGui::ListBox("Function Selection", &(selected_function), EngineData::FUNCTION_NAMES, num_of_labels);
 	
 	m_engine_data->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION, selected_function);
 }
@@ -279,7 +281,7 @@ void ImGUILayer::draw_graph_widget()
 	ImPlotContext* implot_context = ImPlot::GetCurrentContext();
 	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
 	
-	if (ImGui::Begin("Graph")) {
+	if (ImGui::Begin("Graph View")) {
 		if (m_engine_data->num_of_selected_cells() > 0) {
 			if (ImGui::Button("CLEAR SELECTED CELLS")) {
 				m_engine_data->clear_selected_cells();

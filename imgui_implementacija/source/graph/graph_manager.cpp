@@ -4,14 +4,14 @@
 #include "implot_helper.h"
 
 const std::vector<const char*> GraphManager::RENDER_MODE_LABELS = {
-	"Bars Mode", 
-	"Lines Mode"
+	"BARS", 
+	"LINES"
 };
 
 const std::vector<const char*> GraphManager::COMPARISON_MODE_LABELS = {
-	"Default Comparison Mode",
-	"Subplots Comparison Mode",
-	"Relative Comparison Mode"
+	"NORMAL",
+	"SUBPLOTS",
+	"RELATIVE"
 };
 
 void GraphManager::draw_bar_graph(const GraphData& gd, int cell_index)
@@ -110,12 +110,12 @@ void GraphManager::draw_limits_mode_colormap_legend()
 {
 	unsigned int num_of_selected_frequencies = m_engine_data->num_of_selected_frequencies();
 
-	Gradient mid_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_MID_GRADIENT);
-	Gradient bad_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_BAD_GRADIENT);
+	Gradient mid_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_RISKY_GRADIENT);
+	Gradient bad_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT);
 
-	MyImPlot::ColormapScale("Limits Mode Mid Colormap", mid_gradient, 0, num_of_selected_frequencies, num_of_selected_frequencies, { 0, -1 }, false);
+	MyImPlot::ColormapScale("Limits Mode Risky Colormap", mid_gradient, 0, num_of_selected_frequencies, num_of_selected_frequencies, { 0, -1 }, false);
 	ImGui::SameLine(),
-	MyImPlot::ColormapScale("Limits Mode Bad Colormap", bad_gradient, 0, num_of_selected_frequencies, num_of_selected_frequencies, { 0, -1 }, false);
+	MyImPlot::ColormapScale("Limits Mode Dangerous Colormap", bad_gradient, 0, num_of_selected_frequencies, num_of_selected_frequencies, { 0, -1 }, false);
 }
 
 void GraphManager::draw_normal_mode_colormap_legend()
@@ -307,11 +307,15 @@ void GraphManager::switch_comparison_mode()
 
 void GraphManager::draw_graph_settings()
 {
+	ImGui::Text("Graph Rendering Mode: ");
+	ImGui::SameLine();
 	const char* render_mode_button_label = RENDER_MODE_LABELS[(unsigned int)m_current_render_mode];
 	if (ImGui::Button(render_mode_button_label)) {
 		switch_render_mode();
 	}
 
+	ImGui::Text("Comparison Mode: ");
+	ImGui::SameLine();
 	const char* comparison_mode_button_label = COMPARISON_MODE_LABELS[(unsigned int)m_current_comparison_mode];
 	if (ImGui::Button(comparison_mode_button_label)) {
 		switch_comparison_mode();

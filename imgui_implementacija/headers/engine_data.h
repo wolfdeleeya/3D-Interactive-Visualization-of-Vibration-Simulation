@@ -26,7 +26,7 @@ class EngineData {
 public:
 	enum class CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD };
 
-	enum class GradientVariables { NORMAL_MODE_GRADIENT, LIMITS_MODE_MID_GRADIENT, LIMITS_MODE_BAD_GRADIENT, END };
+	enum class GradientVariables { NORMAL_MODE_GRADIENT, LIMITS_MODE_RISKY_GRADIENT, LIMITS_MODE_DANGEROUS_GRADIENT, END };
 
 	enum class ColorVariables { DEFAULT_COLOR, GOOD_LIMITS_COLOR, END };
 

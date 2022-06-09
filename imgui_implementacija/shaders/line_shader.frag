@@ -6,4 +6,5 @@ uniform vec3 line_color;
 
 void main() {
 	color = vec4(0, 0, 0, 1);
+
 }

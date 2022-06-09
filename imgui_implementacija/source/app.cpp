@@ -75,7 +75,7 @@ void App::init_glfw(int width, int height) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
-	glfwWindowHint(GLFW_SAMPLES, 8);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	
 	m_window = glfwCreateWindow(width, height, "Engine Viewer", nullptr, nullptr);
 
@@ -100,6 +100,10 @@ void App::init_opengl() {
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
+
+	//offset added so that the wireframe is drawn in front
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(1.0, 1.0);
 }
 
 void App::scroll_callback(double x_offset, double y_offset)

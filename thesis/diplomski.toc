@@ -1,0 +1,19 @@
+\babel@toc {croatian}{}\relax 
+\contentsline {chapter}{Popis slika}{v}{}%
+\contentsline {chapter}{\numberline {1}Uvod}{1}{}%
+\contentsline {chapter}{\numberline {2}Pregled područja}{2}{}%
+\contentsline {chapter}{\numberline {3}Analiza zadatka i zahtjeva}{4}{}%
+\contentsline {section}{\numberline {3.1}Identificirani zadaci}{4}{}%
+\contentsline {section}{\numberline {3.2}Identificirani zahtjevi}{4}{}%
+\contentsline {chapter}{\numberline {4}Dizajn vizualizacije}{7}{}%
+\contentsline {section}{\numberline {4.1}Prikaz motora}{8}{}%
+\contentsline {section}{\numberline {4.2}Prikaz grafa}{8}{}%
+\contentsline {section}{\numberline {4.3}Postavke grafa}{8}{}%
+\contentsline {section}{\numberline {4.4}Odabir frekvencija}{8}{}%
+\contentsline {section}{\numberline {4.5}Postavke evaluacije odabranih frekvencija}{8}{}%
+\contentsline {section}{\numberline {4.6}Postavke boja}{8}{}%
+\contentsline {section}{\numberline {4.7}Generalne informacije}{8}{}%
+\contentsline {chapter}{\numberline {5}Implementacija}{9}{}%
+\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{10}{}%
+\contentsline {chapter}{\numberline {7}Zaključak}{11}{}%
+\contentsline {chapter}{Literatura}{12}{}%

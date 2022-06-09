@@ -1,0 +1,29 @@
+\begin{thebibliography}{3}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[avl()]{avlEXCITE}
+{A}{V}{L} {E}{X}{C}{I}{T}{E}™.
+\newblock \url{https://www.avl.com/excite}.
+\newblock [Pristupljeno 3. lipnja 2022].
+
+\bibitem[Matkovi{\'c} et~al.(2021)Matkovi{\'c}, Splechtna, Gra{\v{c}}anin,
+  Todorovi{\'c}, Goja, Bedi{\'c}, i Hauser]{matkovic2021getting}
+Kre{\v{s}}imir Matkovi{\'c}, Rainer Splechtna, Denis Gra{\v{c}}anin, Goran
+  Todorovi{\'c}, Stanislav Goja, Boris Bedi{\'c}, i Helwig Hauser.
+\newblock Getting insight into noise, vibration, and harshness simulation data.
+\newblock U \emph{2021 Winter Simulation Conference (WSC)}, stranice 1--12.
+  IEEE, 2021.
+
+\bibitem[Unwin(2020)]{Unwin2020Why}
+Antony Unwin.
+\newblock Why is {Data} {Visualization} {Important}? {What} is {Important} in
+  {Data} {Visualization}?
+\newblock \emph{Harvard Data Science Review}, 2\penalty0 (1), 31. siječnja
+  2020.
+\newblock \url{https://hdsr.mitpress.mit.edu/pub/zok97i7p}.
+
+\end{thebibliography}

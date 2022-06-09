@@ -10,4 +10,5 @@ namespace MyImPlot {
 	void PlotBars(const GraphData& gd, unsigned int index, float bar_width);
 	void PlotLine(const GraphData& gd, unsigned int line_index);
 	void ColormapScale(const char* label, const Gradient& gradient, double scale_min, double scale_max, unsigned int num_of_color_points, const ImVec2& size, bool is_continuous);
+	void AddTicks(double min, double max, unsigned int num_of_ticks, ImPlotTickCollection& ticks);
 }

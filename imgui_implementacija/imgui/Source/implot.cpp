@@ -673,9 +673,10 @@ void AddTicksDefault(const ImPlotRange& range, float pix, bool vertical, ImPlotT
     const int nMinor        = 10;
     const int nMajor        = ImMax(2, (int)IM_ROUND(pix / (vertical ? 300.0f : 400.0f)));
     const double nice_range = NiceNum(range.Size() * 0.99, false);
-    const double interval   = NiceNum(nice_range / (nMajor - 1), true);
+    const double interval = NiceNum(nice_range / (nMajor - 1), true);
     const double graphmin   = floor(range.Min / interval) * interval;
     const double graphmax   = ceil(range.Max / interval) * interval;
+
     bool first_major_set    = false;
     int  first_major_idx    = 0;
     ImVec2 total_size(0,0);

@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: diplomski.aux
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Reallocating 'name_of_file' (item size: 1) to 4 items.
+The style file: fer.bst
+Database file #1: literatura.bib
+Warning--to sort, need author or key in avlEXCITE
+Warning--empty year in avlEXCITE
+You've used 3 entries,
+            2773 wiz_defined-function locations,
+            614 strings with 5513 characters,
+and the built_in function-call counts, 1366 in all, are:
+= -- 120
+> -- 76
+< -- 2
++ -- 27
+- -- 24
+* -- 105
+:= -- 200
+add.period$ -- 11
+call.type$ -- 3
+change.case$ -- 17
+chr.to.int$ -- 3
+cite$ -- 9
+duplicate$ -- 63
+empty$ -- 116
+format.name$ -- 26
+if$ -- 292
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 2
+newline$ -- 24
+num.names$ -- 8
+pop$ -- 46
+preamble$ -- 1
+purify$ -- 14
+quote$ -- 0
+skip$ -- 47
+stack$ -- 0
+substring$ -- 26
+swap$ -- 10
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 33
+warning$ -- 2
+while$ -- 9
+width$ -- 0
+write$ -- 47
+(There were 2 warnings)

@@ -85,10 +85,10 @@ glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
 	}
 
 	if (num_of_bad > 0) {			//if there are bad frequencies sample from bad gradient
-		Gradient& bad_gradient = *get_gradient(GradientVariables::LIMITS_MODE_BAD_GRADIENT);
+		Gradient& bad_gradient = *get_gradient(GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT);
 		return bad_gradient.evaluate(float(num_of_bad) / num_of_valid_frequencies);
 	} else if (num_of_mid > 0) {	//if there are no bad frequencies, but mids exist, sample from mid gradient
-		Gradient& mid_gradient = *get_gradient(GradientVariables::LIMITS_MODE_MID_GRADIENT);
+		Gradient& mid_gradient = *get_gradient(GradientVariables::LIMITS_MODE_RISKY_GRADIENT);
 		return mid_gradient.evaluate(float(num_of_mid) / num_of_valid_frequencies);
 	}								//if there are valid cells, and no bad or mid frequencies, return good color
 	else if (num_of_valid_frequencies > 0) {
