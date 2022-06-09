@@ -3,6 +3,9 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{pdfpages}
+\usepackage{subcaption}
+
+\graphicspath{ {./resources/images/} }
 
 \lstset{ %
 language=C++,                % choose the language of the code
@@ -80,7 +83,7 @@ Pošto dizajniranje alata za vizualizaciju nije jednostavan zadatak, potrebno je
 \section{Identificirani zadaci}
 Ključni zadatak alata razvijenog u sklopu ovog rada je prikazivanje razlika i sličnosti između različith frekvencija rada ćelija motora na intuitivan i razumljiv način. Kao što je već navedeno u prethodnom poglavlju, alat iz \citep{matkovic2021getting} ima problema sa čitljivošću i jasnoćom usporedbe. Usporedba utjecaja više frekvencija rada motora na vibraciju ćelija je jedino moguća koristeći grafove kod kojih svaka linija predstavlja funkciju vibracije jedne ćelije (x-os predstavlja sve frekvencije za koje postoje podaci, a y-os predstavlja snagu vibracije). Takav način rada stvara nezanemarive poteškoće sa korištenjem alata: teže je usporediti frekvencije koje nisu susjedne na grafu, čitljivost grafa je uvelike smanjena kada je odabrano više ćelija i otežano je uočiti gdje se točno na modelu motora nalaze razlike u radu motora.
 
-\section{Identificirani zahtjevi}
+\section{Identificirani zahtjevi} \label{requests-section}
 Kako bi se usporedbu učinilo intuitivnijom i jasnijom, očiti korak je omogućiti iscrtavanje rezultata usporedbe na 3D modelu motora. Naime, iako se u \citep{matkovic2021getting} ćelije bojaju na temelju jačine vibracija pri radu na zadanoj frekvenciji, nije moguće iscrtati utjecaj više frekvencija na modelu motora. Takvim iscrtavanjem bi se uveliko olakšalo uočavanje promjena na dijelovima motora. Naravno, kod više odabranih frekvencija, postavlja se pitanje kako iz niza vibracija kojim ćelija vibrira pri odabranim frekvencijama, odabrati jedan konačni iznos koji će pomoću zadanog raspona i gradijenta odrediti konačnu boju ćelije kojoj pripada. Alat razvijen u sklopu ovog rada korisniku nudi nekoliko funkcija koje može odabrati, a koje primaju niz iznosa vibracija te vraćaju jednu vrijednost vibracije, koja predstavlja "sažetak" navedenog niza:
 
 \begin{itemize}
@@ -103,9 +106,9 @@ No, kada navedene funkcije izračunaju konačnu vrijednost iz niza vrijednosti, 
 
 Alat korisniku omogućuje da sam definira boje gradijenta na temelju kojeg će se model odrediti boje ćelija.
 
-U sklopu alata je implementiran još jedan način "bojanja" modela motora nazvan \textit{limits mode}. Navedeni način rada baziran je na definiranim ograničenjima vibracija koja raspon vibracija dijele na 3 zone: bezopasnu, rizičnu i opasnu. Rasponi su definirani za određene frekvencije(ne nužno za sve) u posebnoj datoteci. Ovaj način bojanja je odvojen od "običnog" načina rada koji je objašnjen u prijašnjem odlomku. 
+U sklopu alata je implementiran još jedan način "bojanja" modela motora koji je baziran na definiranim ograničenjima vibracija. Navedena ograničenja dijele raspon vibracija na 3 zone: bezopasnu, rizičnu i opasnu. Rasponi su definirani za određene frekvencije(ne nužno za sve) u posebnoj datoteci. Ovaj način bojanja je odvojen od normalnog načina rada, objašnjenog u prijašnjem odlomku. 
 \\
-Boje ćelija u \textit{limits mode}-u se određuju na sljedeći način:
+Boje ćelija u načinu rada s ograničenjima se određuju na sljedeći način:
 \begin{itemize}
 \item Zelena - ako se snage vibracije svih odabranih frekvencija za trenutnu ćeliju nalaze u bezopasnoj zoni
 \item Gradijent žute - ako se snage vibracije barem jedne odabrane frekvencije nalaze u rizičnoj zoni, a nijedna u opasnoj zoni
@@ -123,19 +126,36 @@ Navedeno rješenje predstavlja poboljšanje na području čitljivosti zbog više
 
 \chapter{Dizajn vizualizacije}
 
-Zahtjevi navedeni u prijašnjem poglavlju daju naslutiti kako će sučelje alata biti kompleksno, pošto brojne opcije korisniku trebaju biti na raspolaganju. Kako bi se svi navedeni zahtjevi zadovoljili, a upotrebljivost alata se ne bi smanjila, potrebno je alat organizirati u smislene prikaze \engl{view}. Na slici \ref{fig:gen-screen} se može vidjeti kako je alat zapravo organiziran u sedam prikaza. Navedeni prikazi su detaljno opisani u nastavku.\\
+Zahtjevi navedeni u prijašnjem poglavlju daju naslutiti kako će sučelje alata biti kompleksno, pošto korisniku trebaju biti na raspolaganju brojne opcije. Kako bi se svi navedeni zahtjevi zadovoljili, a upotrebljivost alata se ne bi smanjila, potrebno je alat organizirati u smislene prikaze \engl{view}. Na slici \ref{fig:gen-screen} se može vidjeti kako je alat zapravo organiziran u sedam prikaza. Navedeni prikazi su detaljno opisani u nastavku.\\
 
-\begin{figure}[htb]
+\begin{figure}[h]
 \centering
-\includegraphics[width=15cm]{resources/images/general_screenshot.png}
+\includegraphics[width=0.9\linewidth]{general_screenshot.png}
 \caption{Snimka zaslona alata}
 \label{fig:gen-screen}
 \end{figure}
 
-
 \section{Prikaz motora}
+Zadaća prikaza motora je jasno vizualizirati podatke o vibracijama ćelija, pritom uzimajući u obzir brojne postavke vizualizacije poput: načina rada, odabranih frekvencija, načina računanja konačnih podataka ćelije, zadanih raspona podataka, gradijenata koji se koriste za vizualizaciju i načina uzorkovanja tih gradijenata. Korisnik ovu komponentu također može koristiti i za označavanje interesnih ćelija.\\\\
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{engine_view_normal_mode.png}
+\caption{Prikaz motora tijekom normalnog načina rada}
+\label{fig:normal-mode-engine-view}
+\end{figure}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{engine_view_limits.png}
+\caption{Prikaz motora tijekom načina rada sa preddefiniranim ograničenjima}
+\label{fig:limits-mode-engine-view}
+\end{figure}
+Na slikama \ref{fig:normal-mode-engine-view} i \ref{fig:limits-mode-engine-view} se može vidjeti primjer ovog prikaza tijekom dva moguća načina rada. Uz prikaz obojanog modela ova komponenta alata je zadužena i za prikaz legende gradijenta i nabrajanje odabranih frekvencija, kako bi snimak prikaza prenosio sve informacije potrebne za razumijevanje rezultata vizualizacije. Osi koordinatnog sustava su nacrtane uz model motora kako bi korisnik dobio osjećaj za koordinatni sustav u kojem se model nalazi. Označavanje ćelija se odrađuje klikom na lijevu tipku miša kada se pokazivač miša nalazi iznad interesne ćelije. Kada korisnik pokazivačem miša pređe preko ćelije bez klikanja, boja ćelije postaje inverz prijašnje boje. Jednom kada korisnik klikne na ćeliju, ćelija se označava jednom od boja iz trenutne palete (detaljno objašnjeno u poglavlju \ref{color-settings-section}) te je korisniku prikazan detaljan uvid u podatke označene ćelije putem prikaza grafa (detaljno objašnjeno u \ref{graph-view-section}).\\
+Kao što je vidljivo iz slika \ref{fig:normal-mode-engine-view} i \ref{fig:limits-mode-engine-view}, razlike u dva načina rada se ne manifestiraju samo u vizualizaciji motora, već i u sučelju ovog prikaza. Naime, kako je objašnjeno u poglavlju \ref{requests-section}, u normalnom načinu rada alatu je potreban jedan kontinuirani gradijent, a u načinu rada sa preddefiniranim ograničenjima su potrebna dva diskretna gradijenta, jedan za rizičnu i jedan za opasnu zonu. Osim što je navedene gradijente moguće mijenjati pomoću dvije kontrolne boje, moguće ih je mijenjati i promjenom funkcije uzorkovanja gradijenta, ali više o svim postavkama gradijenata je objašnjeno u poglavlju \ref{color-settings-section}.
 
-\section{Prikaz grafa}
+
+
+
+\section{Prikaz grafa} \label{graph-view-section}
 
 \section{Postavke grafa}
 
@@ -143,7 +163,47 @@ Zahtjevi navedeni u prijašnjem poglavlju daju naslutiti kako će sučelje alata
 
 \section{Postavke evaluacije odabranih frekvencija}
 
-\section{Postavke boja}
+\section{Postavke boja} \label{color-settings-section}
+\ref{fig:colormap-legends} referiraj \citep{easing}\\
+\begin{figure} [h]
+     \centering
+     \begin{subfigure}[h]{0.15\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{linear_colormap.png}
+         \caption{Linearno}
+         \label{fig:linear_legend}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[h]{0.15\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{cubic_colormap.png}
+         \caption{Kubno}
+         \label{fig:cubic_legend}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[h]{0.15\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{quartic_colormap.png}
+         \caption{Kvartičko}
+         \label{fig:quartic_legend}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[h]{0.15\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{cubic_symmetrical_colormap.png}
+         \caption{Kubno simetrično}
+         \label{fig:cubic_symmetrical_legend}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[h]{0.15\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{quartic_symmetrical_colormap.png}
+         \caption{Kvartičko simetrično}
+         \label{fig:quartic_symmetrical_legend}
+     \end{subfigure}
+        \caption{Drugačije postavke uzorkovanja gradijenta}
+        \label{fig:colormap-legends}
+\end{figure}
 
 \section{Generalne informacije}
 

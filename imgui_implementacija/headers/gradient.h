@@ -7,7 +7,7 @@
 #include "imgui.h"
 
 class Gradient {
-	enum class InterpolationMode { LINEAR, QUBIC, QUARTIC, QUBIC_SYMMETRICAL, QUARTIC_SYMMETRICAL, END };
+	enum class InterpolationMode { LINEAR, CUBIC, QUARTIC, CUBIC_SYMMETRICAL, QUARTIC_SYMMETRICAL, END };
 	typedef std::function<float(float)> easing_function;
 private:
 	static const std::vector<easing_function> EASING_FUNCTIONS; 
@@ -48,11 +48,11 @@ public:
 
 	static float identity_operation(float val) { return val; }
 
-	static float qubic_operation(float val) { return powf(val, 3); }
+	static float cubic_operation(float val) { return powf(val, 3); }
 
 	static float quart_operation(float val) { return powf(val, 4); }
 
 	static float ease_in_out_quart_operation(float val) { return val < 0.5f ? 8 * powf(val, 4) : (1 - powf(-2 * val + 2, 4) / 2); }
 
-	static float ease_in_out_qubic_operation(float val) { return val < 0.5f ? 4 * powf(val, 3) : (1 - powf(-2 * val + 2, 3) / 2); }
+	static float ease_in_out_cubic_operation(float val) { return val < 0.5f ? 4 * powf(val, 3) : (1 - powf(-2 * val + 2, 3) / 2); }
 };

@@ -6,14 +6,14 @@
 \contentsline {section}{\numberline {3.1}Identificirani zadaci}{4}{}%
 \contentsline {section}{\numberline {3.2}Identificirani zahtjevi}{4}{}%
 \contentsline {chapter}{\numberline {4}Dizajn vizualizacije}{7}{}%
-\contentsline {section}{\numberline {4.1}Prikaz motora}{8}{}%
-\contentsline {section}{\numberline {4.2}Prikaz grafa}{8}{}%
-\contentsline {section}{\numberline {4.3}Postavke grafa}{8}{}%
-\contentsline {section}{\numberline {4.4}Odabir frekvencija}{8}{}%
-\contentsline {section}{\numberline {4.5}Postavke evaluacije odabranih frekvencija}{8}{}%
-\contentsline {section}{\numberline {4.6}Postavke boja}{8}{}%
-\contentsline {section}{\numberline {4.7}Generalne informacije}{8}{}%
-\contentsline {chapter}{\numberline {5}Implementacija}{9}{}%
-\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{10}{}%
-\contentsline {chapter}{\numberline {7}Zaključak}{11}{}%
-\contentsline {chapter}{Literatura}{12}{}%
+\contentsline {section}{\numberline {4.1}Prikaz motora}{7}{}%
+\contentsline {section}{\numberline {4.2}Prikaz grafa}{9}{}%
+\contentsline {section}{\numberline {4.3}Postavke grafa}{9}{}%
+\contentsline {section}{\numberline {4.4}Odabir frekvencija}{9}{}%
+\contentsline {section}{\numberline {4.5}Postavke evaluacije odabranih frekvencija}{9}{}%
+\contentsline {section}{\numberline {4.6}Postavke boja}{9}{}%
+\contentsline {section}{\numberline {4.7}Generalne informacije}{9}{}%
+\contentsline {chapter}{\numberline {5}Implementacija}{11}{}%
+\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{12}{}%
+\contentsline {chapter}{\numberline {7}Zaključak}{13}{}%
+\contentsline {chapter}{Literatura}{14}{}%

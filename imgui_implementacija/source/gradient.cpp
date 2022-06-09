@@ -3,17 +3,17 @@
 
 const std::vector<Gradient::easing_function> Gradient::EASING_FUNCTIONS = {
 	&Gradient::identity_operation,
-	&Gradient::qubic_operation,
+	&Gradient::cubic_operation,
 	&Gradient::quart_operation,
-	&Gradient::ease_in_out_qubic_operation,
+	&Gradient::ease_in_out_cubic_operation,
 	&Gradient::ease_in_out_quart_operation,
 };
 
 const std::vector<const char*> Gradient::INTERPOLATION_MODE_NAMES = {
 	"Linear",
-	"Qubic",
+	"Cubic",
 	"Quartic",
-	"Qubic Symmetrical",
+	"Cubic Symmetrical",
 	"Quartic Symmetrical"
 };
 
