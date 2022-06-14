@@ -23,7 +23,7 @@ App::App(int init_width, int init_height) {
 	m_appliction_model = new ApplicationModel();
 	m_engine_data = new EngineData(glm::vec3(0.55));
 
-	m_mesh_manager = new MeshManager({ init_width, init_height });
+	m_mesh_manager = new MeshManager(m_appliction_model, m_engine_data, { init_width, init_height });
 	m_graph_manager = new GraphManager(m_appliction_model, m_engine_data);
 
 	m_imgui_layer = new ImGUILayer(m_appliction_model, m_engine_data, m_mesh_manager, m_graph_manager, m_window, "version 330 core");
@@ -34,7 +34,6 @@ App::App(int init_width, int init_height) {
 	on_mouse_clicked.add_member_listener(&EngineData::handle_mouse_click, m_engine_data);
 
 	m_appliction_model->on_view_mat_changed.add_member_listener(&MeshManager::view_mat_changed, m_mesh_manager);
-	m_appliction_model->on_clear_color_changed.add_member_listener(&MeshManager::set_current_clear_color, m_mesh_manager);
 
 	m_appliction_model->on_limits_mode_toggled.add_member_listener(&EngineData::on_limits_mode_toggled, m_engine_data);
 
@@ -167,6 +166,7 @@ void App::handle_mouse_button_callback(int button, bool is_pressed)
 
 void App::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	std::cout << "a";
 	m_imgui_layer->handle_key_callback(window, key, scancode, action, mods);
 }
 

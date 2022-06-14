@@ -12,7 +12,7 @@ void ApplicationModel::set_is_limits_mode_active(bool value)
 }
 
 ApplicationModel::ApplicationModel():
-	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 }, [this]() { invoke_clear_color_changed(); })
+	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 }, []() {})
 {
 	m_rotation_sensitivity = 1;
 	m_scroll_sensitivity = 0.05;

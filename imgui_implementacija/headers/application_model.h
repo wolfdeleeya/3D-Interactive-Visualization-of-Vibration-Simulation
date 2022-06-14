@@ -26,7 +26,6 @@ private:
 
 public:
 	Event<const glm::mat4&> on_view_mat_changed;
-	Event<const glm::vec3&> on_clear_color_changed;
 	Event<bool> on_limits_mode_toggled;
 
 	ApplicationModel();
@@ -52,6 +51,4 @@ public:
 	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }
 
 	void set_color(ColorVariables e, const glm::vec3& c) { m_color_variables.set(e, c); }
-
-	void invoke_clear_color_changed() { on_clear_color_changed.invoke(*get_color(ColorVariables::CLEAR_COLOR)); }
 };

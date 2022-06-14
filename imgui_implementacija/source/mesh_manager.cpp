@@ -7,8 +7,11 @@
 #include "mesh/engine_cell_selection_mesh.h"
 #include "mesh/engine_lines_mesh.h"
 
-MeshManager::MeshManager(const glm::ivec2& window_dimensions)
+MeshManager::MeshManager(ApplicationModel* application_model, EngineData* engine_data, const glm::ivec2& window_dimensions)
 {
+	m_application_model = application_model;
+	m_engine_data = engine_data;
+
 	glGenFramebuffers(1, &m_scene_view_FBO); 
 	glGenFramebuffers(1, &m_scene_view_MS_FBO); 
 
@@ -129,7 +132,9 @@ void MeshManager::render()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_scene_view_MS_FBO); 
 
-	glClearColor(m_current_clear_color.r, m_current_clear_color.g, m_current_clear_color.b, 1);
+	glm::vec3 clear_color = *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR);
+
+	glClearColor(clear_color.r, clear_color.g, clear_color.b, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); 

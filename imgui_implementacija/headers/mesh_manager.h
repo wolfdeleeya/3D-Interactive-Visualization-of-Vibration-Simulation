@@ -1,14 +1,20 @@
 #pragma once
 
-#include "events.h"
-#include "signals.h"
+#include "application_model.h"
+#include "engine_data.h"
+
 #include "mesh/abstract_mesh.h"
 #include "mesh/abstract_engine_mesh.h"
-
 #include "mesh/axis_mesh.h"
+
+#include "events.h"
+#include "signals.h"
 
 class MeshManager {
 private:
+	ApplicationModel* m_application_model;
+	EngineData* m_engine_data;
+
 	std::vector<AbstractEngineMesh*> m_engine_meshes;
 
 	AxisMesh* m_axis_mesh;
@@ -24,13 +30,12 @@ private:
 	unsigned int m_scene_view_MS_RBO_depth;
 
 	glm::ivec2 m_window_dimensions;
-	glm::vec3 m_current_clear_color;
 
 public:
 	Signal on_vertices_loaded,
 		on_cell_vertices_loaded;
 
-	MeshManager(const glm::ivec2& window_dimensions);
+	MeshManager(ApplicationModel* application_model, EngineData* engine_data, const glm::ivec2& window_dimensions);
 
 	~MeshManager();
 
@@ -51,8 +56,6 @@ public:
 	unsigned int get_index_at_pos(GLint x, GLint y);
 
 	void render();
-
-	void set_current_clear_color(const glm::vec3& clear_color) { m_current_clear_color = clear_color; }
 
 	unsigned int scene_texture() { return m_scene_view_texture; }
 };
