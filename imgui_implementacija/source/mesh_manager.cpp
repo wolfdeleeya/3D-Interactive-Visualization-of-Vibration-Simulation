@@ -22,14 +22,14 @@ MeshManager::MeshManager(ApplicationModel* application_model, EngineData* engine
 
 	setup_scene_view_framebuffer(window_dimensions);
 
-	EngineVisualizationMesh* evm = new EngineVisualizationMesh(window_dimensions, m_scene_view_MS_FBO);
+	EngineVisualizationMesh* evm = new EngineVisualizationMesh(m_engine_data, window_dimensions, m_scene_view_MS_FBO);
 	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(window_dimensions, { 200, 200 });
 	EngineLineMesh* elm = new EngineLineMesh(window_dimensions, m_scene_view_MS_FBO);
 
 	m_axis_mesh = new AxisMesh(window_dimensions, m_scene_view_MS_FBO);
 
 	on_cell_hovered.add_member_listener(&EngineVisualizationMesh::cell_hovered, evm);
-	on_colors_recalculated.add_member_listener(&EngineVisualizationMesh::set_colors, evm);
+	on_colors_recalculated.add_member_listener(&EngineVisualizationMesh::on_colors_updated, evm);
 
 	m_index_selection_function = std::bind(&EngineCellSelectionMesh::get_index_at_pos, ecm, std::placeholders::_1, std::placeholders::_2);
 

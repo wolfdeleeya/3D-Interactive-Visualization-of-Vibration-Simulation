@@ -2,6 +2,7 @@
 
 #include "abstract_engine_mesh.h"
 #include "data_loading.h"
+#include "engine_data.h"
 
 struct vertex {
 	glm::vec3 position;
@@ -14,14 +15,14 @@ private:
 
 	const static char* SELECTED_CELL_PAR_NAME;
 
+	EngineData* m_engine_data;
+
 	unsigned int m_VBO_color;
 
 	unsigned int m_target_FBO;
 
 	std::vector<vertex> m_model_data;
 	std::vector<glm::vec3> m_color_data;
-
-	std::map<unsigned int, glm::vec3> m_cell_colors_map;
 
 	std::map<unsigned int, std::map<unsigned int, unsigned int>> m_indeces_map;
 
@@ -37,13 +38,13 @@ private:
 
 	void load_color_data();
 public:
-	EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int m_target_FBO = 0);
+	EngineVisualizationMesh(EngineData* engine_data, const glm::ivec2& window_dimensions, unsigned int m_target_FBO = 0);
 	
 	virtual ~EngineVisualizationMesh() override;
 
-	void set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map);
-
 	virtual void render() override;
+
+	void on_colors_updated() { setup_color_data(); }
 
 	void set_target_FBO(unsigned int target_FBO) { m_target_FBO = target_FBO; }
 

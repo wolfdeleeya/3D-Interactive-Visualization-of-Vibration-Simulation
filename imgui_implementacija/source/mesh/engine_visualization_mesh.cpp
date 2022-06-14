@@ -88,13 +88,16 @@ void EngineVisualizationMesh::load_model_data()
 
 void EngineVisualizationMesh::load_color_data()
 {
-	m_color_data.resize(m_indeces.size());
+	const std::map<unsigned int, glm::vec3>& color_map = m_engine_data->current_color_map();
+
+	if (m_color_data.size() != m_indeces.size())
+		m_color_data.resize(m_indeces.size());
 
 	for (auto& pair : m_cell_vertices) {
 		unsigned int cell_index = pair.first;
 
 		for (unsigned int vert_index : pair.second) {
-			glm::vec3 color = m_cell_colors_map[cell_index];
+			glm::vec3 color = color_map.at(cell_index);
 
 			unsigned int index = m_indeces_map[cell_index][vert_index];
 
@@ -103,9 +106,11 @@ void EngineVisualizationMesh::load_color_data()
 	}
 }
 
-EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) :
+EngineVisualizationMesh::EngineVisualizationMesh(EngineData* engine_data, const glm::ivec2& window_dimensions, unsigned int target_FBO) :
 	AbstractEngineMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
 {
+	m_engine_data = engine_data;
+
 	glGenBuffers(1, &m_VBO_color);
 
 	m_target_FBO = target_FBO;
@@ -116,13 +121,6 @@ EngineVisualizationMesh::EngineVisualizationMesh(const glm::ivec2& window_dimens
 EngineVisualizationMesh::~EngineVisualizationMesh()
 {
 	glDeleteBuffers(1, &m_VBO_color);
-}
-
-void EngineVisualizationMesh::set_colors(const std::map<unsigned int, glm::vec3>& cell_colors_map)
-{
-	m_cell_colors_map = cell_colors_map;
-
-	setup_color_data();
 }
 
 void EngineVisualizationMesh::render()

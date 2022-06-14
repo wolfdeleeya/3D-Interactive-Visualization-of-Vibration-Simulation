@@ -21,7 +21,7 @@ private:
 
 	Event<unsigned int> on_cell_hovered;
 
-	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
+	Signal on_colors_recalculated;
 
 	std::function<unsigned int(GLint, GLint)> m_index_selection_function;
 
@@ -43,7 +43,7 @@ public:
 
 	void view_mat_changed(const glm::mat4& view);
 
-	void colors_recalculated(const std::map<unsigned int, glm::vec3>& colors) { on_colors_recalculated.invoke(colors); }
+	void colors_recalculated() { on_colors_recalculated.invoke(); }
 
 	void cell_hovered(unsigned int cell_index) { on_cell_hovered.invoke(cell_index); }
 

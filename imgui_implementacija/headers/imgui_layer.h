@@ -86,7 +86,7 @@ public:
 
 	Event<const glm::ivec2&> on_scene_view_scale_changed;
 
-	ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, const char* version_string, bool is_dark = true);
+	ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, bool is_dark = true);
 	
 	~ImGUILayer();
 

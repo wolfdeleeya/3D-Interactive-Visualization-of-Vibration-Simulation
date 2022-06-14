@@ -4,6 +4,7 @@
 #include "engine_data.h"
 #include "glm_vec_helper.h"
 #include "color_helper.h"
+#include "app.h"
 
 const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineData::CELL_FUNCTIONS{
 	std::make_shared<cell_functors::MinFunctor>(),
@@ -77,17 +78,18 @@ glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
 	auto& stats = m_cell_stats.at(cell_index).freq_map;
 
 	for (std::string frequency : selected_frequencies()) {
-		if (m_frequenzy_limits.find(frequency) != m_frequenzy_limits.end()) {
+		//if (m_frequenzy_limits.find(frequency) != m_frequenzy_limits.end()) {
 			++num_of_valid_frequencies;
 
-			glm::vec2& l = m_frequenzy_limits.at(frequency);
+			//glm::vec2& l = m_frequenzy_limits.at(frequency);
+			glm::vec2 l =  m_frequenzy_limits.at(frequency);
 			float val = stats.at(frequency);
 
 			if (val >= l.x && val <= l.y)
 				++num_of_mid;
 			else if (val >= l.y)
 				++num_of_bad;
-		}
+		//}
 	}
 
 	if (num_of_bad > 0) {			//if there are bad frequencies sample from bad gradient
@@ -107,7 +109,7 @@ glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
 	}
 }
 
-void EngineData::normal_mode_coloring(std::map<unsigned int, glm::vec3>& color_map)
+void EngineData::normal_mode_coloring()
 {
 	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
 
@@ -128,7 +130,7 @@ void EngineData::normal_mode_coloring(std::map<unsigned int, glm::vec3>& color_m
 			float value = cell_stats.freq_map[m_selected_frequencies_names[0]];
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
 
-			color_map[index] = get_gradient(GradientVariables::NORMAL_MODE_GRADIENT)->evaluate(norm_value);
+			m_current_color_map[index] = get_gradient(GradientVariables::NORMAL_MODE_GRADIENT)->evaluate(norm_value);
 		}
 		else {
 			auto& cell_stats = m_cell_stats[index];
@@ -140,12 +142,12 @@ void EngineData::normal_mode_coloring(std::map<unsigned int, glm::vec3>& color_m
 			float value = (*CELL_FUNCTIONS[*get_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION)])(values);
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
 
-			color_map[index] = get_gradient(GradientVariables::NORMAL_MODE_GRADIENT)->evaluate(norm_value);
+			m_current_color_map[index] = get_gradient(GradientVariables::NORMAL_MODE_GRADIENT)->evaluate(norm_value);
 		}
 	}
 }
 
-void EngineData::default_coloring(std::map<unsigned int, glm::vec3>& color_map)
+void EngineData::default_coloring()
 {
 	const auto& selected_cells_begin = m_selected_cells.begin();
 	const auto& selected_cells_end = m_selected_cells.end();
@@ -154,11 +156,11 @@ void EngineData::default_coloring(std::map<unsigned int, glm::vec3>& color_map)
 		if (std::find(selected_cells_begin, selected_cells_end, index) != selected_cells_end)	//if is selected ignore loop
 			continue;
 
-		color_map[index] = *get_color(ColorVariables::DEFAULT_COLOR);
+		m_current_color_map[index] = *get_color(ColorVariables::DEFAULT_COLOR);
 	}
 }
 
-void EngineData::limits_mode_coloring(std::map<unsigned int, glm::vec3>& color_map)
+void EngineData::limits_mode_coloring()
 {
 	const auto& selected_cells_begin = m_selected_cells.begin();
 	const auto& selected_cells_end = m_selected_cells.end();
@@ -167,7 +169,7 @@ void EngineData::limits_mode_coloring(std::map<unsigned int, glm::vec3>& color_m
 		if (std::find(selected_cells_begin, selected_cells_end, index) != selected_cells_end)	//if is selected ignore loop
 			continue;
 
-		color_map[index] = calculate_limits_color_for_cell(index);
+		m_current_color_map[index] = calculate_limits_color_for_cell(index);
 	}
 }
 
@@ -301,21 +303,19 @@ EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 
 void EngineData::calculate_color()
 {
-	std::map<unsigned int, glm::vec3> color_map;
-
 	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
 
 	unsigned int n_selected_cells = m_selected_cells.size();
 
 	for (unsigned int i = 0; i < n_selected_cells; ++i)
-		color_map[m_selected_cells[i]] = get_color_for_selected_cell(i);
+		m_current_color_map[m_selected_cells[i]] = get_color_for_selected_cell(i);
 
 	if (n_selected_frequencies == 0)
-		default_coloring(color_map);
+		default_coloring();
 	else
-		m_cell_coloring_function(color_map);
+		m_cell_coloring_function();
 
-	on_colors_recalculated.invoke(color_map);
+	on_colors_recalculated.invoke();
 }
 
 void EngineData::load_cell_stats(const char* path)
@@ -360,7 +360,7 @@ void EngineData::load_cell_vertices(const char* path)		//used to set default col
 
 void EngineData::check_for_changes()
 {
-	bool are_changes_pending = false;
+	static bool are_changes_pending = false;
 
 	are_changes_pending |= m_gradient_variables.check_for_changes();
 	are_changes_pending |= m_color_variables.check_for_changes();
@@ -466,13 +466,13 @@ glm::vec3 EngineData::get_color_for_selected_cell(unsigned int local_index) cons
 
 void EngineData::set_normal_mode_coloring()
 {
-	m_cell_coloring_function = std::bind(&EngineData::normal_mode_coloring, this, std::placeholders::_1);
+	m_cell_coloring_function = std::bind(&EngineData::normal_mode_coloring, this);
 	calculate_color();
 }
 
 void EngineData::set_limits_mode_coloring()
 {
-	m_cell_coloring_function = std::bind(&EngineData::limits_mode_coloring, this, std::placeholders::_1);
+	m_cell_coloring_function = std::bind(&EngineData::limits_mode_coloring, this);
 	calculate_color();
 }
 

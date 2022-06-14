@@ -40,7 +40,7 @@ private:
 		START_DANGEROUS_LIMITS_COLOR1, START_DANGEROUS_LIMITS_COLOR2;
 
 	std::map<unsigned int, cell_stats> m_cell_stats;
-	
+
 	std::vector<unsigned int> m_cell_indeces;
 
 	std::vector<std::string> m_frequenzy_names;
@@ -65,7 +65,9 @@ private:
 
 	FrequenzyComparator m_frq_comparator;
 
-	std::function<void(std::map<unsigned int, glm::vec3>&)> m_cell_coloring_function;
+	std::function<void()> m_cell_coloring_function;
+
+	std::map<unsigned int, glm::vec3> m_current_color_map;
 
 	void find_local_limits();
 
@@ -73,11 +75,11 @@ private:
 
 	glm::vec3 calculate_limits_color_for_cell(unsigned int cell_index);
 
-	void normal_mode_coloring(std::map<unsigned int, glm::vec3>& color_map);
+	void normal_mode_coloring();
 
-	void default_coloring(std::map<unsigned int, glm::vec3>& color_map);
+	void default_coloring();
 
-	void limits_mode_coloring(std::map<unsigned int, glm::vec3>& color_map);
+	void limits_mode_coloring();
 
 	void add_selected_cell(unsigned int cell_index);
 
@@ -97,7 +99,7 @@ public:
 	Signal on_selected_cells_changed;
 	Signal on_selected_cells_palletes_loaded;
 
-	Event<const std::map<unsigned int, glm::vec3>&> on_colors_recalculated;
+	Signal on_colors_recalculated;
 
 	Event<unsigned int> on_cell_hovered;
 
@@ -184,6 +186,8 @@ public:
 	bool does_cell_exist(unsigned int cell_index) const { return m_cell_stats.find(cell_index) != m_cell_stats.end(); }
 
 	std::vector<float> get_hovered_cell_values() const { return get_values_for_cell(m_hovered_cell); }
+	
+	const std::map<unsigned int, glm::vec3>& current_color_map() { return m_current_color_map; }
 
 	//variable getters, pointer is returned, so they can be used with imgui
 	Gradient* get_gradient(GradientVariables e) { return m_gradient_variables.get(e); }

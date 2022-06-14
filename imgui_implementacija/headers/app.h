@@ -33,6 +33,11 @@ private:
 
 	void init_opengl();
 
+	void init_imgui();
+
+	void init_implot();
+
+	void set_callbacks();
 public:
 	static App* app_instance;
 	static float last_timestamp;

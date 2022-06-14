@@ -3,6 +3,8 @@
 #include "glad/glad.h"
 #include "app.h"
 #include "nfd.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "imgui_layer.h"
 
 App* App::app_instance = nullptr;
@@ -19,6 +21,11 @@ App::App(int init_width, int init_height) {
 
 	init_glfw(init_width, init_height);
 	init_opengl();
+
+	init_imgui();
+	init_implot();
+
+	set_callbacks();
 
 	m_appliction_model = new ApplicationModel();
 	m_engine_data = new EngineData(glm::vec3(0.55));
@@ -45,8 +52,8 @@ App::App(int init_width, int init_height) {
 	m_imgui_layer->on_load_vertex_positions.add_member_listener(&MeshManager::load_vertex_positions, m_mesh_manager);
 	m_imgui_layer->on_load_vertex_positions.add_member_listener(&ApplicationModel::on_vertex_positions_loaded, m_appliction_model);
 
-	m_imgui_layer->on_load_cell_vertices.add_member_listener(&MeshManager::load_cell_vertices, m_mesh_manager);
 	m_imgui_layer->on_load_cell_vertices.add_member_listener(&EngineData::load_cell_vertices, m_engine_data);
+	m_imgui_layer->on_load_cell_vertices.add_member_listener(&MeshManager::load_cell_vertices, m_mesh_manager);
 
 	m_imgui_layer->on_load_cell_stats.add_member_listener(&EngineData::load_cell_stats, m_engine_data);
 
@@ -101,11 +108,6 @@ void App::init_glfw(int width, int height) {
 
 	glfwMakeContextCurrent(m_window);
 	glfwSwapInterval(1);
-
-	glfwSetKeyCallback(m_window, key_callback);
-	glfwSetScrollCallback(m_window, scroll_callback);
-	glfwSetCursorPosCallback(m_window, mouse_moved_callback);
-	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
 }
 
 void App::init_opengl() {
@@ -123,6 +125,34 @@ void App::init_opengl() {
 	//offset added so that the wireframe is drawn in front
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(1.0, 1.0);
+}
+
+void App::init_imgui()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+}
+
+void App::init_implot()
+{
+	ImPlot::CreateContext();
+}
+
+void App::set_callbacks()
+{
+	glfwSetKeyCallback(m_window, key_callback);
+	glfwSetScrollCallback(m_window, scroll_callback);
+	glfwSetCursorPosCallback(m_window, mouse_moved_callback);
+	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
 }
 
 void App::handle_scroll_callback(double x_offset, double y_offset)
@@ -166,7 +196,6 @@ void App::handle_mouse_button_callback(int button, bool is_pressed)
 
 void App::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	std::cout << "a";
 	m_imgui_layer->handle_key_callback(window, key, scancode, action, mods);
 }
 
