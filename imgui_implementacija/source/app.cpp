@@ -5,10 +5,11 @@
 #include "nfd.h"
 #include "imgui_layer.h"
 
+App* App::app_instance = nullptr;
 float App::last_timestamp = 0;
 float App::delta_time = 0;
 
-App::App(int init_width, int init_height, const char* vert_shader_path, const char* frag_shader_path) {
+App::App(int init_width, int init_height) {
 	NFD_Init();
 
 	for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i)
@@ -57,6 +58,14 @@ App::App(int init_width, int init_height, const char* vert_shader_path, const ch
 	m_appliction_model->refresh_camera();
 }
 
+App* App::create_app(int init_width, int init_height)
+{
+	if (app_instance == nullptr)
+		app_instance = new App(init_width, init_height);
+
+	return app_instance;
+}
+
 App::~App()
 {
 	delete m_appliction_model;
@@ -87,6 +96,11 @@ void App::init_glfw(int width, int height) {
 
 	glfwMakeContextCurrent(m_window);
 	glfwSwapInterval(1);
+
+	glfwSetKeyCallback(m_window, key_callback);
+	glfwSetScrollCallback(m_window, scroll_callback);
+	glfwSetCursorPosCallback(m_window, mouse_moved_callback);
+	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
 }
 
 void App::init_opengl() {
@@ -106,7 +120,7 @@ void App::init_opengl() {
 	glPolygonOffset(1.0, 1.0);
 }
 
-void App::scroll_callback(double x_offset, double y_offset)
+void App::handle_scroll_callback(double x_offset, double y_offset)
 {
 	bool is_handled = m_imgui_layer->handle_mouse_scroll(x_offset, y_offset);
 
@@ -114,7 +128,7 @@ void App::scroll_callback(double x_offset, double y_offset)
 		m_appliction_model->move_camera_distance(y_offset);
 }
 
-void App::mouse_moved_callback(double x_pos, double y_pos)
+void App::handle_mouse_moved_callback(double x_pos, double y_pos)
 {
 	m_current_mouse_pos = { x_pos, y_pos };
 	m_mouse_delta = m_current_mouse_pos - m_last_mouse_pos;
@@ -134,7 +148,7 @@ void App::mouse_moved_callback(double x_pos, double y_pos)
 	}
 }
 
-void App::mouse_button_callback(int button, bool is_pressed)
+void App::handle_mouse_button_callback(int button, bool is_pressed)
 {
 	bool is_handled = m_imgui_layer->handle_mouse_click(button, is_pressed);
 	m_mouse_button_state[button] = is_pressed;
@@ -143,6 +157,11 @@ void App::mouse_button_callback(int button, bool is_pressed)
 		if (button == GLFW_MOUSE_BUTTON_LEFT && is_pressed == false && int(glm::length(m_mouse_delta)) == 0)
 			on_mouse_clicked.invoke();
 	}
+}
+
+void App::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	m_imgui_layer->handle_key_callback(window, key, scancode, action, mods);
 }
 
 void App::update() {

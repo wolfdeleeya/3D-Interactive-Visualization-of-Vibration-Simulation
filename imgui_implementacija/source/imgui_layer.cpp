@@ -555,6 +555,11 @@ void ImGUILayer::selected_frequencies_changed()
 		m_selected_frequencies_text += (frq + "\n");
 }
 
+void ImGUILayer::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+}
+
 std::string get_file_path(std::initializer_list<nfdfilteritem_t> filter_items)
 {
 	nfdchar_t* model_path;

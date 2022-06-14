@@ -95,6 +95,8 @@ public:
 	
 	bool handle_mouse_click(int button, bool down);
 
+	void handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 	void cell_stats_loaded();
 
 	glm::ivec2 get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos);
