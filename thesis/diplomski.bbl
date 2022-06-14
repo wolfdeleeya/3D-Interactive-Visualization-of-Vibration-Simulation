@@ -1,4 +1,4 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{5}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -9,6 +9,11 @@
 {A}{V}{L} {E}{X}{C}{I}{T}{E}™.
 \newblock \url{https://www.avl.com/excite}.
 \newblock [Pristupljeno 3. lipnja 2022].
+
+\bibitem[col()]{colorbrewer}
+{C}olor{B}rewer: {C}olor {A}dvice for {M}aps.
+\newblock \url{https://colorbrewer2.org}.
+\newblock [Pristupljeno 10. lipnja 2022].
 
 \bibitem[eas()]{easing}
 {E}asing {F}unctions {C}heat {S}heet.

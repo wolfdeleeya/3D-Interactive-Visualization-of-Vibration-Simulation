@@ -13,6 +13,12 @@ const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineDa
 	std::make_shared<cell_functors::SpreadFunctor>(),
 };
 
+const glm::vec3 EngineData::START_GOOD_LIMITS_COLOR = { 0.560, 0.984, 0.262 };
+const glm::vec3 EngineData::START_RISKY_LIMITS_COLOR1 = { 0.956, 0.956, 0.105 };
+const glm::vec3 EngineData::START_RISKY_LIMITS_COLOR2 = { 0.807, 0.478, 0.145 };
+const glm::vec3 EngineData::START_DANGEROUS_LIMITS_COLOR1 = { 0.941, 0.305, 0.305 };
+const glm::vec3 EngineData::START_DANGEROUS_LIMITS_COLOR2 = { 0.584, 0.003, 0.003 };
+
 const char* EngineData::FUNCTION_NAMES[5] {"MIN", "MAX", "AVERAGE", "MEDIAN", "SPREAD"};
 const char* EngineData::LIMITS_NAMES[3] {"GLOBAL", "LOCAL", "USER DEFINED"};
 
@@ -41,7 +47,7 @@ void EngineData::find_local_limits()
 		}
 	}
 
-	m_normal_mode_limits_variables.set(NormalModeLimitsVariables::LOCAL, local_limits);
+	m_normal_mode_limits_variables.set(VibrationLimitsVariables::LOCAL, local_limits);
 }
 
 void EngineData::find_global_limits()
@@ -59,7 +65,7 @@ void EngineData::find_global_limits()
 		}
 	}
 
-	m_normal_mode_limits_variables.set(NormalModeLimitsVariables::GLOBAL, global_limits);
+	m_normal_mode_limits_variables.set(VibrationLimitsVariables::GLOBAL, global_limits);
 }
 
 glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
@@ -105,9 +111,9 @@ void EngineData::normal_mode_coloring(std::map<unsigned int, glm::vec3>& color_m
 {
 	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
 
-	NormalModeLimitsVariables current_limit_mode = (NormalModeLimitsVariables)*get_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS);
+	VibrationLimitsVariables current_limit_mode = (VibrationLimitsVariables)*get_uint(UnsignedIntVariables::VIBRATION_LIMITS);
 
-	glm::vec2& limits = *get_normal_mode_limits(current_limit_mode);
+	glm::vec2& limits = *get_vibration_limits(current_limit_mode);
 
 	const auto& selected_cells_begin = m_selected_cells.begin();
 	const auto& selected_cells_end = m_selected_cells.end();
@@ -226,7 +232,6 @@ void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
 			}
 		}
 		//if number of colors is lesser than number of selected cells
-		//
 		else if (num_of_available_colors < num_of_selected_cells) {
 			unsigned int index = 0;
 			unsigned int num_of_empty_colors_to_remove = num_of_colors_in_last_pallete - num_of_selected_cells;
@@ -273,12 +278,17 @@ EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 	m_gradient_variables([](const Gradient& g1, const Gradient& g2) {return g1 == g2; }, GradientVariables::END, Gradient{ glm::vec3(1), glm::vec3(0) }, std::bind(&EngineData::calculate_color, this)),
 	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, glm::vec3(0), std::bind(&EngineData::calculate_color, this)),
 	m_uint_variables([](unsigned int ui1, unsigned int ui2) {return ui1 == ui2; }, UnsignedIntVariables::END, 0, std::bind(&EngineData::calculate_color, this)),
-	m_normal_mode_limits_variables([](const glm::vec2& v1, const glm::vec2& v2) { return are_equal(v1, v2); },NormalModeLimitsVariables::END, glm::vec2(0), std::bind(&EngineData::calculate_color, this))
+	m_normal_mode_limits_variables([](const glm::vec2& v1, const glm::vec2& v2) { return are_equal(v1, v2); },VibrationLimitsVariables::END, glm::vec2(0), std::bind(&EngineData::calculate_color, this))
 {
-	set_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS, (unsigned int)NormalModeLimitsVariables::LOCAL);
+	set_uint(UnsignedIntVariables::VIBRATION_LIMITS, (unsigned int)VibrationLimitsVariables::LOCAL);
 	set_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION, (unsigned int)CellFunctions::AVERAGE);
 
 	set_color(ColorVariables::DEFAULT_COLOR, color);
+
+	set_color(ColorVariables::GOOD_LIMITS_COLOR, START_GOOD_LIMITS_COLOR);
+
+	set_gradient(GradientVariables::LIMITS_MODE_RISKY_GRADIENT, Gradient(START_RISKY_LIMITS_COLOR1, START_RISKY_LIMITS_COLOR2));
+	set_gradient(GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT, Gradient(START_DANGEROUS_LIMITS_COLOR1, START_DANGEROUS_LIMITS_COLOR2));
 
 	set_normal_mode_coloring();
 
@@ -403,7 +413,7 @@ void EngineData::clear_selected_cells()
 
 void EngineData::handle_mouse_click()
 {
-	if (m_hovered_cell <= 0)
+	if (!is_valid_cell_hovered())
 		return;
 
 	const auto& hovered_it = std::find(m_selected_cells.begin(), m_selected_cells.end(), m_hovered_cell);
@@ -432,7 +442,7 @@ std::vector<float> EngineData::get_values_for_cell(unsigned int index) const
 {
 	std::vector<float> result;
 	
-	if (m_cell_stats.find(index) != m_cell_stats.end()) {		//if cell exists
+	if (does_cell_exist(index)) {		//if cell exists
 		cell_stats stats = m_cell_stats.at(index);
 
 		for (const auto& name : m_selected_frequencies_names)
@@ -497,6 +507,6 @@ void EngineData::on_limits_mode_toggled(bool is_active)
 
 glm::vec2 EngineData::get_current_normal_mode_limits()
 {
-	unsigned int current_limits_index = *get_uint(UnsignedIntVariables::NORMAL_MODE_LIMITS);
-	return *get_normal_mode_limits((NormalModeLimitsVariables)current_limits_index);
+	unsigned int current_limits_index = *get_uint(UnsignedIntVariables::VIBRATION_LIMITS);
+	return *get_vibration_limits((VibrationLimitsVariables)current_limits_index);
 }

@@ -30,11 +30,14 @@ public:
 
 	enum class ColorVariables { DEFAULT_COLOR, GOOD_LIMITS_COLOR, END };
 
-	enum class UnsignedIntVariables { NORMAL_MODE_LIMITS, NORMAL_MODE_FUNCTION, END };
+	enum class UnsignedIntVariables { VIBRATION_LIMITS, NORMAL_MODE_FUNCTION, END };
 
-	enum class NormalModeLimitsVariables { GLOBAL, LOCAL, USER_DEF, END };
+	enum class VibrationLimitsVariables { GLOBAL, LOCAL, USER_DEF, END };
 private:
 	static const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> CELL_FUNCTIONS;
+
+	static const glm::vec3 START_GOOD_LIMITS_COLOR, START_RISKY_LIMITS_COLOR1, START_RISKY_LIMITS_COLOR2, 
+		START_DANGEROUS_LIMITS_COLOR1, START_DANGEROUS_LIMITS_COLOR2;
 
 	std::map<unsigned int, cell_stats> m_cell_stats;
 	
@@ -58,7 +61,7 @@ private:
 	VariableMap<GradientVariables, Gradient> m_gradient_variables;
 	VariableMap<ColorVariables, glm::vec3> m_color_variables;
 	VariableMap<UnsignedIntVariables, unsigned int> m_uint_variables;
-	VariableMap<NormalModeLimitsVariables, glm::vec2> m_normal_mode_limits_variables;
+	VariableMap<VibrationLimitsVariables, glm::vec2> m_normal_mode_limits_variables;
 
 	FrequenzyComparator m_frq_comparator;
 
@@ -176,7 +179,9 @@ public:
 
 	std::vector<unsigned int> selected_cells() const { return m_selected_cells; }
 
-	bool is_valid_cell_hovered() const { return m_hovered_cell != 0; }
+	bool is_valid_cell_hovered() const { return does_cell_exist(m_hovered_cell); }
+
+	bool does_cell_exist(unsigned int cell_index) const { return m_cell_stats.find(cell_index) != m_cell_stats.end(); }
 
 	std::vector<float> get_hovered_cell_values() const { return get_values_for_cell(m_hovered_cell); }
 
@@ -190,7 +195,7 @@ public:
 	unsigned int* get_uint(UnsignedIntVariables e) { return m_uint_variables.get(e); }
 
 	//variable getters, pointer is returned, so they can be used with imgui
-	glm::vec2* get_normal_mode_limits(NormalModeLimitsVariables e) { return m_normal_mode_limits_variables.get(e); }
+	glm::vec2* get_vibration_limits(VibrationLimitsVariables e) { return m_normal_mode_limits_variables.get(e); }
 
 	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
 	void set_gradient(GradientVariables e, const Gradient& g) { m_gradient_variables.set(e, g); }
@@ -202,5 +207,5 @@ public:
 	void set_uint(UnsignedIntVariables e, unsigned int i) { m_uint_variables.set(e, i); }
 
 	//variable setters, though the same functionality can be achieved with "getters", these setters are much more readable
-	void set_normal_mode_limits(NormalModeLimitsVariables e, const glm::vec2& l) { m_normal_mode_limits_variables.set(e, l); }
+	void set_vibration_limits(VibrationLimitsVariables e, const glm::vec2& l) { m_normal_mode_limits_variables.set(e, l); }
 };

@@ -65,7 +65,7 @@ public:
 
 	void update_relative_plot();
 
-	void referant_cell_changed(unsigned int new_referant_cell_index);
+	void referent_cell_changed(unsigned int new_referent_cell_index);
 
 	void draw_cell_plot();
 
@@ -73,12 +73,20 @@ public:
 
 	void switch_comparison_mode();
 
-	void draw_graph_settings();
-
 	void draw_legend() { m_colormap_legend_plot_function(); }
 
 	void limits_mode_toggled(bool is_active) 
 	{
 		m_colormap_legend_plot_function = std::bind((is_active ? &GraphManager::draw_limits_mode_colormap_legend : &GraphManager::draw_normal_mode_colormap_legend), this);
 	}
+
+	void draw_current_render_mode_settings() { m_render_graph_settings[(unsigned int)m_current_render_mode]->draw(); }
+
+	void draw_current_comparison_mode_settings() { m_comparison_graph_settings[(unsigned int)m_current_comparison_mode]->draw(); }
+
+	glm::vec3* hovered_cell_graph_color() { return &m_hovered_cell_graph_color; }
+
+	const char* current_render_mode_label() { return RENDER_MODE_LABELS[(unsigned int)m_current_render_mode]; }
+
+	const char* current_comparison_mode_label() { return COMPARISON_MODE_LABELS[(unsigned int)m_current_comparison_mode]; }
 };

@@ -24,17 +24,23 @@ void ImGUILayer::draw_color_selection_widget()
 		auto& current_pallete_data = m_selected_cells_palletes_textures[current_selected_cells_pallete_index];
 
 		EngineData* engine_data = m_engine_data;
-		draw_textured_button(current_pallete_data.first.c_str(), current_pallete_data.second, { 32, 32 }, 
-			[engine_data]() {engine_data->set_next_selected_cells_pallete(); }); CHECK_OPENGL;
+		ImGui::Image((void*)current_pallete_data.second, { 60, 60 });
+		ImGui::SameLine();
 
-		if (ImGui::Button("Set Next Selected Cells Color Pallete")) {
+		ImGui::BeginGroup();
+		ImGui::Text(("Pallete Name: " + current_pallete_data.first).c_str());
+		if (ImGui::Button("Set Next Color Pallete \nFor Selected Cells")) {
 			m_engine_data->set_next_selected_cells_pallete();
 		}
+		ImGui::EndGroup();
 
 		if (m_engine_data->are_stats_loaded()) {
 			bool is_limits_mode_active = m_application_model->is_limits_mode_active();
 
 			if (m_engine_data->are_frequenzy_limits_loaded()) {
+				
+				ImGui::Text("Current Mode:");
+				ImGui::SameLine();
 
 				if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "Normal Mode")) {
 					m_application_model->set_is_limits_mode_active(!is_limits_mode_active);
@@ -115,7 +121,7 @@ void ImGUILayer::draw_fps_and_delta_time()
 	static float last_avg_delta_time = 0;
 	static int count = 0;
 
-	ImGui::DragFloat("FPS Refresh Time", &fps_refresh_time, 0.05, 0, 5);
+	ImGui::DragFloat("Info Refresh Interval", &fps_refresh_time, 0.05, 0, 5);
 
 	float delta_time = App::delta_time;
 
@@ -212,7 +218,7 @@ void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 					draw_function_selection();
 			}
 
-			if (ImGui::Button("Clear Selection"))
+			if (ImGui::Button("Clear Selected Frequencies"))
 				m_engine_data->clear_frequency_selection();
 
 			ImGui::End();
@@ -222,21 +228,22 @@ void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 
 void ImGUILayer::draw_limits_selection()
 {
-	int selected_mode = *m_engine_data->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS);
+	int selected_mode = *m_engine_data->get_uint(EngineData::UnsignedIntVariables::VIBRATION_LIMITS);
 	unsigned int num_of_labels = sizeof(EngineData::LIMITS_NAMES) / sizeof(*EngineData::LIMITS_NAMES);
 
 	ImGui::ListBox("Limits Selection", &(selected_mode), EngineData::LIMITS_NAMES, num_of_labels);
 
-	m_engine_data->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_LIMITS, selected_mode);
+	m_engine_data->set_uint(EngineData::UnsignedIntVariables::VIBRATION_LIMITS, selected_mode);
 
-	if (selected_mode == (int)EngineData::NormalModeLimitsVariables::USER_DEF) {
-		glm::vec2* user_limits = m_engine_data->get_normal_mode_limits(EngineData::NormalModeLimitsVariables::USER_DEF);
+	if (selected_mode == (int)EngineData::VibrationLimitsVariables::USER_DEF) {
+		glm::vec2* user_limits = m_engine_data->get_vibration_limits(EngineData::VibrationLimitsVariables::USER_DEF);
 		ImGui::DragFloat2("Custom Limits", glm::value_ptr(*user_limits), 1, -200, 200);
 	}
 }
 
 void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 {
+	ImGui::BeginGroup();
 	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
@@ -245,13 +252,14 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 	glm::vec3* c1 = g.color1_ptr();
 	glm::vec3* c2 = g.color2_ptr();
 
-	std::string c1_name(gradient_name);
-	c1_name += " Color 1";
+	std::string c1_name("Color 1");
+	c1_name += "##" + std::string(gradient_name);
 
-	std::string c2_name(gradient_name);
-	c2_name += " Color 2";
+	std::string c2_name("Color 2");
+	c2_name += "##" + std::string(gradient_name);
 
 	draw_color_selection(c1_name.c_str(), *c1);
+	ImGui::SameLine();
 	draw_color_selection(c2_name.c_str(), *c2);
 
 	std::string interpolation_name = g.get_current_interpolation_mode_name();
@@ -262,6 +270,7 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 	ImGui::SameLine();
 	if (ImGui::Button(interpolation_name.c_str()))
 		g.set_next_interpolation_mode();
+	ImGui::EndGroup();
 }
 
 void ImGUILayer::draw_function_selection()
@@ -298,25 +307,40 @@ void ImGUILayer::draw_graph_widget()
 
 			ImGui::EndChild();
 		}
-
-		ImGui::End();
 	}
+
+	ImGui::End();
 }
 
 void ImGUILayer::draw_graph_settings_widget()
 {
 	if (ImGui::Begin("Graph Settings")) {
-		m_graph_manager->draw_graph_settings();
-		ImGui::End();
+
+		ImGui::Text("Graph Rendering Mode:");
+		ImGui::SameLine();
+		if (ImGui::Button(m_graph_manager->current_render_mode_label())) {
+			m_graph_manager->switch_render_mode();
+		}
+		m_graph_manager->draw_current_render_mode_settings();
+
+		ImGui::Text("Comparison Mode:");
+		ImGui::SameLine();
+		if (ImGui::Button(m_graph_manager->current_comparison_mode_label())) {
+			m_graph_manager->switch_comparison_mode();
+		}
+		m_graph_manager->draw_current_comparison_mode_settings();
+
+		draw_color_selection("Hovered Cell Graph Color", *m_graph_manager->hovered_cell_graph_color());
 	}
+	ImGui::End();
 }
 
 void ImGUILayer::draw_colormap_legend_widget()
 {
 	if (ImGui::Begin("##Color Map Legend")) {
 		m_graph_manager->draw_legend();
-		ImGui::End();
 	}
+	ImGui::End();
 }
 
 bool ImGUILayer::is_window_resized(ImGuiWindow* window)
@@ -372,13 +396,9 @@ unsigned int ImGUILayer::generate_texture_from_pallete(const data::pallete& p)
 void ImGUILayer::draw_textured_button(const char* button_text, unsigned int texture_id, const ImVec2& button_size, std::function<void(void)> button_callback)
 {
 	ImVec2 size = button_size;                     // Size of the image we want to make visible
-	ImVec2 uv0 = ImVec2(0, 0);                        // UV coordinates for lower-left
-	ImVec2 uv1 = ImVec2(1, 1);								// UV coordinates for (32,32) in our texture
-	ImVec4 bg_col = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);         // Black background
-	ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);       // No tint
-	if (ImGui::ImageButton((void*) texture_id, size, uv0, uv1, -1, bg_col, tint_col))	//-1 padding - use default padding
-		button_callback();
 
+	if (ImGui::ImageButton((void*) texture_id, size))	//-1 padding - use default padding
+		button_callback();
 	ImGui::SameLine();
 	ImGui::Text(button_text);
 }

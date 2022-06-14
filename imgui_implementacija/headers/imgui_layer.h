@@ -70,7 +70,7 @@ private:
 	void draw_textured_button(const char* button_text, unsigned int texture_id, const ImVec2& button_size, std::function<void(void)> button_callback);
 
 	void draw_color_selection(const char* color_variable_name, glm::vec3& color) {
-		ImGui::ColorEdit3(color_variable_name, glm::value_ptr(color));
+		ImGui::ColorEdit3(color_variable_name, glm::value_ptr(color), ImGuiColorEditFlags_NoInputs);
 	}
 
 public:

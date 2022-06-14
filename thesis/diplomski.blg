@@ -7,47 +7,49 @@ The style file: fer.bst
 Database file #1: literatura.bib
 Warning--to sort, need author or key in avlEXCITE
 Warning--to sort, need author or key in easing
+Warning--to sort, need author or key in colorbrewer
 Warning--empty year in avlEXCITE
+Warning--empty year in colorbrewer
 Warning--empty year in easing
-You've used 4 entries,
+You've used 5 entries,
             2773 wiz_defined-function locations,
-            618 strings with 5611 characters,
-and the built_in function-call counts, 1612 in all, are:
-= -- 145
+            622 strings with 5726 characters,
+and the built_in function-call counts, 1858 in all, are:
+= -- 170
 > -- 76
 < -- 2
-+ -- 28
++ -- 29
 - -- 24
-* -- 119
-:= -- 221
-add.period$ -- 14
-call.type$ -- 4
-change.case$ -- 20
-chr.to.int$ -- 4
-cite$ -- 14
-duplicate$ -- 78
-empty$ -- 151
+* -- 133
+:= -- 242
+add.period$ -- 17
+call.type$ -- 5
+change.case$ -- 23
+chr.to.int$ -- 5
+cite$ -- 19
+duplicate$ -- 93
+empty$ -- 186
 format.name$ -- 26
-if$ -- 353
+if$ -- 414
 int.to.chr$ -- 1
 int.to.str$ -- 1
 missing$ -- 2
-newline$ -- 29
+newline$ -- 34
 num.names$ -- 8
-pop$ -- 63
+pop$ -- 80
 preamble$ -- 1
-purify$ -- 16
+purify$ -- 18
 quote$ -- 0
-skip$ -- 56
+skip$ -- 65
 stack$ -- 0
-substring$ -- 29
-swap$ -- 11
+substring$ -- 32
+swap$ -- 12
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 44
-warning$ -- 4
+type$ -- 55
+warning$ -- 6
 while$ -- 9
 width$ -- 0
-write$ -- 58
-(There were 4 warnings)
+write$ -- 69
+(There were 6 warnings)
