@@ -27,24 +27,19 @@ const char* EngineData::DEFAULT_PALLETE_PATH = "./Palletes/default_pallete.txt";
 
 void EngineData::find_local_limits()
 {
-	if (m_selected_frequencies_names.size() <= 0)
+	if (m_selected_frequencies_indeces.size() <= 0)
 		return;
 	
 	glm::vec2 local_limits(std::numeric_limits<float>::max(), std::numeric_limits<float>::min());
 
 	for (const auto& pair : m_cell_stats) {
-		const std::map<std::string, float>& map = pair.second.freq_map;
+		const std::vector<float>& freq_data = pair.second.freq_data;
 
-		for (const std::string& name : m_selected_frequencies_names) {
-			if (map.count(name) > 0) {
-				float value = map.at(name);
+		for (unsigned int index : m_selected_frequencies_indeces) {
+			float value = freq_data[index];
 
-				local_limits.x = local_limits.x > value ? value : local_limits.x;		//set min limit
-				local_limits.y = local_limits.y < value ? value : local_limits.y;		//set max limit
-			}
-			else {
-				std::cout << "CELL " << pair.first << " DOESN'T HAVE FRQ " << name << std::endl;
-			}
+			local_limits.x = local_limits.x > value ? value : local_limits.x;		//set min limit
+			local_limits.y = local_limits.y < value ? value : local_limits.y;		//set max limit
 		}
 	}
 
@@ -56,10 +51,10 @@ void EngineData::find_global_limits()
 	glm::vec2 global_limits(std::numeric_limits<float>::max(), std::numeric_limits<float>::min());
 
 	for (const auto& pair : m_cell_stats) {
-		const std::map<std::string, float>& map = pair.second.freq_map;
+		const std::vector<float>& freq_data = pair.second.freq_data;
 
-		for (const std::string& name : m_frequenzy_names) {
-			float value = map.at(name);
+		for (unsigned int index = 0; index < m_frequenzy_names.size(); ++index) {
+			float value = freq_data[index];
 
 			global_limits.x = global_limits.x > value ? value : global_limits.x;		//set min limit
 			global_limits.y = global_limits.y < value ? value : global_limits.y;		//set max limit
@@ -75,21 +70,18 @@ glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
 	unsigned int num_of_mid = 0;
 	unsigned int num_of_bad = 0;
 
-	auto& stats = m_cell_stats.at(cell_index).freq_map;
+	auto& freq_data = m_cell_stats.at(cell_index).freq_data;
 
-	for (std::string frequency : selected_frequencies()) {
-		//if (m_frequenzy_limits.find(frequency) != m_frequenzy_limits.end()) {
+	for (unsigned int f_index : m_selected_frequencies_indeces) {
 			++num_of_valid_frequencies;
 
-			//glm::vec2& l = m_frequenzy_limits.at(frequency);
-			glm::vec2 l =  m_frequenzy_limits.at(frequency);
-			float val = stats.at(frequency);
+			glm::vec2 l =  m_frequenzy_limits.at(m_frequenzy_names[f_index]);
+			float val = freq_data[f_index];
 
 			if (val >= l.x && val <= l.y)
 				++num_of_mid;
 			else if (val >= l.y)
 				++num_of_bad;
-		//}
 	}
 
 	if (num_of_bad > 0) {			//if there are bad frequencies sample from bad gradient
@@ -111,7 +103,7 @@ glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
 
 void EngineData::normal_mode_coloring()
 {
-	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
+	unsigned int n_selected_frequencies = num_of_selected_frequencies();
 
 	VibrationLimitsVariables current_limit_mode = (VibrationLimitsVariables)*get_uint(UnsignedIntVariables::VIBRATION_LIMITS);
 
@@ -127,7 +119,7 @@ void EngineData::normal_mode_coloring()
 		if (n_selected_frequencies == 1) {
 			auto& cell_stats = m_cell_stats[index];
 
-			float value = cell_stats.freq_map[m_selected_frequencies_names[0]];
+			float value = cell_stats.freq_data[m_selected_frequencies_indeces[0]];
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
 
 			m_current_color_map[index] = get_gradient(GradientVariables::NORMAL_MODE_GRADIENT)->evaluate(norm_value);
@@ -137,7 +129,7 @@ void EngineData::normal_mode_coloring()
 
 			std::vector<float> values;
 			for (unsigned int i = 0; i < n_selected_frequencies; ++i)
-				values.push_back(cell_stats.freq_map[m_selected_frequencies_names[i]]);
+				values.push_back(cell_stats.freq_data[m_selected_frequencies_indeces[i]]);
 
 			float value = (*CELL_FUNCTIONS[*get_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION)])(values);
 			float norm_value = (value - limits.x) / (limits.y - limits.x);
@@ -171,6 +163,13 @@ void EngineData::limits_mode_coloring()
 
 		m_current_color_map[index] = calculate_limits_color_for_cell(index);
 	}
+}
+
+void EngineData::refresh_selected_frequencies_names()
+{
+	m_selected_frequencies_names.clear();
+	for (unsigned int index : m_selected_frequencies_indeces)
+		m_selected_frequencies_names.push_back(m_frequenzy_names[index]);
 }
 
 void EngineData::add_selected_cell(unsigned int cell_index)
@@ -303,7 +302,7 @@ EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 
 void EngineData::calculate_color()
 {
-	unsigned int n_selected_frequencies = m_selected_frequencies_names.size();
+	unsigned int n_selected_frequencies = m_selected_frequencies_indeces.size();
 
 	unsigned int n_selected_cells = m_selected_cells.size();
 
@@ -370,25 +369,29 @@ void EngineData::check_for_changes()
 
 void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 {
-	if (is_selected)				//if true add name
-		m_selected_frequencies_names.push_back(f_name);
-	else {					//if false delete name
-		const auto& last = std::remove(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name);
-		m_selected_frequencies_names.erase(last);
+	unsigned int f_index = get_index_from_frequency_name(f_name);
+	if (is_selected) {
+		//if true add index and sort
+		m_selected_frequencies_indeces.push_back(f_index);
+		std::sort(m_selected_frequencies_indeces.begin(), m_selected_frequencies_indeces.end());
 	}
-
-	std::sort(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), m_frq_comparator);
+	else {					//if false delete index
+		const auto& last = std::remove(m_selected_frequencies_indeces.begin(), m_selected_frequencies_indeces.end(), f_index);
+		m_selected_frequencies_indeces.erase(last);
+	}
 
 	find_local_limits();
 
 	calculate_color();
+
+	refresh_selected_frequencies_names();
 
 	on_selected_frequencies_changed.invoke();
 }
 
 void EngineData::clear_frequency_selection()
 {
-	m_selected_frequencies_names.clear();
+	m_selected_frequencies_indeces.clear();
 	on_selected_frequencies_changed.invoke();
 
 	calculate_color();
@@ -445,10 +448,10 @@ std::vector<float> EngineData::get_values_for_cell(unsigned int index) const
 	if (does_cell_exist(index)) {		//if cell exists
 		cell_stats stats = m_cell_stats.at(index);
 
-		for (const auto& name : m_selected_frequencies_names)
-			result.push_back(stats.freq_map[name]);
+		for (const auto& f_index : m_selected_frequencies_indeces)
+			result.push_back(stats.freq_data[f_index]);
 	} else
-		for (const auto& name : m_selected_frequencies_names)
+		for (const auto& f_index : m_selected_frequencies_indeces)
 			result.push_back(0);
 	
 	return result;
@@ -509,4 +512,23 @@ glm::vec2 EngineData::get_current_normal_mode_limits()
 {
 	unsigned int current_limits_index = *get_uint(UnsignedIntVariables::VIBRATION_LIMITS);
 	return *get_vibration_limits((VibrationLimitsVariables)current_limits_index);
+}
+
+unsigned int EngineData::get_index_from_frequency_name(const std::string& name) const
+{
+	unsigned int index = 0;
+	for (const auto& f_name : m_frequenzy_names) {
+		if (f_name == name)
+			return index;
+		++index;
+	}
+
+	if (index >= m_frequenzy_names.size())
+		throw std::out_of_range("FREQUENCY INDEX OUT OF RANGE!");
+}
+
+bool EngineData::is_frequency_selected(const std::string& f_name) const
+{
+	unsigned int f_index = get_index_from_frequency_name(f_name);
+	return is_frequency_selected(f_index);
 }

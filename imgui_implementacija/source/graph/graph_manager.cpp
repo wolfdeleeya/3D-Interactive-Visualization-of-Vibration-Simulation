@@ -228,7 +228,7 @@ void GraphManager::update_cell_plot()
 		item_data.push_back(data_entry);
 	}
 
-	m_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors);
+	m_graph_data = GraphData(m_engine_data->selected_frequencies_names(), item_data, colors);
 }
 
 void GraphManager::update_relative_plot()
@@ -283,7 +283,7 @@ void GraphManager::update_relative_plot()
 		item_data.push_back(data_entry);
 	}
 
-	m_cached_relative_graph_data = GraphData(m_engine_data->selected_frequencies(), item_data, colors);
+	m_cached_relative_graph_data = GraphData(m_engine_data->selected_frequencies_names(), item_data, colors);
 }
 
 void GraphManager::referent_cell_changed(unsigned int new_referent_cell_index)

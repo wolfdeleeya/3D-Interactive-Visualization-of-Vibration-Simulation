@@ -45,6 +45,8 @@ private:
 
 	std::vector<std::string> m_frequenzy_names;
 	std::vector<std::string> m_selected_frequencies_names;
+
+	std::vector<unsigned int> m_selected_frequencies_indeces;
 	std::vector<std::string> m_frequencies_with_limits;
 
 	std::map<std::string, glm::vec2> m_frequenzy_limits;
@@ -80,6 +82,8 @@ private:
 	void default_coloring();
 
 	void limits_mode_coloring();
+
+	void refresh_selected_frequencies_names();
 
 	void add_selected_cell(unsigned int cell_index);
 
@@ -149,13 +153,15 @@ public:
 
 	glm::vec2 get_current_normal_mode_limits();
 
+	unsigned int get_index_from_frequency_name(const std::string& name) const;
+
 	void handle_mouse_dragged(const glm::ivec2& delta) { clear_hovered_cell(); }
 
 	void on_scene_view_focus_changed(bool is_in_focus) { if (!is_in_focus) clear_hovered_cell(); }
 
 	unsigned int hovered_cell() const { return m_hovered_cell; }
 
-	unsigned int num_of_selected_frequencies() const { return m_selected_frequencies_names.size(); }
+	unsigned int num_of_selected_frequencies() const { return m_selected_frequencies_indeces.size(); }
 
 	unsigned int num_of_selected_cells() const { return m_selected_cells.size(); }
 
@@ -163,7 +169,9 @@ public:
 
 	unsigned int selected_cell_index(unsigned int local_index) const { return m_selected_cells[local_index]; }
 
-	bool is_frequency_selected(const std::string& f_name) const { return std::find(m_selected_frequencies_names.begin(), m_selected_frequencies_names.end(), f_name) != m_selected_frequencies_names.end(); }
+	bool is_frequency_selected(unsigned int f_index) const { return std::find(m_selected_frequencies_indeces.begin(), m_selected_frequencies_indeces.end(), f_index) != m_selected_frequencies_indeces.end(); }
+
+	bool is_frequency_selected(const std::string& f_name) const;
 
 	bool are_stats_loaded() const { return m_cell_stats.size() > 0; }
 
@@ -175,7 +183,9 @@ public:
 
 	std::vector<std::string> frequenzy_names() const { return m_frequenzy_names; }
 
-	std::vector<std::string> selected_frequencies() const { return m_selected_frequencies_names; }
+	std::vector<unsigned int> selected_frequencies_indeces() const { return m_selected_frequencies_indeces; }
+
+	std::vector<std::string> selected_frequencies_names() const { return m_selected_frequencies_names; }
 
 	std::vector<std::string> frequencies_with_limits() const { return m_frequencies_with_limits; }
 

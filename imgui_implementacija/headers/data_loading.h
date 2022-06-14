@@ -11,7 +11,7 @@ struct cell_stats {
 	double area_percent;
 	float area_based_weight;
 	glm::vec3 pos_mean;
-	std::map<std::string, float> freq_map;
+	std::vector<float> freq_data;
 };
 
 namespace data {

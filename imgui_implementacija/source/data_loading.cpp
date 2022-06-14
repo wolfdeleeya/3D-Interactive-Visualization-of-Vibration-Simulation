@@ -133,11 +133,12 @@ namespace data {
 						frequenzy_names.push_back(string_token);
 					++column;
 				}
-			} else {											//is line with data
+			}
+			else {											//is line with data
 				cell_stats stats;
 				std::stringstream line_stream(line);
-				std::string string_token;						
-			
+				std::string string_token;
+
 				std::getline(line_stream, string_token, ',');	//get id
 				unsigned int cell_id = std::stoi(string_token);
 
@@ -159,10 +160,12 @@ namespace data {
 				}
 
 				int column_index = 0;							//skip first 8
-			
-				while (std::getline(line_stream, string_token, ','))	//load remaining frequenzy data
-					stats.freq_map.insert({ frequenzy_names[column_index++], std::stof(string_token) });
 
+				while (std::getline(line_stream, string_token, ',')) {	//load remaining frequenzy data
+					stats.freq_data.push_back(std::stof(string_token));
+					++column_index;
+				}
+				
 				result.insert({ cell_id, stats });
 			}
 		}

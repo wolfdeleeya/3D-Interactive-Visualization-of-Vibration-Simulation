@@ -538,8 +538,8 @@ void ImGUILayer::selected_frequencies_changed()
 {
 	m_selected_frequencies_text = "SELECTED FREQUENCIES:\n";
 
-	for (const std::string& frq : m_engine_data->selected_frequencies())
-		m_selected_frequencies_text += (frq + "\n");
+	for (unsigned int f_index : m_engine_data->selected_frequencies_indeces())
+		m_selected_frequencies_text += (m_frequenzy_names[f_index] + "\n");
 }
 
 void ImGUILayer::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
