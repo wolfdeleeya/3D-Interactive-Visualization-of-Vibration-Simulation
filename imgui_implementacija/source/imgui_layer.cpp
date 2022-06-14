@@ -86,7 +86,7 @@ void ImGUILayer::draw_engine_view()
 				m_scene_view_scale = scene_scale;
 				on_scene_view_scale_changed.invoke({ scene_scale.x, scene_scale.y });
 			}
-			ImGui::Image((ImTextureID)m_scene_view_texture, scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
+			ImGui::Image((ImTextureID)m_mesh_manager->scene_texture(), scene_scale, ImVec2(0, 1), ImVec2(1, 0));		// invert the V from the UV
 
 			bool is_scene_view_in_focus = ImGui::IsItemHovered();
 
@@ -403,15 +403,15 @@ void ImGUILayer::draw_textured_button(const char* button_text, unsigned int text
 	ImGui::Text(button_text);
 }
 
-ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark): 
+ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, const char* version_string, bool is_dark):
 	m_window(window)
 {
 	m_application_model = application_model;
 	m_engine_data = engine_data;
-	m_graph_manager = new GraphManager(application_model, engine_data);
+	m_mesh_manager = mesh_manager;
+	m_graph_manager = graph_manager;
 
 	m_is_hovering_scene_view = true;
-	m_scene_view_texture = scene_view_texture;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -420,12 +420,11 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_d
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 	ImGui::StyleColorsDark();
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 130");
+	ImGui_ImplOpenGL3_Init("#version 330");
 
 	m_engine_data->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
 	m_engine_data->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
@@ -438,7 +437,6 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_d
 
 ImGUILayer::~ImGUILayer()
 {
-	delete m_graph_manager;
 	delete_selected_cells_palletes();
 
 	ImGui_ImplOpenGL3_Shutdown();

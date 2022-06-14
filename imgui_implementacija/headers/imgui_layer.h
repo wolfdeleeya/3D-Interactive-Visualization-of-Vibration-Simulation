@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "graph/graph_manager.h"
+#include "mesh_manager.h"
 
 class ImGUILayer {
 private:
@@ -18,16 +19,18 @@ private:
 
 	std::string m_selected_frequencies_text;
 
+	//MODEL
 	ApplicationModel* m_application_model;
 	EngineData* m_engine_data;
+
+	//VIEW
+	MeshManager* m_mesh_manager;
 	GraphManager* m_graph_manager;
 
 	ImVec2 m_scene_view_position;
 	ImVec2 m_scene_view_scale;
 
 	std::vector<std::pair<std::string, unsigned int>> m_selected_cells_palletes_textures;
-
-	unsigned int m_scene_view_texture;
 
 	bool m_is_hovering_scene_view;
 
@@ -83,7 +86,7 @@ public:
 
 	Event<const glm::ivec2&> on_scene_view_scale_changed;
 
-	ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, GLFWwindow* window, const char* version_string, unsigned int scene_view_texture, bool is_dark = true);
+	ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, const char* version_string, bool is_dark = true);
 	
 	~ImGUILayer();
 

@@ -22,8 +22,11 @@ App::App(int init_width, int init_height) {
 
 	m_appliction_model = new ApplicationModel();
 	m_engine_data = new EngineData(glm::vec3(0.55));
+
 	m_mesh_manager = new MeshManager({ init_width, init_height });
-	m_imgui_layer = new ImGUILayer(m_appliction_model, m_engine_data, m_window, "version 330 core", m_mesh_manager->scene_texture());
+	m_graph_manager = new GraphManager(m_appliction_model, m_engine_data);
+
+	m_imgui_layer = new ImGUILayer(m_appliction_model, m_engine_data, m_mesh_manager, m_graph_manager, m_window, "version 330 core");
 
 	on_mouse_dragged.add_member_listener(&ApplicationModel::handle_mouse_dragged, m_appliction_model);
 	on_mouse_dragged.add_member_listener(&EngineData::handle_mouse_dragged, m_engine_data);
@@ -70,8 +73,11 @@ App::~App()
 {
 	delete m_appliction_model;
 	delete m_engine_data;
-	delete m_imgui_layer;
+
 	delete m_mesh_manager;
+	delete m_graph_manager;
+
+	delete m_imgui_layer;
 
 	glfwTerminate();
 	NFD_Quit();

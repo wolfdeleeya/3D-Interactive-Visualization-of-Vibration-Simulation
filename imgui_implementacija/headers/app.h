@@ -11,10 +11,13 @@
 //APP
 class App {
 private:
+	GLFWwindow* m_window;
+
 	ApplicationModel* m_appliction_model;
 	EngineData* m_engine_data;
-	GLFWwindow* m_window;
+	
 	MeshManager* m_mesh_manager;
+	GraphManager* m_graph_manager;
 
 	ImGUILayer* m_imgui_layer;
 
