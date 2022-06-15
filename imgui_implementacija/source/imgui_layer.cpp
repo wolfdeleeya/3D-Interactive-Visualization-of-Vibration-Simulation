@@ -11,6 +11,7 @@
 #include "nfd.h"
 #include "debug.h"
 #include "implot_helper.h"
+#include "custom_imgui_widgets.h"
 
 void ImGUILayer::draw_color_selection_widget()
 {
@@ -321,18 +322,64 @@ void ImGUILayer::draw_graph_settings_widget()
 		if (ImGui::Button(m_graph_manager->current_render_mode_label())) {
 			m_graph_manager->switch_render_mode();
 		}
-		m_graph_manager->draw_current_render_mode_settings();
+
+		draw_render_graph_settings();
 
 		ImGui::Text("Comparison Mode:");
 		ImGui::SameLine();
 		if (ImGui::Button(m_graph_manager->current_comparison_mode_label())) {
 			m_graph_manager->switch_comparison_mode();
 		}
-		m_graph_manager->draw_current_comparison_mode_settings();
 
-		draw_color_selection("Hovered Cell Graph Color", *m_graph_manager->hovered_cell_graph_color());
+		draw_comparison_graph_settings();
+
+		draw_color_selection("Hovered Cell Graph Color", m_graph_manager->hovered_cell_graph_color);
 	}
 	ImGui::End();
+}
+
+void ImGUILayer::draw_subplots_comparison_graph_settings()
+{
+	int num_of_selected_cells = m_engine_data->num_of_selected_cells();
+
+	//if the number of selected cells is greater than 1, than the grid of subplots will have more than 1 subplot
+	if (num_of_selected_cells > 1)
+		ImGui::DragInt("Number Of Colums", &m_graph_manager->num_of_columns, 0.1, 1, num_of_selected_cells);
+}
+
+void ImGUILayer::draw_relative_comparison_graph_settings()
+{
+	std::vector<unsigned int> selected_cells_indeces(m_engine_data->selected_cells());
+	unsigned int num_of_selected_cells = selected_cells_indeces.size();
+
+	if (ImGui::TreeNode("Pick Referant Selected Cell"))
+	{
+		static unsigned int selected = 0;
+		for (unsigned int i = 0; i < num_of_selected_cells; ++i)
+		{
+			unsigned int current_cell_index = selected_cells_indeces[i];
+			std::string cell_label = "Cell ";
+			cell_label += std::to_string(current_cell_index);
+
+			glm::vec3 color = m_engine_data->get_color_for_selected_cell(i);
+			ImU32 packed_color = ImGui::GetColorU32({ color.r, color.g, color.b, 1 });
+
+			if (MyImGui::SelectableCustomColor(cell_label.c_str(), selected == current_cell_index, packed_color, packed_color)) {
+				//if it's already selected - deselect it!
+				if (selected == current_cell_index)
+					selected = 0;
+				else
+					selected = current_cell_index;
+				m_graph_manager->set_referent_cell(selected);
+			}
+		}
+		ImGui::TreePop();
+	}
+}
+
+void ImGUILayer::draw_bar_graph_settings()
+{
+	ImGui::DragFloat("Bar Width", &m_graph_manager->bar_width, 0.05, 0, 1);
 }
 
 void ImGUILayer::draw_colormap_legend_widget()
@@ -422,6 +469,18 @@ ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_d
 
 	if (m_engine_data->are_selected_cells_palletes_loaded())
 		selected_cells_palletes_loaded();
+
+	//Initialize functions arrays
+	m_render_graph_settings_functions = {
+		std::bind(&ImGUILayer::draw_bar_graph_settings, this),	//BARS
+		[]() {}													//LINES - doesn't have any settings to draw, so we pass in an empty lambda
+	};
+
+	m_comparison_graph_settings_functions = {
+		[]() {},																//DEFAULT - doesn't have any settings to draw, so we pass in empty lambda
+		std::bind(&ImGUILayer::draw_subplots_comparison_graph_settings, this),	//SUBPLOTS
+		std::bind(&ImGUILayer::draw_relative_comparison_graph_settings, this)	//RELATIVE
+	};
 }
 
 ImGUILayer::~ImGUILayer()

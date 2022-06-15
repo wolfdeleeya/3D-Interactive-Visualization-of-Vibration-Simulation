@@ -1,10 +1,10 @@
 #include "custom_imgui_widgets.h"
 #include "imgui_internal.h"
 
-IMGUI_API bool ImGui::SelectableCustomColor(const char* label, bool selected, ImU32 selected_color,
+IMGUI_API bool MyImGui::SelectableCustomColor(const char* label, bool selected, ImU32 selected_color,
     ImU32 hovered_color, ImU32 default_color, ImGuiSelectableFlags flags, const ImVec2& size_arg)
 {
-    ImGuiWindow* window = GetCurrentWindow();
+    ImGuiWindow* window = ImGui::GetCurrentWindow();
     if (window->SkipItems)
         return false;
 
@@ -13,11 +13,11 @@ IMGUI_API bool ImGui::SelectableCustomColor(const char* label, bool selected, Im
 
     // Submit label or explicit size to ItemSize(), whereas ItemAdd() will submit a larger/spanning rectangle.
     ImGuiID id = window->GetID(label);
-    ImVec2 label_size = CalcTextSize(label, NULL, true);
+    ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
     ImVec2 size(size_arg.x != 0.0f ? size_arg.x : label_size.x, size_arg.y != 0.0f ? size_arg.y : label_size.y);
     ImVec2 pos = window->DC.CursorPos;
     pos.y += window->DC.CurrLineTextBaseOffset;
-    ItemSize(size, 0.0f);
+    ImGui::ItemSize(size, 0.0f);
 
     // Fill horizontal space
     // We don't support (size < 0.0f) in Selectable() because the ItemSpacing extension would make explicitly right-aligned sizes not visibly match other widgets.
@@ -56,7 +56,7 @@ IMGUI_API bool ImGui::SelectableCustomColor(const char* label, bool selected, Im
     }
 
     const bool disabled_item = (flags & ImGuiSelectableFlags_Disabled) != 0;
-    const bool item_add = ItemAdd(bb, id, NULL, disabled_item ? ImGuiItemFlags_Disabled : ImGuiItemFlags_None);
+    const bool item_add = ImGui::ItemAdd(bb, id, NULL, disabled_item ? ImGuiItemFlags_Disabled : ImGuiItemFlags_None);
     if (span_all_columns)
     {
         window->ClipRect.Min.x = backup_clip_rect_min_x;
@@ -68,14 +68,14 @@ IMGUI_API bool ImGui::SelectableCustomColor(const char* label, bool selected, Im
 
     const bool disabled_global = (g.CurrentItemFlags & ImGuiItemFlags_Disabled) != 0;
     if (disabled_item && !disabled_global) // Only testing this as an optimization
-        BeginDisabled();
+        ImGui::BeginDisabled();
 
     // FIXME: We can standardize the behavior of those two, we could also keep the fast path of override ClipRect + full push on render only,
     // which would be advantageous since most selectable are not selected.
     if (span_all_columns && window->DC.CurrentColumns)
-        PushColumnsBackground();
+        ImGui::PushColumnsBackground();
     else if (span_all_columns && g.CurrentTable)
-        TablePushBackgroundChannel();
+        ImGui::TablePushBackgroundChannel();
 
     // We use NoHoldingActiveID on menus so user can click and _hold_ on a menu then drag to browse child entries
     ImGuiButtonFlags button_flags = 0;
@@ -87,7 +87,7 @@ IMGUI_API bool ImGui::SelectableCustomColor(const char* label, bool selected, Im
 
     const bool was_selected = selected;
     bool hovered, held;
-    bool pressed = ButtonBehavior(bb, id, &hovered, &held, button_flags);
+    bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, button_flags);
 
     // Auto-select when moved into
     // - This will be more fully fleshed in the range-select branch
@@ -105,15 +105,15 @@ IMGUI_API bool ImGui::SelectableCustomColor(const char* label, bool selected, Im
     {
         if (!g.NavDisableMouseHover && g.NavWindow == window && g.NavLayer == window->DC.NavLayerCurrent)
         {
-            SetNavID(id, window->DC.NavLayerCurrent, window->DC.NavFocusScopeIdCurrent, WindowRectAbsToRel(window, bb)); // (bb == NavRect)
+            ImGui::SetNavID(id, window->DC.NavLayerCurrent, window->DC.NavFocusScopeIdCurrent, ImGui::WindowRectAbsToRel(window, bb)); // (bb == NavRect)
             g.NavDisableHighlight = true;
         }
     }
     if (pressed)
-        MarkItemEdited(id);
+        ImGui::MarkItemEdited(id);
 
     if (flags & ImGuiSelectableFlags_AllowItemOverlap)
-        SetItemAllowOverlap();
+        ImGui::SetItemAllowOverlap();
 
     // In this branch, Selectable() cannot toggle the selection so this will never trigger.
     if (selected != was_selected) //-V547
@@ -130,24 +130,24 @@ IMGUI_API bool ImGui::SelectableCustomColor(const char* label, bool selected, Im
     else if (hovered)
         col = hovered_color;
 
-    RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
+    ImGui::RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
     
 
-    RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
+    ImGui::RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
 
     if (span_all_columns && window->DC.CurrentColumns)
-        PopColumnsBackground();
+        ImGui::PopColumnsBackground();
     else if (span_all_columns && g.CurrentTable)
-        TablePopBackgroundChannel();
+        ImGui::TablePopBackgroundChannel();
 
-    RenderTextClipped(text_min, text_max, label, NULL, &label_size, style.SelectableTextAlign, &bb);
+    ImGui::RenderTextClipped(text_min, text_max, label, NULL, &label_size, style.SelectableTextAlign, &bb);
 
     // Automatically close popups
     if (pressed && (window->Flags & ImGuiWindowFlags_Popup) && !(flags & ImGuiSelectableFlags_DontClosePopups) && !(g.LastItemData.InFlags & ImGuiItemFlags_SelectableDontClosePopup))
-        CloseCurrentPopup();
+        ImGui::CloseCurrentPopup();
 
     if (disabled_item && !disabled_global)
-        EndDisabled();
+        ImGui::EndDisabled();
 
     IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags);
     return pressed; //-V1020

@@ -34,6 +34,10 @@ private:
 
 	bool m_is_hovering_scene_view;
 
+	std::vector<std::function<void(void)>> m_comparison_graph_settings_functions;
+
+	std::vector<std::function<void(void)>> m_render_graph_settings_functions;
+
 	void draw_color_selection_widget();
 
 	void draw_normal_color_selection();
@@ -61,6 +65,20 @@ private:
 	void draw_graph_widget();
 
 	void draw_graph_settings_widget();
+
+	void draw_comparison_graph_settings() { m_comparison_graph_settings_functions[unsigned int(m_graph_manager->current_comparison_mode())](); }
+
+	//specific comparison graph settings
+
+	void draw_subplots_comparison_graph_settings();
+
+	void draw_relative_comparison_graph_settings();
+
+	void draw_render_graph_settings() { m_render_graph_settings_functions[unsigned int(m_graph_manager->current_render_mode())](); }
+
+	//specific graph render settings methods
+
+	void draw_bar_graph_settings();
 
 	void draw_colormap_legend_widget();
 

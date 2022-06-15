@@ -3,7 +3,6 @@
 #include "application_model.h"
 #include "engine_data.h"
 #include "graph_data.h"
-#include "graph_settings.h"
 
 class GraphManager {
 	enum class RenderMode { BARS, LINES, END };
@@ -22,13 +21,8 @@ private:
 	RenderMode m_current_render_mode;
 	ComparisonMode m_current_comparison_mode;
 
-	std::vector<BaseGraphSettings*> m_render_graph_settings;
-	std::vector<BaseGraphSettings*> m_comparison_graph_settings;
-
 	std::vector<render_plot_function> m_render_plot_functions;
 	std::vector <comparison_plot_function> m_comparison_plot_functions;
-
-	glm::vec3 m_hovered_cell_graph_color;
 
 	std::function<void(void)> m_colormap_legend_plot_function;
 
@@ -57,15 +51,19 @@ private:
 
 	void set_comparison_mode(ComparisonMode mode) { m_current_comparison_mode = mode; }
 public:
-	GraphManager(ApplicationModel* application_model, EngineData* engine_data);
+	glm::vec3 hovered_cell_graph_color;
 
-	~GraphManager();
+	float bar_width;
+
+	int num_of_columns;
+
+	GraphManager(ApplicationModel* application_model, EngineData* engine_data);
 
 	void update_cell_plot();		//for now on each plot change, we call this function
 
 	void update_relative_plot();
 
-	void referent_cell_changed(unsigned int new_referent_cell_index);
+	void set_referent_cell(unsigned int new_referent_cell_index);
 
 	void draw_cell_plot();
 
@@ -80,11 +78,9 @@ public:
 		m_colormap_legend_plot_function = std::bind((is_active ? &GraphManager::draw_limits_mode_colormap_legend : &GraphManager::draw_normal_mode_colormap_legend), this);
 	}
 
-	void draw_current_render_mode_settings() { m_render_graph_settings[(unsigned int)m_current_render_mode]->draw(); }
+	RenderMode current_render_mode() { return m_current_render_mode; }
 
-	void draw_current_comparison_mode_settings() { m_comparison_graph_settings[(unsigned int)m_current_comparison_mode]->draw(); }
-
-	glm::vec3* hovered_cell_graph_color() { return &m_hovered_cell_graph_color; }
+	ComparisonMode current_comparison_mode() { return m_current_comparison_mode; }
 
 	const char* current_render_mode_label() { return RENDER_MODE_LABELS[(unsigned int)m_current_render_mode]; }
 

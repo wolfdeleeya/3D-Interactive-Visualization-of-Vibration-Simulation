@@ -16,11 +16,10 @@ const std::vector<const char*> GraphManager::COMPARISON_MODE_LABELS = {
 
 void GraphManager::draw_bar_graph(const GraphData& gd, int cell_index)
 {
-	BarGraphSettings* bar_settings = (BarGraphSettings*)m_render_graph_settings[(unsigned int)RenderMode::BARS];
 	if (cell_index >= 0)
-		MyImPlot::PlotBars(gd, cell_index, bar_settings->bar_width);
+		MyImPlot::PlotBars(gd, cell_index,bar_width);
 	else
-		MyImPlot::PlotBarGroups(gd, bar_settings->bar_width);
+		MyImPlot::PlotBarGroups(gd, bar_width);
 }
 
 void GraphManager::draw_line_graph(const GraphData& gd, int cell_index)
@@ -59,7 +58,6 @@ void GraphManager::draw_subplot_comparison()
 	unsigned int num_of_selected_cells = m_engine_data->num_of_selected_cells();
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
 
-	unsigned int num_of_columns = ((SubplotsComparisonSettings*)m_comparison_graph_settings[(unsigned int)ComparisonMode::SUBPLOTS])->num_of_columns;
 	unsigned int num_of_rows = num_of_selected_cells / num_of_columns;
 	num_of_rows = num_of_rows < 1 ? 1 : num_of_rows;	//make sure that the number of rows is not 0
 
@@ -148,20 +146,6 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engi
 
 	m_application_model->on_limits_mode_toggled.add_listener(std::bind(&GraphManager::limits_mode_toggled, this, std::placeholders::_1));
 
-	m_render_graph_settings = {
-		new BarGraphSettings(0.5),
-		new BaseGraphSettings()
-	};
-
-	m_comparison_graph_settings = {
-		new BaseGraphSettings(),
-		new SubplotsComparisonSettings(m_engine_data, 1),
-		new RelativeComparisonSettings(m_engine_data)
-	};
-
-	//hook up to event so that referent cell index updated accordingly
-	((RelativeComparisonSettings*)m_comparison_graph_settings[(unsigned int)ComparisonMode::RELATIVE])->on_referent_cell_changed.add_member_listener(&GraphManager::referent_cell_changed, this);
-
 	m_render_plot_functions = {
 		std::bind(&GraphManager::draw_bar_graph, this, std::placeholders::_1, std::placeholders::_2),
 		std::bind(&GraphManager::draw_line_graph, this, std::placeholders::_1, std::placeholders::_2)
@@ -178,16 +162,9 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engi
 
 	m_colormap_legend_plot_function = std::bind(&GraphManager::draw_normal_mode_colormap_legend, this);
 
-	m_hovered_cell_graph_color = { 0.835, 0.662, 0.427 };
-}
-
-GraphManager::~GraphManager()
-{
-	for (auto& settings_ptr : m_render_graph_settings)
-		delete settings_ptr;
-
-	for (auto& settings_ptr : m_comparison_graph_settings)
-		delete settings_ptr;
+	hovered_cell_graph_color = { 0.835, 0.662, 0.427 };
+	bar_width = 0.5;
+	num_of_columns = 1;
 }
 
 void GraphManager::update_cell_plot()
@@ -216,7 +193,7 @@ void GraphManager::update_cell_plot()
 
 	//add hovered cell to the list
 	if (m_engine_data->is_valid_cell_hovered()) {
-		colors.push_back(m_hovered_cell_graph_color);
+		colors.push_back(hovered_cell_graph_color);
 
 		std::pair<std::string, std::vector<float>> data_entry;
 
@@ -267,7 +244,7 @@ void GraphManager::update_relative_plot()
 
 	//add hovered cell to the list
 	if (m_engine_data->is_valid_cell_hovered()) {
-		colors.push_back(m_hovered_cell_graph_color);
+		colors.push_back(hovered_cell_graph_color);
 
 		std::pair<std::string, std::vector<float>> data_entry;
 
@@ -286,7 +263,7 @@ void GraphManager::update_relative_plot()
 	m_cached_relative_graph_data = GraphData(m_engine_data->selected_frequencies_names(), item_data, colors);
 }
 
-void GraphManager::referent_cell_changed(unsigned int new_referent_cell_index)
+void GraphManager::set_referent_cell(unsigned int new_referent_cell_index)
 {
 	m_current_referent_cell_index = new_referent_cell_index;
 	update_relative_plot();

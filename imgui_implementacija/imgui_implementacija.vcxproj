@@ -149,7 +149,6 @@
     <ClInclude Include="headers\custom_imgui_widgets.h" />
     <ClInclude Include="headers\graph\graph_manager.h" />
     <ClInclude Include="headers\graph\graph_data.h" />
-    <ClInclude Include="headers\graph\graph_settings.h" />
     <ClInclude Include="headers\implot_helper.h" />
     <ClInclude Include="headers\mesh\abstract_engine_mesh.h" />
     <ClInclude Include="headers\mesh\abstract_mesh.h" />
@@ -194,7 +193,6 @@
     <ClCompile Include="source\custom_imgui_widgets.cpp" />
     <ClCompile Include="source\graph\graph_data.cpp" />
     <ClCompile Include="source\graph\graph_manager.cpp" />
-    <ClCompile Include="source\graph\graph_settings.cpp" />
     <ClCompile Include="source\implot_helper.cpp" />
     <ClCompile Include="source\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
