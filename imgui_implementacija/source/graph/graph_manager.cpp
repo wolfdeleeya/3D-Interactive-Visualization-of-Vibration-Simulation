@@ -172,6 +172,12 @@ void GraphManager::update_cell_plot()
 	if (!m_engine_data->are_stats_loaded())
 		return;
 
+	unsigned int num_of_selected_cells = m_engine_data->num_of_selected_cells();
+	
+	if (num_of_selected_cells > 0)
+		num_of_columns = num_of_columns > num_of_selected_cells ? num_of_selected_cells : num_of_columns;
+	
+
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
 

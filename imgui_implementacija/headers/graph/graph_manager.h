@@ -59,7 +59,7 @@ public:
 
 	GraphManager(ApplicationModel* application_model, EngineData* engine_data);
 
-	void update_cell_plot();		//for now on each plot change, we call this function
+	void update_cell_plot();
 
 	void update_relative_plot();
 

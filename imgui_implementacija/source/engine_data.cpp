@@ -216,9 +216,8 @@ void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
 	unsigned int num_of_selected_cells = m_selected_cells.size();
 
 	//if no cell is selected, just resize color_indeces vector and set each color to -1 (empty)
-	if (num_of_selected_cells == 0) {								
-		m_selected_cells_color_indeces = std::vector<int>(num_of_available_colors, -1);
-	}
+	if (num_of_selected_cells == 0)
+		clear_selected_cells_colors();
 	else {
 		unsigned int num_of_colors_in_last_pallete = m_selected_cells_color_indeces.size();
 
@@ -273,6 +272,12 @@ void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
 
 	calculate_color();
 	on_selected_cells_pallete_changed.invoke(m_current_selected_cell_pallet);
+}
+
+void EngineData::clear_selected_cells_colors()
+{
+	unsigned int num_of_available_colors = m_selected_cells_palletes[m_current_selected_cell_pallet].second.size();
+	m_selected_cells_color_indeces = std::vector<int>(num_of_available_colors, -1);
 }
 
 EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
@@ -408,6 +413,9 @@ void EngineData::clear_selected_cells()
 	if (m_selected_cells.size() > 0)
 	{
 		m_selected_cells.clear();
+
+		clear_selected_cells_colors();
+
 		on_selected_cells_changed.invoke();
 
 		calculate_color();
@@ -461,7 +469,9 @@ glm::vec3 EngineData::get_color_for_selected_cell(unsigned int local_index) cons
 {
 	unsigned int color_index = 0;
 
-	while (m_selected_cells_color_indeces[color_index] != local_index) ++color_index;
+	unsigned int num_of_colors = current_pallete().second.size();
+
+	while (m_selected_cells_color_indeces[color_index] != local_index && color_index < num_of_colors) ++color_index;
 
 	glm::vec3 color = current_pallete().second[color_index];
 	return color;

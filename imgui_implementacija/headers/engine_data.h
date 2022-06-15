@@ -90,6 +90,8 @@ private:
 	void remove_selected_cell_at(unsigned int index);
 
 	void set_selected_cells_color_pallete(unsigned int pallete_index);
+
+	void clear_selected_cells_colors();
 	
 	const data::pallete& current_pallete() const { return m_selected_cells_palletes[m_current_selected_cell_pallet]; }
 
