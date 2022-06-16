@@ -88,7 +88,7 @@ void EngineVisualizationMesh::load_model_data()
 
 void EngineVisualizationMesh::load_color_data()
 {
-	const std::map<unsigned int, glm::vec3>& color_map = m_engine_data->current_color_map();
+	const std::map<unsigned int, glm::vec3>& color_map = m_engine_model->current_color_map();
 
 	if (m_color_data.size() != m_indeces.size())
 		m_color_data.resize(m_indeces.size());
@@ -106,10 +106,10 @@ void EngineVisualizationMesh::load_color_data()
 	}
 }
 
-EngineVisualizationMesh::EngineVisualizationMesh(EngineData* engine_data, const glm::ivec2& window_dimensions, unsigned int target_FBO) :
+EngineVisualizationMesh::EngineVisualizationMesh(EngineModel* engine_model, const glm::ivec2& window_dimensions, unsigned int target_FBO) :
 	AbstractEngineMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions)
 {
-	m_engine_data = engine_data;
+	m_engine_model = engine_model;
 
 	glGenBuffers(1, &m_VBO_color);
 

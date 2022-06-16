@@ -2,7 +2,7 @@
 
 #include "abstract_engine_mesh.h"
 #include "data_loading.h"
-#include "engine_data.h"
+#include "engine_model.h"
 
 struct vertex {
 	glm::vec3 position;
@@ -15,7 +15,7 @@ private:
 
 	const static char* SELECTED_CELL_PAR_NAME;
 
-	EngineData* m_engine_data;
+	EngineModel* m_engine_model;
 
 	unsigned int m_VBO_color;
 
@@ -38,7 +38,7 @@ private:
 
 	void load_color_data();
 public:
-	EngineVisualizationMesh(EngineData* engine_data, const glm::ivec2& window_dimensions, unsigned int m_target_FBO = 0);
+	EngineVisualizationMesh(EngineModel* engine_model, const glm::ivec2& window_dimensions, unsigned int m_target_FBO = 0);
 	
 	virtual ~EngineVisualizationMesh() override;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "application_model.h"
-#include "engine_data.h"
+#include "engine_model.h"
 
 #include "mesh/abstract_mesh.h"
 #include "mesh/abstract_engine_mesh.h"
@@ -13,7 +13,7 @@
 class MeshManager {
 private:
 	ApplicationModel* m_application_model;
-	EngineData* m_engine_data;
+	EngineModel* m_engine_model;
 
 	std::vector<AbstractEngineMesh*> m_engine_meshes;
 
@@ -35,7 +35,7 @@ public:
 	Signal on_vertices_loaded,
 		on_cell_vertices_loaded;
 
-	MeshManager(ApplicationModel* application_model, EngineData* engine_data, const glm::ivec2& window_dimensions);
+	MeshManager(ApplicationModel* application_model, EngineModel* engine_model, const glm::ivec2& window_dimensions);
 
 	~MeshManager();
 

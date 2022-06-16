@@ -1,5 +1,5 @@
 \babel@toc {croatian}{}\relax 
-\contentsline {chapter}{Popis slika}{v}{}%
+\contentsline {chapter}{Popis slika}{vi}{}%
 \contentsline {chapter}{\numberline {1}Uvod}{1}{}%
 \contentsline {chapter}{\numberline {2}Pregled područja}{2}{}%
 \contentsline {chapter}{\numberline {3}Analiza zadatka i zahtjeva}{4}{}%
@@ -14,7 +14,18 @@
 \contentsline {section}{\numberline {4.6}Postavke evaluacije odabranih frekvencija}{16}{}%
 \contentsline {section}{\numberline {4.7}Općenite informacije}{17}{}%
 \contentsline {chapter}{\numberline {5}Implementacija}{19}{}%
-\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{20}{}%
-\contentsline {chapter}{\numberline {7}Zaključak}{21}{}%
-\contentsline {chapter}{Literatura}{22}{}%
-\contentsline {chapter}{\numberline {A}Različiti načini crtanja grafova}{23}{}%
+\contentsline {section}{\numberline {5.1}Korištene biblioteke}{19}{}%
+\contentsline {subsection}{\numberline {5.1.1}OpenGL}{19}{}%
+\contentsline {subsection}{\numberline {5.1.2}Dear ImGui}{20}{}%
+\contentsline {subsection}{\numberline {5.1.3}ImPlot}{20}{}%
+\contentsline {subsection}{\numberline {5.1.4}Ostale biblioteke}{20}{}%
+\contentsline {section}{\numberline {5.2}Arhitektura rješenja}{21}{}%
+\contentsline {subsection}{\numberline {5.2.1}Model}{22}{}%
+\contentsline {subsection}{\numberline {5.2.2}Pogled}{22}{}%
+\contentsline {subsection}{\numberline {5.2.3}Upravljač}{22}{}%
+\contentsline {section}{\numberline {5.3}Organizacija podataka na grafičkoj kartici}{22}{}%
+\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{23}{}%
+\contentsline {chapter}{\numberline {7}Zaključak}{24}{}%
+\contentsline {chapter}{Literatura}{25}{}%
+\contentsline {chapter}{\numberline {A}Različiti načini crtanja grafova}{27}{}%
+\contentsline {chapter}{\numberline {B}Sustav događaja i signala}{31}{}%

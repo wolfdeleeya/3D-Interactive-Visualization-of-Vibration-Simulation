@@ -4,8 +4,8 @@
 
 #include "mesh_manager.h"
 #include "application_model.h"
-#include "engine_data.h"
-#include "imgui_layer.h"
+#include "engine_model.h"
+#include "imgui_manager.h"
 #include "GLFW/glfw3.h"
 
 //APP
@@ -14,12 +14,12 @@ private:
 	GLFWwindow* m_window;
 
 	ApplicationModel* m_appliction_model;
-	EngineData* m_engine_data;
+	EngineModel* m_engine_model;
 	
 	MeshManager* m_mesh_manager;
 	GraphManager* m_graph_manager;
 
-	ImGUILayer* m_imgui_layer;
+	ImGuiManager* m_imgui_manager;
 
 	glm::vec2 m_last_mouse_pos;
 	glm::vec2 m_current_mouse_pos;

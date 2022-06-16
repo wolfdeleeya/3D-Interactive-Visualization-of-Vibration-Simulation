@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{11}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -19,6 +19,38 @@
 {E}asing {F}unctions {C}heat {S}heet.
 \newblock \url{https://easings.net/#}.
 \newblock [Pristupljeno 9. lipnja 2022].
+
+\bibitem[glf()]{glfw}
+Glfw: Main page.
+\newblock \url{https://www.glfw.org/docs/3.3/index.html}.
+\newblock [Pristupljeno 15. lipnja 2022].
+
+\bibitem[glm()]{glm}
+{O}pen{G}{L} {M}athematics ({G}{L}{M}).
+\newblock \url{https://github.com/g-truc/glm}.
+\newblock [Pristupljeno 15. lipnja 2022].
+
+\bibitem[img()]{imgui}
+Dear {I}m{G}ui: {B}loat-free {G}raphical {U}ser interface for {C}++ with
+  minimal dependencies.
+\newblock \url{https://github.com/ocornut/imgui}.
+\newblock [Pristupljeno 15. lipnja 2022].
+
+\bibitem[imp()]{implot}
+implot: {I}mmediate {M}ode {P}lotting.
+\newblock \url{https://github.com/epezent/implot}.
+\newblock [Pristupljeno 15. lipnja 2022].
+
+\bibitem[nfd()]{nfd}
+nativefiledialog: {A} tiny, neat {C} library that portably invokes native file
+  open and save dialogs.
+\newblock \url{https://github.com/mlabbe/nativefiledialog}.
+\newblock [Pristupljeno 15. lipnja 2022].
+
+\bibitem[ope()]{opengl}
+Opengl - the industry standard for high performance graphics.
+\newblock \url{https://www.opengl.org/}.
+\newblock [Pristupljeno 15. lipnja 2022].
 
 \bibitem[Matkovi{\'c} et~al.(2021)Matkovi{\'c}, Splechtna, Gra{\v{c}}anin,
   Todorovi{\'c}, Goja, Bedi{\'c}, i Hauser]{matkovic2021getting}

@@ -55,7 +55,7 @@ void GraphManager::draw_default_comparison()
 
 void GraphManager::draw_subplot_comparison()
 {
-	unsigned int num_of_selected_cells = m_engine_data->num_of_selected_cells();
+	unsigned int num_of_selected_cells = m_engine_model->num_of_selected_cells();
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
 
 	unsigned int num_of_rows = num_of_selected_cells / num_of_columns;
@@ -65,7 +65,7 @@ void GraphManager::draw_subplot_comparison()
 		for (unsigned int i = 0; i < num_of_selected_cells; ++i) {
 			
 			std::string plot_title = "Plot of Cell ";
-			plot_title += std::to_string(m_engine_data->selected_cell_index(i));
+			plot_title += std::to_string(m_engine_model->selected_cell_index(i));
 
 			if (ImPlot::BeginPlot(plot_title.c_str())) {
 				ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
@@ -92,7 +92,7 @@ void GraphManager::draw_relative_comparison()
 	std::string title = "Selected Cell Frequencies - Relative Display - ";
 	std::string referent_cell_title = std::string("Relative To Cell ") + std::to_string(m_current_referent_cell_index);
 
-	title += m_engine_data->does_cell_exist(m_current_referent_cell_index) ? referent_cell_title : "No Selected Referent Cell";
+	title += m_engine_model->does_cell_exist(m_current_referent_cell_index) ? referent_cell_title : "No Selected Referent Cell";
 
 	if (ImPlot::BeginPlot(title.c_str(), {-1, -1})) {
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
@@ -111,10 +111,10 @@ void GraphManager::draw_relative_comparison()
 
 void GraphManager::draw_limits_mode_colormap_legend()
 {
-	unsigned int num_of_selected_frequencies = m_engine_data->num_of_selected_frequencies();
+	unsigned int num_of_selected_frequencies = m_engine_model->num_of_selected_frequencies();
 
-	Gradient mid_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_RISKY_GRADIENT);
-	Gradient bad_gradient = *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT);
+	Gradient mid_gradient = *m_engine_model->get_gradient(EngineModel::GradientVariables::LIMITS_MODE_RISKY_GRADIENT);
+	Gradient bad_gradient = *m_engine_model->get_gradient(EngineModel::GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT);
 
 	MyImPlot::ColormapScale("Limits Mode Risky Colormap", mid_gradient, 0, num_of_selected_frequencies, num_of_selected_frequencies, { 0, -1 }, false);
 	ImGui::SameLine(),
@@ -123,26 +123,26 @@ void GraphManager::draw_limits_mode_colormap_legend()
 
 void GraphManager::draw_normal_mode_colormap_legend()
 {
-	glm::vec2 limits = m_engine_data->get_current_normal_mode_limits();
-	MyImPlot::ColormapScale("Normal Mode Colormap", *(m_engine_data->get_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT)), limits.x, limits.y, 10, { 0, -1 }, true);
+	glm::vec2 limits = m_engine_model->get_current_normal_mode_limits();
+	MyImPlot::ColormapScale("Normal Mode Colormap", *(m_engine_model->get_gradient(EngineModel::GradientVariables::NORMAL_MODE_GRADIENT)), limits.x, limits.y, 10, { 0, -1 }, true);
 }
 
-GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engine_data) : m_graph_data({}, {}, {}), m_cached_relative_graph_data({}, {}, {})
+GraphManager::GraphManager(ApplicationModel* application_model, EngineModel* engine_model) : m_graph_data({}, {}, {}), m_cached_relative_graph_data({}, {}, {})
 {
 	m_application_model = application_model;
-	m_engine_data = engine_data;
+	m_engine_model = engine_model;
 
-	m_engine_data->on_cell_hovered.add_listener([this](unsigned int id) { this->update_cell_plot(); });
-	m_engine_data->on_cell_hovered.add_listener([this](unsigned int id) { this->update_relative_plot(); });
+	m_engine_model->on_cell_hovered.add_listener([this](unsigned int id) { this->update_cell_plot(); });
+	m_engine_model->on_cell_hovered.add_listener([this](unsigned int id) { this->update_relative_plot(); });
 
-	m_engine_data->on_selected_cells_pallete_changed.add_listener([this](unsigned int pallete_index) {this->update_cell_plot(); });
-	m_engine_data->on_selected_cells_pallete_changed.add_listener([this](unsigned int pallete_index) {this->update_relative_plot(); });
+	m_engine_model->on_selected_cells_pallete_changed.add_listener([this](unsigned int pallete_index) {this->update_cell_plot(); });
+	m_engine_model->on_selected_cells_pallete_changed.add_listener([this](unsigned int pallete_index) {this->update_relative_plot(); });
 
-	m_engine_data->on_selected_cells_changed.add_member_listener(&GraphManager::update_cell_plot, this);
-	m_engine_data->on_selected_cells_changed.add_member_listener(&GraphManager::update_relative_plot, this);
+	m_engine_model->on_selected_cells_changed.add_member_listener(&GraphManager::update_cell_plot, this);
+	m_engine_model->on_selected_cells_changed.add_member_listener(&GraphManager::update_relative_plot, this);
 
-	m_engine_data->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_cell_plot, this); 
-	m_engine_data->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_relative_plot, this);
+	m_engine_model->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_cell_plot, this); 
+	m_engine_model->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_relative_plot, this);
 
 	m_application_model->on_limits_mode_toggled.add_listener(std::bind(&GraphManager::limits_mode_toggled, this, std::placeholders::_1));
 
@@ -169,10 +169,10 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineData* engi
 
 void GraphManager::update_cell_plot()
 {
-	if (!m_engine_data->are_stats_loaded())
+	if (!m_engine_model->are_stats_loaded())
 		return;
 
-	unsigned int num_of_selected_cells = m_engine_data->num_of_selected_cells();
+	unsigned int num_of_selected_cells = m_engine_model->num_of_selected_cells();
 	
 	if (num_of_selected_cells > 0)
 		num_of_columns = num_of_columns > num_of_selected_cells ? num_of_selected_cells : num_of_columns;
@@ -181,65 +181,65 @@ void GraphManager::update_cell_plot()
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
 
-	std::vector<unsigned int> selected_cells = m_engine_data->selected_cells();
+	std::vector<unsigned int> selected_cells = m_engine_model->selected_cells();
 
 	unsigned int n_selected_cells = selected_cells.size();
 
 	for (unsigned int i = 0; i < n_selected_cells; ++i) {
-		colors.push_back(m_engine_data->get_color_for_selected_cell(i));
+		colors.push_back(m_engine_model->get_color_for_selected_cell(i));
 
 		std::pair<std::string, std::vector<float>> data_entry;
 		unsigned int cell_id = selected_cells[i];
 
 		data_entry.first = "CELL " + std::to_string(cell_id);
-		data_entry.second = m_engine_data->get_values_for_cell(cell_id);
+		data_entry.second = m_engine_model->get_values_for_cell(cell_id);
 
 		item_data.push_back(data_entry);
 	}
 
 	//add hovered cell to the list
-	if (m_engine_data->is_valid_cell_hovered()) {
+	if (m_engine_model->is_valid_cell_hovered()) {
 		colors.push_back(hovered_cell_graph_color);
 
 		std::pair<std::string, std::vector<float>> data_entry;
 
-		unsigned int hovered_cell_id = m_engine_data->hovered_cell();
+		unsigned int hovered_cell_id = m_engine_model->hovered_cell();
 
 		data_entry.first = "CELL " + std::to_string(hovered_cell_id);
-		data_entry.second = m_engine_data->get_hovered_cell_values();
+		data_entry.second = m_engine_model->get_hovered_cell_values();
 
 		item_data.push_back(data_entry);
 	}
 
-	m_graph_data = GraphData(m_engine_data->selected_frequencies_names(), item_data, colors);
+	m_graph_data = GraphData(m_engine_model->selected_frequencies_names(), item_data, colors);
 }
 
 void GraphManager::update_relative_plot()
 {
-	if (!m_engine_data->are_stats_loaded())
+	if (!m_engine_model->are_stats_loaded())
 		return;
 
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
 
-	std::vector<unsigned int> selected_cells = m_engine_data->selected_cells();
+	std::vector<unsigned int> selected_cells = m_engine_model->selected_cells();
 
 	unsigned int n_selected_cells = selected_cells.size();
 
-	std::vector<float> referent_cell_data = m_engine_data->get_values_for_cell(m_current_referent_cell_index);
+	std::vector<float> referent_cell_data = m_engine_model->get_values_for_cell(m_current_referent_cell_index);
 
 	for (unsigned int i = 0; i < n_selected_cells; ++i) {
 		if (selected_cells[i] == m_current_referent_cell_index) {
 			continue;
 		}
 
-		colors.push_back(m_engine_data->get_color_for_selected_cell(i));
+		colors.push_back(m_engine_model->get_color_for_selected_cell(i));
 
 		std::pair<std::string, std::vector<float>> data_entry;
 		unsigned int cell_id = selected_cells[i];
 
 		data_entry.first = "CELL " + std::to_string(cell_id);
-		data_entry.second = m_engine_data->get_values_for_cell(cell_id);
+		data_entry.second = m_engine_model->get_values_for_cell(cell_id);
 
 		//this will produce correct relative graph data if the referent cell exists
 		for (int i = 0; i < referent_cell_data.size(); ++i)
@@ -249,15 +249,15 @@ void GraphManager::update_relative_plot()
 	}
 
 	//add hovered cell to the list
-	if (m_engine_data->is_valid_cell_hovered()) {
+	if (m_engine_model->is_valid_cell_hovered()) {
 		colors.push_back(hovered_cell_graph_color);
 
 		std::pair<std::string, std::vector<float>> data_entry;
 
-		unsigned int hovered_cell_id = m_engine_data->hovered_cell();
+		unsigned int hovered_cell_id = m_engine_model->hovered_cell();
 
 		data_entry.first = "CELL " + std::to_string(hovered_cell_id);
-		data_entry.second = m_engine_data->get_hovered_cell_values();
+		data_entry.second = m_engine_model->get_hovered_cell_values();
 
 		//this will produce correct relative graph data if the referent cell exists
 		for (int i = 0; i < referent_cell_data.size(); ++i)
@@ -266,7 +266,7 @@ void GraphManager::update_relative_plot()
 		item_data.push_back(data_entry);
 	}
 
-	m_cached_relative_graph_data = GraphData(m_engine_data->selected_frequencies_names(), item_data, colors);
+	m_cached_relative_graph_data = GraphData(m_engine_model->selected_frequencies_names(), item_data, colors);
 }
 
 void GraphManager::set_referent_cell(unsigned int new_referent_cell_index)

@@ -7,10 +7,10 @@
 #include "mesh/engine_cell_selection_mesh.h"
 #include "mesh/engine_lines_mesh.h"
 
-MeshManager::MeshManager(ApplicationModel* application_model, EngineData* engine_data, const glm::ivec2& window_dimensions)
+MeshManager::MeshManager(ApplicationModel* application_model, EngineModel* engine_model, const glm::ivec2& window_dimensions)
 {
 	m_application_model = application_model;
-	m_engine_data = engine_data;
+	m_engine_model = engine_model;
 
 	glGenFramebuffers(1, &m_scene_view_FBO); 
 	glGenFramebuffers(1, &m_scene_view_MS_FBO); 
@@ -22,7 +22,7 @@ MeshManager::MeshManager(ApplicationModel* application_model, EngineData* engine
 
 	setup_scene_view_framebuffer(window_dimensions);
 
-	EngineVisualizationMesh* evm = new EngineVisualizationMesh(m_engine_data, window_dimensions, m_scene_view_MS_FBO);
+	EngineVisualizationMesh* evm = new EngineVisualizationMesh(m_engine_model, window_dimensions, m_scene_view_MS_FBO);
 	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(window_dimensions, { 200, 200 });
 	EngineLineMesh* elm = new EngineLineMesh(window_dimensions, m_scene_view_MS_FBO);
 

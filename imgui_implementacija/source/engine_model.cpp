@@ -1,12 +1,12 @@
 #include <iostream>
 #include <algorithm>
 
-#include "engine_data.h"
+#include "engine_model.h"
 #include "glm_vec_helper.h"
 #include "color_helper.h"
 #include "app.h"
 
-const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineData::CELL_FUNCTIONS{
+const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineModel::CELL_FUNCTIONS{
 	std::make_shared<cell_functors::MinFunctor>(),
 	std::make_shared<cell_functors::MaxFunctor>(),
 	std::make_shared<cell_functors::AvgFunctor>(),
@@ -14,18 +14,18 @@ const std::vector <std::shared_ptr<cell_functors::AbstractCellFunctor>> EngineDa
 	std::make_shared<cell_functors::SpreadFunctor>(),
 };
 
-const glm::vec3 EngineData::START_GOOD_LIMITS_COLOR = { 0.560, 0.984, 0.262 };
-const glm::vec3 EngineData::START_RISKY_LIMITS_COLOR1 = { 0.956, 0.956, 0.105 };
-const glm::vec3 EngineData::START_RISKY_LIMITS_COLOR2 = { 0.807, 0.478, 0.145 };
-const glm::vec3 EngineData::START_DANGEROUS_LIMITS_COLOR1 = { 0.941, 0.305, 0.305 };
-const glm::vec3 EngineData::START_DANGEROUS_LIMITS_COLOR2 = { 0.584, 0.003, 0.003 };
+const glm::vec3 EngineModel::START_GOOD_LIMITS_COLOR = { 0.560, 0.984, 0.262 };
+const glm::vec3 EngineModel::START_RISKY_LIMITS_COLOR1 = { 0.956, 0.956, 0.105 };
+const glm::vec3 EngineModel::START_RISKY_LIMITS_COLOR2 = { 0.807, 0.478, 0.145 };
+const glm::vec3 EngineModel::START_DANGEROUS_LIMITS_COLOR1 = { 0.941, 0.305, 0.305 };
+const glm::vec3 EngineModel::START_DANGEROUS_LIMITS_COLOR2 = { 0.584, 0.003, 0.003 };
 
-const char* EngineData::FUNCTION_NAMES[5] {"MIN", "MAX", "AVERAGE", "MEDIAN", "SPREAD"};
-const char* EngineData::LIMITS_NAMES[3] {"GLOBAL", "LOCAL", "USER DEFINED"};
+const char* EngineModel::FUNCTION_NAMES[5] {"MIN", "MAX", "AVERAGE", "MEDIAN", "SPREAD"};
+const char* EngineModel::LIMITS_NAMES[3] {"GLOBAL", "LOCAL", "USER DEFINED"};
 
-const char* EngineData::DEFAULT_PALLETE_PATH = "./Palletes/default_pallete.txt";
+const char* EngineModel::DEFAULT_PALLETE_PATH = "./Palletes/default_pallete.txt";
 
-void EngineData::find_local_limits()
+void EngineModel::find_local_limits()
 {
 	if (m_selected_frequencies_indeces.size() <= 0)
 		return;
@@ -46,7 +46,7 @@ void EngineData::find_local_limits()
 	m_normal_mode_limits_variables.set(VibrationLimitsVariables::LOCAL, local_limits);
 }
 
-void EngineData::find_global_limits()
+void EngineModel::find_global_limits()
 {
 	glm::vec2 global_limits(std::numeric_limits<float>::max(), std::numeric_limits<float>::min());
 
@@ -64,7 +64,7 @@ void EngineData::find_global_limits()
 	m_normal_mode_limits_variables.set(VibrationLimitsVariables::GLOBAL, global_limits);
 }
 
-glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
+glm::vec3 EngineModel::calculate_limits_color_for_cell(unsigned int cell_index)
 {
 	unsigned int num_of_valid_frequencies = 0;
 	unsigned int num_of_mid = 0;
@@ -101,7 +101,7 @@ glm::vec3 EngineData::calculate_limits_color_for_cell(unsigned int cell_index)
 	}
 }
 
-void EngineData::normal_mode_coloring()
+void EngineModel::normal_mode_coloring()
 {
 	unsigned int n_selected_frequencies = num_of_selected_frequencies();
 
@@ -139,7 +139,7 @@ void EngineData::normal_mode_coloring()
 	}
 }
 
-void EngineData::default_coloring()
+void EngineModel::default_coloring()
 {
 	const auto& selected_cells_begin = m_selected_cells.begin();
 	const auto& selected_cells_end = m_selected_cells.end();
@@ -152,7 +152,7 @@ void EngineData::default_coloring()
 	}
 }
 
-void EngineData::limits_mode_coloring()
+void EngineModel::limits_mode_coloring()
 {
 	const auto& selected_cells_begin = m_selected_cells.begin();
 	const auto& selected_cells_end = m_selected_cells.end();
@@ -165,14 +165,14 @@ void EngineData::limits_mode_coloring()
 	}
 }
 
-void EngineData::refresh_selected_frequencies_names()
+void EngineModel::refresh_selected_frequencies_names()
 {
 	m_selected_frequencies_names.clear();
 	for (unsigned int index : m_selected_frequencies_indeces)
 		m_selected_frequencies_names.push_back(m_frequenzy_names[index]);
 }
 
-void EngineData::add_selected_cell(unsigned int cell_index)
+void EngineModel::add_selected_cell(unsigned int cell_index)
 {
 	//if the number of selected cells is greater or equal replace the last one with the new one
 	// -> it will be colored as the last one because colors save only "local" cell indeces
@@ -193,7 +193,7 @@ void EngineData::add_selected_cell(unsigned int cell_index)
 
 }
 
-void EngineData::remove_selected_cell_at(unsigned int index)
+void EngineModel::remove_selected_cell_at(unsigned int index)
 {
 	//erase cell at given "local" index from selected cells list
 	m_selected_cells.erase(m_selected_cells.begin() + index);
@@ -208,7 +208,7 @@ void EngineData::remove_selected_cell_at(unsigned int index)
 	}
 }
 
-void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
+void EngineModel::set_selected_cells_color_pallete(unsigned int pallete_index)
 {
 	m_current_selected_cell_pallet = pallete_index;
 	
@@ -274,17 +274,17 @@ void EngineData::set_selected_cells_color_pallete(unsigned int pallete_index)
 	on_selected_cells_pallete_changed.invoke(m_current_selected_cell_pallet);
 }
 
-void EngineData::clear_selected_cells_colors()
+void EngineModel::clear_selected_cells_colors()
 {
 	unsigned int num_of_available_colors = m_selected_cells_palletes[m_current_selected_cell_pallet].second.size();
 	m_selected_cells_color_indeces = std::vector<int>(num_of_available_colors, -1);
 }
 
-EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
-	m_gradient_variables([](const Gradient& g1, const Gradient& g2) {return g1 == g2; }, GradientVariables::END, Gradient{ glm::vec3(1), glm::vec3(0) }, std::bind(&EngineData::calculate_color, this)),
-	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, glm::vec3(0), std::bind(&EngineData::calculate_color, this)),
-	m_uint_variables([](unsigned int ui1, unsigned int ui2) {return ui1 == ui2; }, UnsignedIntVariables::END, 0, std::bind(&EngineData::calculate_color, this)),
-	m_normal_mode_limits_variables([](const glm::vec2& v1, const glm::vec2& v2) { return are_equal(v1, v2); },VibrationLimitsVariables::END, glm::vec2(0), std::bind(&EngineData::calculate_color, this))
+EngineModel::EngineModel(const glm::vec3& color) : m_frq_comparator({}),
+	m_gradient_variables([](const Gradient& g1, const Gradient& g2) {return g1 == g2; }, GradientVariables::END, Gradient{ glm::vec3(1), glm::vec3(0) }, std::bind(&EngineModel::calculate_color, this)),
+	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, glm::vec3(0), std::bind(&EngineModel::calculate_color, this)),
+	m_uint_variables([](unsigned int ui1, unsigned int ui2) {return ui1 == ui2; }, UnsignedIntVariables::END, 0, std::bind(&EngineModel::calculate_color, this)),
+	m_normal_mode_limits_variables([](const glm::vec2& v1, const glm::vec2& v2) { return are_equal(v1, v2); },VibrationLimitsVariables::END, glm::vec2(0), std::bind(&EngineModel::calculate_color, this))
 {
 	set_uint(UnsignedIntVariables::VIBRATION_LIMITS, (unsigned int)VibrationLimitsVariables::LOCAL);
 	set_uint(UnsignedIntVariables::NORMAL_MODE_FUNCTION, (unsigned int)CellFunctions::AVERAGE);
@@ -305,7 +305,7 @@ EngineData::EngineData(const glm::vec3& color) : m_frq_comparator({}),
 	}
 }
 
-void EngineData::calculate_color()
+void EngineModel::calculate_color()
 {
 	unsigned int n_selected_frequencies = m_selected_frequencies_indeces.size();
 
@@ -322,7 +322,7 @@ void EngineData::calculate_color()
 	on_colors_recalculated.invoke();
 }
 
-void EngineData::load_cell_stats(const char* path)
+void EngineModel::load_cell_stats(const char* path)
 {
 	m_cell_stats = data::load_cell_stats(path, m_frequenzy_names);
 
@@ -340,14 +340,14 @@ void EngineData::load_cell_stats(const char* path)
 	on_cell_stats_loaded.invoke();
 }
 
-void EngineData::load_frequency_limits(const char* path)
+void EngineModel::load_frequency_limits(const char* path)
 {
 	m_frequenzy_limits = data::load_frequenzy_limits(path, m_frequencies_with_limits);
 
 	on_frequency_limits_loaded.invoke();
 }
 
-void EngineData::load_cell_vertices(const char* path)		//used to set default color when stats are not yet loaded
+void EngineModel::load_cell_vertices(const char* path)		//used to set default color when stats are not yet loaded
 {
 	if (m_cell_stats.size() != 0)
 		return;
@@ -362,7 +362,7 @@ void EngineData::load_cell_vertices(const char* path)		//used to set default col
 	calculate_color();
 }
 
-void EngineData::check_for_changes()
+void EngineModel::check_for_changes()
 {
 	static bool are_changes_pending = false;
 
@@ -372,7 +372,7 @@ void EngineData::check_for_changes()
 	are_changes_pending |= m_normal_mode_limits_variables.check_for_changes();
 }
 
-void EngineData::select_frequency(const std::string& f_name, bool is_selected)
+void EngineModel::select_frequency(const std::string& f_name, bool is_selected)
 {
 	unsigned int f_index = get_index_from_frequency_name(f_name);
 	if (is_selected) {
@@ -394,7 +394,7 @@ void EngineData::select_frequency(const std::string& f_name, bool is_selected)
 	on_selected_frequencies_changed.invoke();
 }
 
-void EngineData::clear_frequency_selection()
+void EngineModel::clear_frequency_selection()
 {
 	m_selected_frequencies_indeces.clear();
 	on_selected_frequencies_changed.invoke();
@@ -402,13 +402,13 @@ void EngineData::clear_frequency_selection()
 	calculate_color();
 }
 
-void EngineData::clear_hovered_cell()
+void EngineModel::clear_hovered_cell()
 {
 	if (is_valid_cell_hovered())
 		set_hovered_cell(0);
 }
 
-void EngineData::clear_selected_cells()
+void EngineModel::clear_selected_cells()
 {
 	if (m_selected_cells.size() > 0)
 	{
@@ -422,7 +422,7 @@ void EngineData::clear_selected_cells()
 	}
 }
 
-void EngineData::handle_mouse_click()
+void EngineModel::handle_mouse_click()
 {
 	if (!is_valid_cell_hovered())
 		return;
@@ -441,7 +441,7 @@ void EngineData::handle_mouse_click()
 	on_selected_cells_changed.invoke();
 }
 
-void EngineData::set_hovered_cell(unsigned int cell_index)
+void EngineModel::set_hovered_cell(unsigned int cell_index)
 {
 	bool is_hovered_cell_changed = cell_index != m_hovered_cell;
 	m_hovered_cell = cell_index;
@@ -449,7 +449,7 @@ void EngineData::set_hovered_cell(unsigned int cell_index)
 		on_cell_hovered.invoke(m_hovered_cell);
 }
 
-std::vector<float> EngineData::get_values_for_cell(unsigned int index) const
+std::vector<float> EngineModel::get_values_for_cell(unsigned int index) const
 {
 	std::vector<float> result;
 	
@@ -465,7 +465,7 @@ std::vector<float> EngineData::get_values_for_cell(unsigned int index) const
 	return result;
 }
 
-glm::vec3 EngineData::get_color_for_selected_cell(unsigned int local_index) const
+glm::vec3 EngineModel::get_color_for_selected_cell(unsigned int local_index) const
 {
 	unsigned int color_index = 0;
 
@@ -477,19 +477,19 @@ glm::vec3 EngineData::get_color_for_selected_cell(unsigned int local_index) cons
 	return color;
 }
 
-void EngineData::set_normal_mode_coloring()
+void EngineModel::set_normal_mode_coloring()
 {
-	m_cell_coloring_function = std::bind(&EngineData::normal_mode_coloring, this);
+	m_cell_coloring_function = std::bind(&EngineModel::normal_mode_coloring, this);
 	calculate_color();
 }
 
-void EngineData::set_limits_mode_coloring()
+void EngineModel::set_limits_mode_coloring()
 {
-	m_cell_coloring_function = std::bind(&EngineData::limits_mode_coloring, this);
+	m_cell_coloring_function = std::bind(&EngineModel::limits_mode_coloring, this);
 	calculate_color();
 }
 
-bool EngineData::load_selected_cells_color_pallete(const char* path)
+bool EngineModel::load_selected_cells_color_pallete(const char* path)
 {
 	std::vector<data::pallete> loaded_palletes = data::load_selected_cells_pallete(path);
 
@@ -506,25 +506,25 @@ bool EngineData::load_selected_cells_color_pallete(const char* path)
 		return false;
 }
 
-void EngineData::set_next_selected_cells_pallete()
+void EngineModel::set_next_selected_cells_pallete()
 {
 	unsigned int index_to_set = (m_current_selected_cell_pallet + 1) % m_selected_cells_palletes.size();
 	set_selected_cells_color_pallete(index_to_set);
 }
 
-void EngineData::on_limits_mode_toggled(bool is_active)
+void EngineModel::on_limits_mode_toggled(bool is_active)
 {
 	clear_frequency_selection();
 	is_active ? set_limits_mode_coloring() : set_normal_mode_coloring();
 }
 
-glm::vec2 EngineData::get_current_normal_mode_limits()
+glm::vec2 EngineModel::get_current_normal_mode_limits()
 {
 	unsigned int current_limits_index = *get_uint(UnsignedIntVariables::VIBRATION_LIMITS);
 	return *get_vibration_limits((VibrationLimitsVariables)current_limits_index);
 }
 
-unsigned int EngineData::get_index_from_frequency_name(const std::string& name) const
+unsigned int EngineModel::get_index_from_frequency_name(const std::string& name) const
 {
 	unsigned int index = 0;
 	for (const auto& f_name : m_frequenzy_names) {
@@ -537,7 +537,7 @@ unsigned int EngineData::get_index_from_frequency_name(const std::string& name) 
 		throw std::out_of_range("FREQUENCY INDEX OUT OF RANGE!");
 }
 
-bool EngineData::is_frequency_selected(const std::string& f_name) const
+bool EngineModel::is_frequency_selected(const std::string& f_name) const
 {
 	unsigned int f_index = get_index_from_frequency_name(f_name);
 	return is_frequency_selected(f_index);

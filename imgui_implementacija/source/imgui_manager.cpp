@@ -1,6 +1,6 @@
 #include <memory>
 
-#include "imgui_layer.h"
+#include "imgui_manager.h"
 #include "app.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
@@ -13,32 +13,32 @@
 #include "implot_helper.h"
 #include "custom_imgui_widgets.h"
 
-void ImGUILayer::draw_color_selection_widget()
+void ImGuiManager::draw_color_selection_widget()
 {
 	if (ImGui::Begin("Color Properties Selection")) {
 		draw_color_selection("Background Color", *m_application_model->get_color(ApplicationModel::ColorVariables::CLEAR_COLOR));
 
-		draw_color_selection("Default Color", *m_engine_data->get_color(EngineData::ColorVariables::DEFAULT_COLOR));
+		draw_color_selection("Default Color", *m_engine_model->get_color(EngineModel::ColorVariables::DEFAULT_COLOR));
 
-		unsigned int current_selected_cells_pallete_index = m_engine_data->current_selected_cells_pallete_index();
+		unsigned int current_selected_cells_pallete_index = m_engine_model->current_selected_cells_pallete_index();
 
 		auto& current_pallete_data = m_selected_cells_palletes_textures[current_selected_cells_pallete_index];
 
-		EngineData* engine_data = m_engine_data;
+		EngineModel* engine_model = m_engine_model;
 		ImGui::Image((void*)current_pallete_data.second, { 60, 60 });
 		ImGui::SameLine();
 
 		ImGui::BeginGroup();
 		ImGui::Text(("Pallete Name: " + current_pallete_data.first).c_str());
 		if (ImGui::Button("Set Next Color Pallete \nFor Selected Cells")) {
-			m_engine_data->set_next_selected_cells_pallete();
+			m_engine_model->set_next_selected_cells_pallete();
 		}
 		ImGui::EndGroup();
 
-		if (m_engine_data->are_stats_loaded()) {
+		if (m_engine_model->are_stats_loaded()) {
 			bool is_limits_mode_active = m_application_model->is_limits_mode_active();
 
-			if (m_engine_data->are_frequenzy_limits_loaded()) {
+			if (m_engine_model->are_frequenzy_limits_loaded()) {
 				
 				ImGui::Text("Current Mode:");
 				ImGui::SameLine();
@@ -58,19 +58,19 @@ void ImGUILayer::draw_color_selection_widget()
 	}
 }
 
-void ImGUILayer::draw_normal_color_selection()
+void ImGuiManager::draw_normal_color_selection()
 {
-	draw_gradient_selection("Normal Mode Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::NORMAL_MODE_GRADIENT));
+	draw_gradient_selection("Normal Mode Gradient", *m_engine_model->get_gradient(EngineModel::GradientVariables::NORMAL_MODE_GRADIENT));
 }
 
-void ImGUILayer::draw_limits_mode_color_selection()
+void ImGuiManager::draw_limits_mode_color_selection()
 {
-	draw_color_selection("Safe Zone Color", *m_engine_data->get_color(EngineData::ColorVariables::GOOD_LIMITS_COLOR));
-	draw_gradient_selection("Risky Zone Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_RISKY_GRADIENT));
-	draw_gradient_selection("Dangerous Zone Gradient", *m_engine_data->get_gradient(EngineData::GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT));
+	draw_color_selection("Safe Zone Color", *m_engine_model->get_color(EngineModel::ColorVariables::GOOD_LIMITS_COLOR));
+	draw_gradient_selection("Risky Zone Gradient", *m_engine_model->get_gradient(EngineModel::GradientVariables::LIMITS_MODE_RISKY_GRADIENT));
+	draw_gradient_selection("Dangerous Zone Gradient", *m_engine_model->get_gradient(EngineModel::GradientVariables::LIMITS_MODE_DANGEROUS_GRADIENT));
 }
 
-void ImGUILayer::draw_engine_view()
+void ImGuiManager::draw_engine_view()
 {
 	if(ImGui::Begin("Engine View")) {
 		m_graph_manager->draw_legend();
@@ -106,7 +106,7 @@ void ImGUILayer::draw_engine_view()
 	}
 }
 
-void ImGUILayer::draw_general_info_widget()
+void ImGuiManager::draw_general_info_widget()
 {
 	if (ImGui::Begin("General Info")) {
 		draw_fps_and_delta_time();
@@ -115,7 +115,7 @@ void ImGUILayer::draw_general_info_widget()
 	}
 }
 
-void ImGUILayer::draw_fps_and_delta_time()
+void ImGuiManager::draw_fps_and_delta_time()
 {
 	static float timer = 0;
 	static float fps_refresh_time = 1;
@@ -143,7 +143,7 @@ void ImGUILayer::draw_fps_and_delta_time()
 	ImGui::Text(delta_time_label.c_str());
 }
 
-void ImGUILayer::draw_main_bar()
+void ImGuiManager::draw_main_bar()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -179,7 +179,7 @@ void ImGUILayer::draw_main_bar()
 	}
 }
 
-void ImGUILayer::draw_frequency_selection_widget()
+void ImGuiManager::draw_frequency_selection_widget()
 {
 	if (ImGui::Begin("Frequency Selection")) {
 		if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
@@ -191,13 +191,13 @@ void ImGUILayer::draw_frequency_selection_widget()
 
 			for (int i = 0; i < frequency_names.size(); i++)
 			{
-				selected.get()[i] = m_engine_data->is_frequency_selected(frequency_names[i]);
+				selected.get()[i] = m_engine_model->is_frequency_selected(frequency_names[i]);
 
 				ImGui::TableNextColumn();
 				ImGui::Selectable(frequency_names[i].c_str(), &selected.get()[i], 1);;
 
-				if (m_engine_data->is_frequency_selected(frequency_names[i]) != selected.get()[i]) {
-					m_engine_data->select_frequency(frequency_names[i], selected.get()[i]);
+				if (m_engine_model->is_frequency_selected(frequency_names[i]) != selected.get()[i]) {
+					m_engine_model->select_frequency(frequency_names[i], selected.get()[i]);
 				}
 			}
 
@@ -207,9 +207,9 @@ void ImGUILayer::draw_frequency_selection_widget()
 	}
 }
 
-void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
+void ImGuiManager::draw_frequency_selection_evaluation_settings_widget()
 {
-	unsigned int num_of_selected_frequencies = m_engine_data->num_of_selected_frequencies();
+	unsigned int num_of_selected_frequencies = m_engine_model->num_of_selected_frequencies();
 
 	if (num_of_selected_frequencies > 0) {
 		if (ImGui::Begin("Frequency Selection Evaluation Settings")) {
@@ -220,29 +220,29 @@ void ImGUILayer::draw_frequency_selection_evaluation_settings_widget()
 			}
 
 			if (ImGui::Button("Clear Selected Frequencies"))
-				m_engine_data->clear_frequency_selection();
+				m_engine_model->clear_frequency_selection();
 
 			ImGui::End();
 		}
 	}
 }
 
-void ImGUILayer::draw_limits_selection()
+void ImGuiManager::draw_limits_selection()
 {
-	int selected_mode = *m_engine_data->get_uint(EngineData::UnsignedIntVariables::VIBRATION_LIMITS);
-	unsigned int num_of_labels = sizeof(EngineData::LIMITS_NAMES) / sizeof(*EngineData::LIMITS_NAMES);
+	int selected_mode = *m_engine_model->get_uint(EngineModel::UnsignedIntVariables::VIBRATION_LIMITS);
+	unsigned int num_of_labels = sizeof(EngineModel::LIMITS_NAMES) / sizeof(*EngineModel::LIMITS_NAMES);
 
-	ImGui::ListBox("Limits Selection", &(selected_mode), EngineData::LIMITS_NAMES, num_of_labels);
+	ImGui::ListBox("Limits Selection", &(selected_mode), EngineModel::LIMITS_NAMES, num_of_labels);
 
-	m_engine_data->set_uint(EngineData::UnsignedIntVariables::VIBRATION_LIMITS, selected_mode);
+	m_engine_model->set_uint(EngineModel::UnsignedIntVariables::VIBRATION_LIMITS, selected_mode);
 
-	if (selected_mode == (int)EngineData::VibrationLimitsVariables::USER_DEF) {
-		glm::vec2* user_limits = m_engine_data->get_vibration_limits(EngineData::VibrationLimitsVariables::USER_DEF);
+	if (selected_mode == (int)EngineModel::VibrationLimitsVariables::USER_DEF) {
+		glm::vec2* user_limits = m_engine_model->get_vibration_limits(EngineModel::VibrationLimitsVariables::USER_DEF);
 		ImGui::DragFloat2("Custom Limits", glm::value_ptr(*user_limits), 1, -200, 200);
 	}
 }
 
-void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
+void ImGuiManager::draw_gradient_selection(const char* gradient_name, Gradient& g)
 {
 	ImGui::BeginGroup();
 	ImGui::PushItemWidth(-ImGui::GetFontSize() * 15);
@@ -274,17 +274,17 @@ void ImGUILayer::draw_gradient_selection(const char* gradient_name, Gradient& g)
 	ImGui::EndGroup();
 }
 
-void ImGUILayer::draw_function_selection()
+void ImGuiManager::draw_function_selection()
 {
-	int selected_function = (int) *m_engine_data->get_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION);
-	unsigned int num_of_labels = sizeof(EngineData::FUNCTION_NAMES) / sizeof(*EngineData::FUNCTION_NAMES);
+	int selected_function = (int) *m_engine_model->get_uint(EngineModel::UnsignedIntVariables::NORMAL_MODE_FUNCTION);
+	unsigned int num_of_labels = sizeof(EngineModel::FUNCTION_NAMES) / sizeof(*EngineModel::FUNCTION_NAMES);
 
-	ImGui::ListBox("Function Selection", &(selected_function), EngineData::FUNCTION_NAMES, num_of_labels);
+	ImGui::ListBox("Function Selection", &(selected_function), EngineModel::FUNCTION_NAMES, num_of_labels);
 	
-	m_engine_data->set_uint(EngineData::UnsignedIntVariables::NORMAL_MODE_FUNCTION, selected_function);
+	m_engine_model->set_uint(EngineModel::UnsignedIntVariables::NORMAL_MODE_FUNCTION, selected_function);
 }
 
-void ImGUILayer::draw_graph_widget()
+void ImGuiManager::draw_graph_widget()
 {
 	ImGui::SetNextWindowSize({500, 330});
 
@@ -292,9 +292,9 @@ void ImGUILayer::draw_graph_widget()
 	ImGuiContext* imgui_context = ImGui::GetCurrentContext();
 	
 	if (ImGui::Begin("Graph View")) {
-		if (m_engine_data->num_of_selected_cells() > 0) {
+		if (m_engine_model->num_of_selected_cells() > 0) {
 			if (ImGui::Button("CLEAR SELECTED CELLS")) {
-				m_engine_data->clear_selected_cells();
+				m_engine_model->clear_selected_cells();
 			}
 		}
 
@@ -313,7 +313,7 @@ void ImGUILayer::draw_graph_widget()
 	ImGui::End();
 }
 
-void ImGUILayer::draw_graph_settings_widget()
+void ImGuiManager::draw_graph_settings_widget()
 {
 	if (ImGui::Begin("Graph Settings")) {
 
@@ -338,18 +338,18 @@ void ImGUILayer::draw_graph_settings_widget()
 	ImGui::End();
 }
 
-void ImGUILayer::draw_subplots_comparison_graph_settings()
+void ImGuiManager::draw_subplots_comparison_graph_settings()
 {
-	int num_of_selected_cells = m_engine_data->num_of_selected_cells();
+	int num_of_selected_cells = m_engine_model->num_of_selected_cells();
 
 	//if the number of selected cells is greater than 1, than the grid of subplots will have more than 1 subplot
 	if (num_of_selected_cells > 1)
 		ImGui::DragInt("Number Of Colums", &m_graph_manager->num_of_columns, 0.1, 1, num_of_selected_cells);
 }
 
-void ImGUILayer::draw_relative_comparison_graph_settings()
+void ImGuiManager::draw_relative_comparison_graph_settings()
 {
-	std::vector<unsigned int> selected_cells_indeces(m_engine_data->selected_cells());
+	std::vector<unsigned int> selected_cells_indeces(m_engine_model->selected_cells());
 	unsigned int num_of_selected_cells = selected_cells_indeces.size();
 
 	if (ImGui::TreeNode("Pick Referant Selected Cell"))
@@ -361,7 +361,7 @@ void ImGUILayer::draw_relative_comparison_graph_settings()
 			std::string cell_label = "Cell ";
 			cell_label += std::to_string(current_cell_index);
 
-			glm::vec3 color = m_engine_data->get_color_for_selected_cell(i);
+			glm::vec3 color = m_engine_model->get_color_for_selected_cell(i);
 			ImU32 packed_color = ImGui::GetColorU32({ color.r, color.g, color.b, 1 });
 
 			if (MyImGui::SelectableCustomColor(cell_label.c_str(), selected == current_cell_index, packed_color, packed_color)) {
@@ -377,12 +377,12 @@ void ImGUILayer::draw_relative_comparison_graph_settings()
 	}
 }
 
-void ImGUILayer::draw_bar_graph_settings()
+void ImGuiManager::draw_bar_graph_settings()
 {
 	ImGui::DragFloat("Bar Width", &m_graph_manager->bar_width, 0.05, 0, 1);
 }
 
-void ImGUILayer::draw_colormap_legend_widget()
+void ImGuiManager::draw_colormap_legend_widget()
 {
 	if (ImGui::Begin("##Color Map Legend")) {
 		m_graph_manager->draw_legend();
@@ -390,7 +390,7 @@ void ImGUILayer::draw_colormap_legend_widget()
 	ImGui::End();
 }
 
-bool ImGUILayer::is_window_resized(ImGuiWindow* window)
+bool ImGuiManager::is_window_resized(ImGuiWindow* window)
 {
 	ImGuiID active_id = ImGui::GetActiveID();
 
@@ -406,7 +406,7 @@ bool ImGUILayer::is_window_resized(ImGuiWindow* window)
 	return false;
 }
 
-void ImGUILayer::delete_selected_cells_palletes()
+void ImGuiManager::delete_selected_cells_palletes()
 {
 	for (auto& pair : m_selected_cells_palletes_textures)
 		glDeleteTextures(1, &pair.second);
@@ -414,7 +414,7 @@ void ImGUILayer::delete_selected_cells_palletes()
 	m_selected_cells_palletes_textures.clear();
 }
 
-unsigned int ImGUILayer::generate_texture_from_pallete(const data::pallete& p)
+unsigned int ImGuiManager::generate_texture_from_pallete(const data::pallete& p)
 {
 	unsigned int texture_id;
 	//generate texture for pixel buffering
@@ -440,7 +440,7 @@ unsigned int ImGUILayer::generate_texture_from_pallete(const data::pallete& p)
 	return texture_id;
 }
 
-void ImGUILayer::draw_textured_button(const char* button_text, unsigned int texture_id, const ImVec2& button_size, std::function<void(void)> button_callback)
+void ImGuiManager::draw_textured_button(const char* button_text, unsigned int texture_id, const ImVec2& button_size, std::function<void(void)> button_callback)
 {
 	ImVec2 size = button_size;                     // Size of the image we want to make visible
 
@@ -450,40 +450,40 @@ void ImGUILayer::draw_textured_button(const char* button_text, unsigned int text
 	ImGui::Text(button_text);
 }
 
-ImGUILayer::ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, bool is_dark)
+ImGuiManager::ImGuiManager(ApplicationModel* application_model, EngineModel* engine_model, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, bool is_dark)
 {
 	m_window = window;
 
 	m_application_model = application_model;
-	m_engine_data = engine_data;
+	m_engine_model = engine_model;
 	
 	m_mesh_manager = mesh_manager;
 	m_graph_manager = graph_manager;
 
 	m_is_hovering_scene_view = true;
 
-	m_engine_data->on_cell_stats_loaded.add_member_listener(&ImGUILayer::cell_stats_loaded, this);
-	m_engine_data->on_frequency_limits_loaded.add_member_listener(&ImGUILayer::frequency_limits_loaded, this);
-	m_engine_data->on_selected_cells_palletes_loaded.add_member_listener(&ImGUILayer::selected_cells_palletes_loaded, this);
-	m_engine_data->on_selected_frequencies_changed.add_member_listener(&ImGUILayer::selected_frequencies_changed, this);
+	m_engine_model->on_cell_stats_loaded.add_member_listener(&ImGuiManager::cell_stats_loaded, this);
+	m_engine_model->on_frequency_limits_loaded.add_member_listener(&ImGuiManager::frequency_limits_loaded, this);
+	m_engine_model->on_selected_cells_palletes_loaded.add_member_listener(&ImGuiManager::selected_cells_palletes_loaded, this);
+	m_engine_model->on_selected_frequencies_changed.add_member_listener(&ImGuiManager::selected_frequencies_changed, this);
 
-	if (m_engine_data->are_selected_cells_palletes_loaded())
+	if (m_engine_model->are_selected_cells_palletes_loaded())
 		selected_cells_palletes_loaded();
 
 	//Initialize functions arrays
 	m_render_graph_settings_functions = {
-		std::bind(&ImGUILayer::draw_bar_graph_settings, this),	//BARS
+		std::bind(&ImGuiManager::draw_bar_graph_settings, this),	//BARS
 		[]() {}													//LINES - doesn't have any settings to draw, so we pass in an empty lambda
 	};
 
 	m_comparison_graph_settings_functions = {
 		[]() {},																//DEFAULT - doesn't have any settings to draw, so we pass in empty lambda
-		std::bind(&ImGUILayer::draw_subplots_comparison_graph_settings, this),	//SUBPLOTS
-		std::bind(&ImGUILayer::draw_relative_comparison_graph_settings, this)	//RELATIVE
+		std::bind(&ImGuiManager::draw_subplots_comparison_graph_settings, this),	//SUBPLOTS
+		std::bind(&ImGuiManager::draw_relative_comparison_graph_settings, this)	//RELATIVE
 	};
 }
 
-ImGUILayer::~ImGUILayer()
+ImGuiManager::~ImGuiManager()
 {
 	delete_selected_cells_palletes();
 
@@ -492,7 +492,7 @@ ImGUILayer::~ImGUILayer()
 	ImGui::DestroyContext();
 }
 
-void ImGUILayer::update()
+void ImGuiManager::update()
 {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGui_ImplOpenGL3_NewFrame();
@@ -531,7 +531,7 @@ void ImGUILayer::update()
 	}
 }
 
-bool ImGUILayer::handle_mouse_scroll(double x_offset, double y_offset)
+bool ImGuiManager::handle_mouse_scroll(double x_offset, double y_offset)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.AddMouseWheelEvent((float)x_offset, (float)y_offset);
@@ -540,7 +540,7 @@ bool ImGUILayer::handle_mouse_scroll(double x_offset, double y_offset)
 	return !m_is_hovering_scene_view;
 }
 
-bool ImGUILayer::handle_mouse_pos(double x_pos, double y_pos)
+bool ImGuiManager::handle_mouse_pos(double x_pos, double y_pos)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -556,7 +556,7 @@ bool ImGUILayer::handle_mouse_pos(double x_pos, double y_pos)
 	return !m_is_hovering_scene_view;
 }
 
-bool ImGUILayer::handle_mouse_click(int button, bool down)
+bool ImGuiManager::handle_mouse_click(int button, bool down)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	if (button >= 0 && button < ImGuiMouseButton_COUNT)
@@ -566,12 +566,12 @@ bool ImGUILayer::handle_mouse_click(int button, bool down)
 	return !m_is_hovering_scene_view;
 }
 
-void ImGUILayer::cell_stats_loaded()
+void ImGuiManager::cell_stats_loaded()
 {
-	m_frequenzy_names = m_engine_data->frequenzy_names();
+	m_frequenzy_names = m_engine_model->frequenzy_names();
 }
 
-glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)
+glm::ivec2 ImGuiManager::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)
 {
 	int x = mouse_pos.x - m_scene_view_position.x;
 	int y = mouse_pos.y - m_scene_view_position.y;
@@ -579,11 +579,11 @@ glm::ivec2 ImGUILayer::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_po
 	return glm::ivec2(x, y);
 }
 
-void ImGUILayer::selected_cells_palletes_loaded()
+void ImGuiManager::selected_cells_palletes_loaded()
 {
 	delete_selected_cells_palletes();
 
-	const auto& palletes = m_engine_data->selected_cells_palletes();
+	const auto& palletes = m_engine_model->selected_cells_palletes();
 
 	m_selected_cells_palletes_textures.resize(palletes.size());
 
@@ -593,15 +593,15 @@ void ImGUILayer::selected_cells_palletes_loaded()
 	}
 }
 
-void ImGUILayer::selected_frequencies_changed()
+void ImGuiManager::selected_frequencies_changed()
 {
 	m_selected_frequencies_text = "SELECTED FREQUENCIES:\n";
 
-	for (unsigned int f_index : m_engine_data->selected_frequencies_indeces())
+	for (unsigned int f_index : m_engine_model->selected_frequencies_indeces())
 		m_selected_frequencies_text += (m_frequenzy_names[f_index] + "\n");
 }
 
-void ImGUILayer::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void ImGuiManager::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
 }

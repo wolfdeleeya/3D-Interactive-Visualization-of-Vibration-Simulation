@@ -10,7 +10,7 @@
 #include "graph/graph_manager.h"
 #include "mesh_manager.h"
 
-class ImGUILayer {
+class ImGuiManager {
 private:
 	GLFWwindow* m_window; 
 
@@ -21,7 +21,7 @@ private:
 
 	//MODEL
 	ApplicationModel* m_application_model;
-	EngineData* m_engine_data;
+	EngineModel* m_engine_model;
 
 	//VIEW
 	MeshManager* m_mesh_manager;
@@ -104,9 +104,9 @@ public:
 
 	Event<const glm::ivec2&> on_scene_view_scale_changed;
 
-	ImGUILayer(ApplicationModel* application_model, EngineData* engine_data, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, bool is_dark = true);
+	ImGuiManager(ApplicationModel* application_model, EngineModel* engine_model, MeshManager* mesh_manager, GraphManager* graph_manager, GLFWwindow* window, bool is_dark = true);
 	
-	~ImGUILayer();
+	~ImGuiManager();
 
 	void update();
 
@@ -126,7 +126,7 @@ public:
 
 	void selected_frequencies_changed();
 
-	void frequency_limits_loaded() { m_frequencies_with_limits = m_engine_data->frequencies_with_limits(); }
+	void frequency_limits_loaded() { m_frequencies_with_limits = m_engine_model->frequencies_with_limits(); }
 
 	ImVec2 scene_view_scale() { return m_scene_view_scale; }
 };

@@ -45,7 +45,7 @@
     <ClInclude Include="headers\app.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\imgui_layer.h">
+    <ClInclude Include="headers\imgui_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\application_model.h">
@@ -75,7 +75,7 @@
     <ClInclude Include="headers\cell_value_functors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\engine_data.h">
+    <ClInclude Include="headers\engine_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\glm_vec_helper.h">
@@ -158,7 +158,7 @@
     <ClCompile Include="source\app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\imgui_layer.cpp">
+    <ClCompile Include="source\imgui_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\data_loading.cpp">
@@ -182,7 +182,7 @@
     <ClCompile Include="source\gradient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine_data.cpp">
+    <ClCompile Include="source\engine_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\debug.cpp">

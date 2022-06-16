@@ -22,7 +22,7 @@ struct FrequenzyComparator {
 	}
 };
 
-class EngineData {
+class EngineModel {
 public:
 	enum class CellFunctions { MIN, MAX, AVERAGE, MEDIAN, SPREAD };
 
@@ -114,7 +114,7 @@ public:
 	Signal on_cell_stats_loaded,
 		on_frequency_limits_loaded;
 
-	EngineData(const glm::vec3& default_color);
+	EngineModel(const glm::vec3& default_color);
 
 	void calculate_color();
 

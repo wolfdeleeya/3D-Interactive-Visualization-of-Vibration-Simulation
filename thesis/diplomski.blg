@@ -8,48 +8,60 @@ Database file #1: literatura.bib
 Warning--to sort, need author or key in avlEXCITE
 Warning--to sort, need author or key in easing
 Warning--to sort, need author or key in colorbrewer
+Warning--to sort, need author or key in opengl
+Warning--to sort, need author or key in imgui
+Warning--to sort, need author or key in implot
+Warning--to sort, need author or key in glfw
+Warning--to sort, need author or key in glm
+Warning--to sort, need author or key in nfd
 Warning--empty year in avlEXCITE
 Warning--empty year in colorbrewer
 Warning--empty year in easing
-You've used 5 entries,
+Warning--empty year in glfw
+Warning--empty year in glm
+Warning--empty year in imgui
+Warning--empty year in implot
+Warning--empty year in nfd
+Warning--empty year in opengl
+You've used 11 entries,
             2773 wiz_defined-function locations,
-            622 strings with 5726 characters,
-and the built_in function-call counts, 1858 in all, are:
-= -- 170
+            641 strings with 6362 characters,
+and the built_in function-call counts, 3334 in all, are:
+= -- 320
 > -- 76
 < -- 2
-+ -- 29
++ -- 35
 - -- 24
-* -- 133
-:= -- 242
-add.period$ -- 17
-call.type$ -- 5
-change.case$ -- 23
-chr.to.int$ -- 5
-cite$ -- 19
-duplicate$ -- 93
-empty$ -- 186
+* -- 217
+:= -- 368
+add.period$ -- 35
+call.type$ -- 11
+change.case$ -- 41
+chr.to.int$ -- 11
+cite$ -- 49
+duplicate$ -- 183
+empty$ -- 396
 format.name$ -- 26
-if$ -- 414
+if$ -- 780
 int.to.chr$ -- 1
 int.to.str$ -- 1
 missing$ -- 2
-newline$ -- 34
+newline$ -- 64
 num.names$ -- 8
-pop$ -- 80
+pop$ -- 182
 preamble$ -- 1
-purify$ -- 18
+purify$ -- 30
 quote$ -- 0
-skip$ -- 65
+skip$ -- 119
 stack$ -- 0
-substring$ -- 32
-swap$ -- 12
+substring$ -- 50
+swap$ -- 18
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 55
-warning$ -- 6
+type$ -- 121
+warning$ -- 18
 while$ -- 9
 width$ -- 0
-write$ -- 69
-(There were 6 warnings)
+write$ -- 135
+(There were 18 warnings)

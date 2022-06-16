@@ -1,7 +1,7 @@
 #pragma once
 
 #include "application_model.h"
-#include "engine_data.h"
+#include "engine_model.h"
 #include "graph_data.h"
 
 class GraphManager {
@@ -13,7 +13,7 @@ class GraphManager {
 
 private:
 	ApplicationModel* m_application_model;
-	EngineData* m_engine_data;
+	EngineModel* m_engine_model;
 
 	GraphData m_graph_data;
 	GraphData m_cached_relative_graph_data;
@@ -57,7 +57,7 @@ public:
 
 	int num_of_columns;
 
-	GraphManager(ApplicationModel* application_model, EngineData* engine_data);
+	GraphManager(ApplicationModel* application_model, EngineModel* engine_model);
 
 	void update_cell_plot();
 

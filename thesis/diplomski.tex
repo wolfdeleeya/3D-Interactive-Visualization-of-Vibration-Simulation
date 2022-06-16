@@ -339,10 +339,59 @@ Na slici \ref{fig:general-info} se može vidjeti komponenta koja služi za prika
 \end{figure}
 
 \chapter{Implementacija}
-5-7 stranica
-\begin{lstlisting}
-//ovdje kod
-\end{lstlisting}
+
+Alat je razvijen u programskom jeziku C++ uz korištenje biblioteke OpenGL za komuniciranje sa grafičkom karticom. No, osim OpenGL-a za razvoj alata je korišten i niz drugih biblioteka, čiji su detaljniji opisi i razlozi za korištenje navedeni u poglavlju \ref{libraries-section}. Pošto su se tijekom razvoja alata konstantno pojavljivali novi zahtjevi i funkcionalnosti koje se treba implementirati, potrebno je bilo uspostaviti arhitekturu rješenja koje će se rješenje pridržavati kako ne bi postalo kruto i krhko, a ta arhitektura je opisana u poglavlju \ref{codebase-architecture-section}. Konačno, kako je način slanja podataka sa procesora na grafičku karticu iznimno važna komponenta izvedbe svake grafičke aplikacije, poglavlje \ref{graphics-card-data-section} opisuje kako je organiziran tok podataka sa procesora na grafičku karticu.
+
+\section{Korištene biblioteke} \label{libraries-section}
+
+\subsection{OpenGL}
+
+OpenGL\citep{opengl} je višeplatformska i višejezična biblioteka koja služi za prikazivanje 2D i 3D vektorske grafike. Biblioteka podržava dva distinktna načina rada: \textit{compatibility} i \textit{core}. U \textit{compatibility} načinu rada klijent definira poziciju i boju točaka primitiva koje želi iscrtati pozivajući funkcije API-a, nakon čega se navedene točke propuštaju kroz fiksni grafički protočni sustav na kraju kojega se iscrtava slika. \textit{Core} način rada, često zvani moderni OpenGL, dopušta klijentu mijenjanje određenih dijelova grafičkog protočnog sustava pomoću sjenčara \engl{shader}. Sjenčari su programi napisani u GLSL-u \engl{OpenGL Shading Language} koji se izvode na grafičkoj kartici, te manipuliraju podacima koje im klijent šalje preko OpenGL API-a u obliku tzv. \textit{buffer object}-a kako bi se postigli različiti vizualni efekti.\\
+
+Za razvoj alata opisanog u ovom radu je korišten OpenGL 3.3 u \textit{core} načinu rada. Iako je u sklopu implementacije alata ova biblioteka prvenstveno korištena za iscrtavanje 3D modela motora, implementacije biblioteka Dear ImGui (poglavlje \ref{imgui-section}) i ImPlot (poglavlje \ref{implot-section}) korištene u ovom radu također koriste OpenGL za iscrtavanje elemenata korisničkog sučelja i 2D grafova.
+
+\subsection{Dear ImGui} \label{imgui-section}
+Dear ImGui\citep{imgui} je C++ biblioteka koja služi za iscrtavanje grafičkog korisničkog sučelja ili GUI-a \engl{Graphical User Interface}.\\
+
+GUI biblioteke se obično mogu razvrstati na zadržane \engl{retained} i izravne \engl{immediate} s obzirom na korištene obrasce ažuriranja prikaza. Zadržane biblioteke interno čuvaju podatke o primitivima korisničkog sučelja koje treba iscrtati, a klijent pozivima metoda biblioteke ne može izravno utjecati na iscrtavanje tih primitiva, već jedino može mijenjati apstraktni model korisničkog sučelja. Na ovakav način zadržane biblioteke mogu dodatno optimizirati kako i kada će se izvršiti iscrtavanje elemenata. S druge strane, izravne GUI biblioteke omogućuju klijentu izravno pozivanje metoda za iscrtavanje elemenata korisničkog sučelja. Zbog toga klijent treba pozivati funkcije za iscrtavanje primitiva u svakoj iteraciji petlje ažuriranja aplikacije.\\
+
+Dear ImGui spada u kategoriju izravnih GUI biblioteka. Ova biblioteka omogućuje jednostavno i brzo iteriranje GUI aplikacija, te unatoč tome što joj nedostaju određene funkcionalnosti koje se mogu naći u drugim GUI bibliotekama, i dalje je iznimno popularna u području razvoja GUI aplikacija zbog jednostavnosti korištenja i nadogradnje.
+
+\subsection{ImPlot} \label{implot-section}
+
+Iako Dear ImGui službeno podržava crtanje grafova, funkcionalnosti grafova implementiranih u sklopu ove biblioteke su iznimno ograničene. Iz tog razloga, za implementaciju grafova u ovom radu je korištena biblioteka ImPlot\citep{implot}. Ova biblioteka je proširenje Dear ImGui-a koje omogućava prikaz raznovrsnih interaktivnih grafova jednostavnim izravnim pozivima metoda za iscrtavanje. 
+
+\subsection{Ostale biblioteke}
+Osim već spomenutih biblioteka, za razvoj ovog alata je korištena još nekolicina drugih biblioteka koje su navedene u ovom poglavlju.\\
+
+GLFW\citep{glfw} je višeplatformska biblioteka za razvoj OpenGL aplikacija, a u sklopu ove aplikacije biblioteka je korištena za stvaranje prozora, konteksta, javljanje događaja i primanje ulaza od korisnika.\\
+
+GLM\citep{glm} je matematička biblioteka za grafičke aplikacije pisane u OpenGL-u. GLM nudi brojne klase i funkcije koje su dizajnirane i implementirane sa istim konvencijama imenovanja i funkcionalnostima kao odgovarajući tipovi podataka i funkcije u GLSL-u. GLM je u ovom alatu korišten za operacije nad vektorima, te računanje matrica transformacije i projekcije.\\
+
+NFD\citep{nfd} \engl{Native File Dialog} je višeplatformska C biblioteka koja pruža mogućnost otvaranja izvornog dijaloga za datoteke, a u sklopu alata je korištena prilikom učitavanja različitih datoteka sa podacima o motoru.
+
+\section{Arhitektura rješenja} \label{codebase-architecture-section}
+
+Generalni obrazac organizacije koda alata je obrazac model-pogled-upravljač ili MVC \engl{Model-View-Controller}. Na slici \ref{fig:high-level-overview} se može vidjeti pojednostavljeni prikaz MVC organizacije alata sa većinom ključnih klasa alata.
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{high_level_overview.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+\ 
+\\
+
+Jedna važna klasa koja nedostaje je klasa \textit{App} koja je zapravo glavna klasa ovog alata, a na spomenutom grafu nije prikazana pošto ne sudjeluje direktno u MVC arhitekturi. Glavna odgovornost ove klase je povezivanje prikazanih komponenti i obrađivanje GLFW događaja.
+
+\subsection{Model}
+
+\subsection{Pogled}
+
+\subsection{Upravljač}
+
+\section{Organizacija podataka na grafičkoj kartici} \label{graphics-card-data-section}
 
 \chapter{Demonstracija rada alata}
 5-7 stranica
@@ -397,6 +446,8 @@ Na slici \ref{fig:general-info} se može vidjeti komponenta koja služi za prika
 	\caption{Relativni način usporedbe grafova u obliku linija u kojem su podaci svih ćelija prikazani u odnosu na ćeliju 10982}
     \label{appendix:relative_graph_display_lines}
 \end{figure}
+
+\chapter{Sustav događaja i signala} \label{appendix:event-signal-system}
 
 \begin{sazetak}
 Sažetak na hrvatskom jeziku.
