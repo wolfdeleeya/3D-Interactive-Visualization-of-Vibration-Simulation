@@ -10,6 +10,7 @@ struct cell_select_vertex {
 class EngineCellSelectionMesh: public AbstractEngineMesh {
 private:
 	unsigned int m_FBO;
+	unsigned int m_FBO_texture;
 	unsigned int m_RBO_color, m_RBO_depth;
 
 	const static char* CELL_SELECT_VERT_SHADER;
@@ -41,4 +42,6 @@ public:
 	virtual void render() override;
 
 	int get_index_at_pos(GLint x, GLint y);
+
+	unsigned int texture() { return m_FBO_texture; }
 };

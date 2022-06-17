@@ -6,12 +6,15 @@
 #include "mesh/abstract_mesh.h"
 #include "mesh/abstract_engine_mesh.h"
 #include "mesh/axis_mesh.h"
+#include "mesh/engine_cell_selection_mesh.h"
 
 #include "events.h"
 #include "signals.h"
 
 class MeshManager {
 private:
+	enum class MeshType {ENGINE_VISUALIZATION, ENGINE_CELL_SELECTION, ENGINE_LINE_MESH, AXIS_MESH};
+
 	ApplicationModel* m_application_model;
 	EngineModel* m_engine_model;
 
@@ -53,9 +56,11 @@ public:
 
 	void window_size_changed(const glm::ivec2& window_dimensions);
 
-	unsigned int get_index_at_pos(GLint x, GLint y);
+	unsigned int get_index_at_pos(GLint x, GLint y) { return ; }
 
 	void render();
 
 	unsigned int scene_texture() { return m_scene_view_texture; }
+
+	unsigned int cell_selection_texture() { return EngineCellSelectionMesh*(m_engine_meshes[unsigned int(MeshType::ENGINE_CELL_SELECTION)]) }
 };

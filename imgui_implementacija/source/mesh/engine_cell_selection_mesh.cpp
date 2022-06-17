@@ -111,6 +111,7 @@ EngineCellSelectionMesh::EngineCellSelectionMesh(const glm::ivec2& window_dimens
 {
 	glGenFramebuffers(1, &m_FBO);
 
+
 	glGenRenderbuffers(1, &m_RBO_color);
 	glGenRenderbuffers(1, &m_RBO_depth);
 

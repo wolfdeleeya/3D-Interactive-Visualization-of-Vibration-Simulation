@@ -53,7 +53,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \chapter{Uvod}
 Buka i vibriranje motora su jedni od ključnih faktora koji utječu na osjećaj udobnosti putnika u osobnom automobilu. No, iako se može reći kako je osjećaj udobnosti subjektivne prirode, propisi koji kontroliraju dozvoljene razine buke motora vozila pri određenim brzinama su objektivni i egzaktni. Zbog navedenih razloga je inženjerima iznimno važno da je vibriranje motora prilikom rada na što nižoj razini, a najjednostavniji način na koji to mogu provjeriti u fazi projektiranja motora je pomoću NVH \engl{Noise, Vibration, Harshness} simulacija. NVH simulacije inženjerima omogućuju precizan uvid u razinu vibriranja pojedinih dijelova motora, a probleme koji mogu uzrokovati vibraciju mogu rješavati prilikom projektiranja.\\
 
-No, računanje simulacije je samo dio problema. Računske simulacije ove vrste, nerijetko proizvode podatke koje se ne može jednostavno vizualizirati i analizirati \citep{matkovic2021getting}. Kako bi stručnjaci mogli navedene podatke koristiti na što efikasniji način, potrebno ih je intuitivno i razumljivo prikazati. Iako su podaci koji su prikazani u obliku tablica i grafova korisni, vizualizacijom istih podataka na 3D modelu motora se postiže jasniji, intuitivniji i potpuniji prikaz rada motora.\\
+No, računanje simulacije je samo dio problema. Računske simulacije ove vrste, nerijetko proizvode podatke koje se ne može jednostavno vizualizirati i analizirati \citep{matkovic2021getting}. Kako bi stručnjaci mogli navedene podatke koristiti na što efikasniji način, potrebno ih je intuitivno i razumljivo prikazati. Iako su podaci prikazani u obliku tablica i grafova korisni, vizualizacijom istih podataka na 3D modelu motora se postiže jasniji, intuitivniji i potpuniji prikaz rada motora.\\
 
 Ovaj rad opisuje izradu alata za vizualizaciju podataka dobivenih iz NVH simulacije pomoću 3D modela motora i 2D grafova. Fokus predstavljenog alata je na vizualizaciji vibracija motora prilikom rada na višestrukom broju frekvencija, kako bi se razine vibracije različitih taktova motora jednostavnije uspoređivale.
 
@@ -127,7 +127,7 @@ Kako bi se adresirao problem sa uspoređivanjem nesusjednih frekvencija, na graf
 \item RELATIVE - kao DEFAULT, ali je dodatno moguće odabrati jednu ćeliju s obzirom na koju će se prikazati grafovi svih ostalih ćelija\\
 \end{itemize}
 
-Navedeno rješenje predstavlja poboljšanje na području čitljivosti zbog više razloga. Grafovi svih ćelija više nisu prikazani odjednom, već su samo prikazani grafovi odabranih ćelija. Moguće je prikazati svaki graf na zasebnom prikazu, čime je pojednostavljeno uspoređivanje u slučaju više odabranih ćelija. Sa relativnim uspoređivanjem, korisnik može lakše usporediti odabranu ćeliju sa ostalim ćelijama. Konačno, pošto su omogućena dva načina iscrtavanja podataka, korisnik može odabrati onaj način koji odgovara njegovim potrebama i preferencijama, te nije prisiljen koristiti linije za iscrtavanje grafova.
+Navedeno rješenje predstavlja poboljšanje na području čitljivosti zbog više razloga. Grafovi svih ćelija više nisu prikazani odjednom, već su samo prikazani grafovi odabranih ćelija. Moguće je prikazati svaki graf na zasebnom prikazu, čime je pojednostavljeno uspoređivanje u slučaju više odabranih ćelija. Sa relativnim uspoređivanjem, korisnik može lakše usporediti odabranu ćeliju sa ostalim ćelijama. Konačno, pošto su omogućena dva načina iscrtavanja podataka, korisnik može odabrati način koji najbolje odgovara njegovim potrebama i preferencijama, te nije prisiljen koristiti linije za iscrtavanje grafova.
 
 \chapter{Dizajn vizualizacije}
 
@@ -141,7 +141,7 @@ Zahtjevi navedeni u prijašnjem poglavlju daju naslutiti kako će sučelje alata
 \end{figure}
 
 \section{Prikaz motora} \label{engine-view-section}
-Zadaća prikaza motora je jasno vizualizirati podatke o vibracijama ćelija, pritom uzimajući u obzir brojne postavke vizualizacije poput: načina rada, odabranih frekvencija, načina računanja konačnih podataka ćelije, zadanih raspona podataka, gradijenata koji se koriste za vizualizaciju i načina uzorkovanja tih gradijenata. Korisnik ovu komponentu također može koristiti i za označavanje interesnih ćelija.\\
+Zadaća prikaza motora je jasno vizualizirati podatke o vibracijama ćelija, pritom uzimajući u obzir brojne postavke vizualizacije poput: načina rada, odabranih frekvencija, načina računanja konačnih podataka ćelije, zadanih raspona podataka, gradijenata koje se koristi za vizualizaciju i načina uzorkovanja tih gradijenata. Korisnik ovu komponentu također može koristiti i za označavanje interesnih ćelija.\\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{engine_view_normal_mode.png}
@@ -346,7 +346,7 @@ Alat je razvijen u programskom jeziku C++ uz korištenje biblioteke OpenGL za ko
 
 \subsection{OpenGL}
 
-OpenGL\citep{opengl} je višeplatformska i višejezična biblioteka koja služi za prikazivanje 2D i 3D vektorske grafike. Biblioteka podržava dva distinktna načina rada: \textit{compatibility} i \textit{core}. U \textit{compatibility} načinu rada klijent definira poziciju i boju točaka primitiva koje želi iscrtati pozivajući funkcije API-a, nakon čega se navedene točke propuštaju kroz fiksni grafički protočni sustav na kraju kojega se iscrtava slika. \textit{Core} način rada, često zvani moderni OpenGL, dopušta klijentu mijenjanje određenih dijelova grafičkog protočnog sustava pomoću sjenčara \engl{shader}. Sjenčari su programi napisani u GLSL-u \engl{OpenGL Shading Language} koji se izvode na grafičkoj kartici, te manipuliraju podacima koje im klijent šalje preko OpenGL API-a u obliku tzv. \textit{buffer object}-a kako bi se postigli različiti vizualni efekti.\\
+OpenGL\citep{opengl} je višeplatformska i višejezična biblioteka koja služi za prikazivanje 2D i 3D vektorske grafike. Biblioteka podržava dva distinktna načina rada: \textit{compatibility} i \textit{core}. U \textit{compatibility} načinu rada klijent definira poziciju i boju točaka primitiva koje želi iscrtati pozivajući funkcije API-a, nakon čega se navedene točke propuštaju kroz fiksni grafički protočni sustav na kraju kojega se iscrtava slika. \textit{Core} način rada, često zvani moderni OpenGL, dopušta klijentu mijenjanje određenih dijelova grafičkog protočnog sustava pomoću sjenčara \engl{shader}. Sjenčari su programi napisani u GLSL-u \engl{OpenGL Shading Language} koji se izvode na grafičkoj kartici, te manipuliraju podacima poslanim od strane klijenta preko OpenGL API-a u obliku tzv. \textit{buffer object}-a kako bi se postigli različiti vizualni efekti.\\
 
 Za razvoj alata opisanog u ovom radu je korišten OpenGL 3.3 u \textit{core} načinu rada. Iako je u sklopu implementacije alata ova biblioteka prvenstveno korištena za iscrtavanje 3D modela motora, implementacije biblioteka Dear ImGui (poglavlje \ref{imgui-section}) i ImPlot (poglavlje \ref{implot-section}) korištene u ovom radu također koriste OpenGL za iscrtavanje elemenata korisničkog sučelja i 2D grafova.
 
@@ -372,7 +372,7 @@ NFD\citep{nfd} \engl{Native File Dialog} je višeplatformska C biblioteka koja p
 
 \section{Arhitektura rješenja} \label{codebase-architecture-section}
 
-Generalni obrazac organizacije koda alata je obrazac model-pogled-upravljač ili MVC \engl{Model-View-Controller}. Na slici \ref{fig:high-level-overview} se može vidjeti pojednostavljeni prikaz MVC organizacije alata sa većinom ključnih klasa alata.
+Organizacija koda alata je generalno inspirirana obrascom Model-Pogled-Upravljač ili MVC \engl{Model-View-Controller} kako bi se omogućilo lakše održavanje programa. Na slici \ref{fig:high-level-overview} se može vidjeti pojednostavljeni prikaz MVC organizacije alata sa većinom ključnih klasa alata.
 
 \begin{figure} [H]
 	\centering
@@ -383,11 +383,19 @@ Generalni obrazac organizacije koda alata je obrazac model-pogled-upravljač ili
 \ 
 \\
 
-Jedna važna klasa koja nedostaje je klasa \textit{App} koja je zapravo glavna klasa ovog alata, a na spomenutom grafu nije prikazana pošto ne sudjeluje direktno u MVC arhitekturi. Glavna odgovornost ove klase je povezivanje prikazanih komponenti i obrađivanje GLFW događaja.
+Važno je spomenuti kako na slici \ref{fig:high-level-overview} nedostaje glavna klasa alata, a to je klasa \textit{App}, pošto ne sudjeluje direktno u MVC arhitekturi. Glavna odgovornost ove klase je povezivanje prikazanih komponenti, obrađivanje GLFW događaja i pozivanje metoda za ažuriranje spomenutih komponenti tijekom iteracija petlje ažuriranja. Spomenuta klasa stvara instance komponenti MVC arhitekture, te ih međusobno povezuje slanjem preko argumenata konstruktora ili povezivanjem preko sustava događaja i signala (detaljno opisanih u dodatku \ref{appendix:event-signal-system}). U poglavljima koje slijede su opisane uloge, odgovornosti i dijelovi svake komponente MVC organizacije ovog alata.
 
 \subsection{Model}
+Osnovna odgovornost svakog Modela u sklopu MVC arhitekture je čuvanja podataka aplikacije i pravila za njihovu manipulaciju. Radi lakšeg razumijevanja koda i raspodjele odgovornosti, Model ovog alata je podijeljen u dvije klase: \textit{EngineModel} i \textit{ApplicationModel}. Objekt klase \textit{EngineModel} čuva postavke i podatake vezane za motor i prikaz motora, poput odabranih frekvencija, odabranih ćelija, "trenutne" lebdeće ćelije, pozicija točaka motora, ćelija motora itd., te definira metode za mijenjanje navedenih podataka. S druge strane, odgovornost klase \textit{ApplicationModel} je čuvanje postavki aplikacije koje nisu izravno vezane za podatke o motoru ili prikaz tih podataka, te definiranje metoda za vanjsko mijenjanje tih postavki. Spomenute postavke i podaci uključuju razne postavke grafova, postavke bojanja motora, pozadinsku boju alata te poziciju i rotaciju kamere.\\
+
+Navedene klase nemaju izravne reference na nijedan drugi dio MVC arhitekture, stoga svaki put kada se dogodi promjena u Modelu, oni je javljaju "pretplatnicima" na tu promjenu pomoću događaja i/ili signala, čime se smanjuje krutost programskog rješenja. Što se mijenjanja postavki tiče, objekti spomenutih klasa interno sadrže objekte klase \textit{VariableMap} (detaljno opisana u dodatku \ref{appendix:variablemap-class}) čija je odgovornost čuvanje varijabli postavki, te pozivanje zadane metode kada se dogodi promjena u nekoj varijabli. Na taj način su omogućeni povratni pozivi, koje Dear ImGui za većinu elemenata korisničkog sučelja zapravo ne podržava. Kako bi se promjene u Modelu ispitale prilikom svake iteracije petlje ažuriranja alata, već spomenuta klasa \textit{App} poziva odgovarajuće metode objekata klasa \textit{EngineModel} i \textit{ApplicationModel} koje interno zovu metode vlastitih \textit{VariableMap} objekata.
 
 \subsection{Pogled}
+
+Pogled je, kao komponenta MVC-a, uglavnom odgovoran za prikaz podataka iz komponente Model na koristan i praktičan način. Na slici \ref{fig:high-level-overview} se može vidjeti kako je komponenta Pogled, baš kao i Model, podijeljena na dvije klase: \textit{MeshManager} i \textit{GraphManager}.\\
+
+Ključna odgovornost klase \textit{MeshManager} je iscrtavanje poligona i linija uz pomoć OpenGL-a na temelju podataka iz komponente Model. Kako se može vidjeti na skici organizacije arhitekture koda, klasa \textit{MeshManager} to čini uz četiri pomoćne klase: \textit{EngineVisualizationMesh}, \textit{EngineCellSelectionMesh}, \textit{EngineLinesMesh} i \textit{AxisMesh}. Sve navedene pomoćne klase nasljeđuju apstraktnu klasu \textit{AbstractMesh}, s time da sve klase osim klase \textit{AxisMesh} klasu ne nasljeđuju izravno, već preko posredničke apstraktne klase \textit{AbstractEngineMesh}.
+Implementirana je i klasa \textit{Shader} kako bi se apstrahirale operacije vezane za sjenčare, a svaka od spomenutih komponenata \textit{MeshManager}-a sadrži vlastitu instancu klase \textit{Shader}, te definira vlastite \textit{buffer object}-e koje šalje na grafičku karticu (više u poglavlju \ref{graphics-card-data-section}).  Rezultati iscrtavanja se ne spremaju u glavni grafički međuspremnik \engl{framebuffer}, već u dva sporedna međuspremnika. U prvi međuspremnik rezultate iscrtavanja upisuju objekti klase \textit{EngineVisualizationMesh}, \textit{EngineLinesMesh} i \textit{AxisMesh}, a to je međuspremnik koji korisnik vidi jer se u prozoru prikaza motora zapravo iscrtava tekstura u koju se spremaju RGB vrijednosti navedenog međuspremnika. 
 
 \subsection{Upravljač}
 
@@ -448,6 +456,8 @@ Jedna važna klasa koja nedostaje je klasa \textit{App} koja je zapravo glavna k
 \end{figure}
 
 \chapter{Sustav događaja i signala} \label{appendix:event-signal-system}
+
+\chapter{Klasa \textit{VariableMap}} \label{appendix:variablemap-class}
 
 \begin{sazetak}
 Sažetak na hrvatskom jeziku.

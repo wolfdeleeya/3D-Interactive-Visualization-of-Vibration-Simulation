@@ -123,11 +123,6 @@ void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
 	m_axis_mesh->update_window_size(window_dimensions);
 }
 
-unsigned int MeshManager::get_index_at_pos(GLint x, GLint y)
-{
-	return m_index_selection_function(x, y);
-}
-
 void MeshManager::render()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_scene_view_MS_FBO); 
