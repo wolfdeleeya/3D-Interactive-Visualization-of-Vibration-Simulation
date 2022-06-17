@@ -56,11 +56,9 @@ public:
 
 	void window_size_changed(const glm::ivec2& window_dimensions);
 
-	unsigned int get_index_at_pos(GLint x, GLint y) { return ; }
+	unsigned int get_index_at_pos(GLint x, GLint y) { return m_index_selection_function(x, y); }
 
 	void render();
 
 	unsigned int scene_texture() { return m_scene_view_texture; }
-
-	unsigned int cell_selection_texture() { return EngineCellSelectionMesh*(m_engine_meshes[unsigned int(MeshType::ENGINE_CELL_SELECTION)]) }
 };
