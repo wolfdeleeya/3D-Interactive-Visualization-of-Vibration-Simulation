@@ -4,7 +4,7 @@ layout (location = 0) in vec3 position;
 layout (location = 1) in uint cell_index;
 layout (location = 2) in vec3 color;
 
-out vec3 frag_color;
+flat out vec3 frag_color;
 
 uniform mat4 model = mat4(1), view = mat4(1), projection = mat4(1);
 uniform uint selected_index;

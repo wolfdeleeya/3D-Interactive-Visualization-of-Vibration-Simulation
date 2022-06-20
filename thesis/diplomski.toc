@@ -22,11 +22,19 @@
 \contentsline {section}{\numberline {5.2}Arhitektura rješenja}{21}{}%
 \contentsline {subsection}{\numberline {5.2.1}Model}{22}{}%
 \contentsline {subsection}{\numberline {5.2.2}Pogled}{23}{}%
-\contentsline {subsection}{\numberline {5.2.3}Upravljač}{23}{}%
-\contentsline {section}{\numberline {5.3}Organizacija podataka na grafičkoj kartici}{23}{}%
-\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{24}{}%
-\contentsline {chapter}{\numberline {7}Zaključak}{25}{}%
-\contentsline {chapter}{Literatura}{26}{}%
-\contentsline {chapter}{\numberline {A}Različiti načini crtanja grafova}{28}{}%
-\contentsline {chapter}{\numberline {B}Sustav događaja i signala}{32}{}%
-\contentsline {chapter}{\numberline {C}Klasa \textit {VariableMap}}{33}{}%
+\contentsline {subsection}{\numberline {5.2.3}Upravljač}{25}{}%
+\contentsline {section}{\numberline {5.3}Organizacija podataka na grafičkoj kartici}{26}{}%
+\contentsline {subsection}{\numberline {5.3.1}Podaci za bojanje ćelija}{27}{}%
+\contentsline {subsection}{\numberline {5.3.2}Podaci za detekciju lebdeće ćelije}{28}{}%
+\contentsline {subsection}{\numberline {5.3.3}Podaci za linije ćelija}{28}{}%
+\contentsline {subsection}{\numberline {5.3.4}Podaci za koordinatne osi}{28}{}%
+\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{30}{}%
+\contentsline {section}{\numberline {6.1}Učitavanje datoteka}{30}{}%
+\contentsline {section}{\numberline {6.2}Normalni način rada}{32}{}%
+\contentsline {section}{\numberline {6.3}Način rada sa preddefiniranim ograničenjima}{35}{}%
+\contentsline {section}{\numberline {6.4}Uspoređivanje ćelija pomoću grafova}{36}{}%
+\contentsline {chapter}{\numberline {7}Zaključak}{40}{}%
+\contentsline {chapter}{Literatura}{41}{}%
+\contentsline {chapter}{\numberline {A}Različiti načini crtanja grafova}{43}{}%
+\contentsline {chapter}{\numberline {B}Sustav događaja i signala}{47}{}%
+\contentsline {chapter}{\numberline {C}Klasa \textit {VariableMap}}{48}{}%

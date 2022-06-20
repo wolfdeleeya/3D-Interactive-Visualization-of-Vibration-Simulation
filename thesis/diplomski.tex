@@ -51,7 +51,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \listoffigures
 
 \chapter{Uvod}
-Buka i vibriranje motora su jedni od ključnih faktora koji utječu na osjećaj udobnosti putnika u osobnom automobilu. No, iako se može reći kako je osjećaj udobnosti subjektivne prirode, propisi koji kontroliraju dozvoljene razine buke motora vozila pri određenim brzinama su objektivni i egzaktni. Zbog navedenih razloga je inženjerima iznimno važno da je vibriranje motora prilikom rada na što nižoj razini, a najjednostavniji način na koji to mogu provjeriti u fazi projektiranja motora je pomoću NVH \engl{Noise, Vibration, Harshness} simulacija. NVH simulacije inženjerima omogućuju precizan uvid u razinu vibriranja pojedinih dijelova motora, a probleme koji mogu uzrokovati vibraciju mogu rješavati prilikom projektiranja.\\
+Buka i vibriranje motora su jedni od ključnih faktora koji utječu na osjećaj udobnosti putnika u osobnom automobilu. No, iako se može reći kako je osjećaj udobnosti subjektivne prirode, propisi koji kontroliraju dozvoljene razine buke motora vozila pri određenim brzinama su objektivni i egzaktni. Zbog navedenih razloga je inženjerima iznimno važno održati vibriranje motora na što nižoj razini prilikom rada, a najjednostavniji način na koji to mogu provjeriti u fazi projektiranja motora je pomoću NVH \engl{Noise, Vibration, Harshness} simulacija. NVH simulacije inženjerima omogućuju precizan uvid u razinu vibriranja pojedinih dijelova motora, a probleme koji mogu uzrokovati vibraciju mogu rješavati prilikom projektiranja.\\
 
 No, računanje simulacije je samo dio problema. Računske simulacije ove vrste, nerijetko proizvode podatke koje se ne može jednostavno vizualizirati i analizirati \citep{matkovic2021getting}. Kako bi stručnjaci mogli navedene podatke koristiti na što efikasniji način, potrebno ih je intuitivno i razumljivo prikazati. Iako su podaci prikazani u obliku tablica i grafova korisni, vizualizacijom istih podataka na 3D modelu motora se postiže jasniji, intuitivniji i potpuniji prikaz rada motora.\\
 
@@ -109,7 +109,7 @@ No, kada navedene funkcije iz niza vrijednosti izračunaju konačnu vrijednost, 
 \item USER DEFINED - korisnik sam definira donju i gornju granicu raspona\\
 \end{itemize}
 
-Alat korisniku omogućuje da sam definira boje gradijenta na temelju kojeg će se modelu odrediti boje ćelija.\\
+Alat korisniku omogućuje definiranje boje gradijenta na temelju kojeg će se modelu odrediti boje ćelija.\\
 
 U sklopu alata je implementiran još jedan način "bojanja" modela motora koji je baziran na unaprijed određenim ograničenjima vibracija. Navedena ograničenja dijele raspon vibracija na 3 zone: bezopasnu, rizičnu i opasnu. Rasponi su definirani za određene frekvencije (ne nužno za sve) u posebnoj datoteci. Ovaj način bojanja je odvojen od normalnog načina rada, objašnjenog u prijašnjem odlomku. Boje ćelija u načinu rada s ograničenjima se određuju na sljedeći način:
 \begin{itemize}
@@ -390,19 +390,214 @@ Osnovna odgovornost svakog Modela u sklopu MVC arhitekture je čuvanja podataka 
 
 Navedene klase nemaju izravne reference na nijedan drugi dio MVC arhitekture, stoga svaki put kada se dogodi promjena u Modelu, oni je javljaju "pretplatnicima" na tu promjenu pomoću događaja i/ili signala, čime se smanjuje krutost programskog rješenja. Što se mijenjanja postavki tiče, objekti spomenutih klasa interno sadrže objekte klase \textit{VariableMap} (detaljno opisana u dodatku \ref{appendix:variablemap-class}) čija je odgovornost čuvanje varijabli postavki, te pozivanje zadane metode kada se dogodi promjena u nekoj varijabli. Na taj način su omogućeni povratni pozivi, koje Dear ImGui za većinu elemenata korisničkog sučelja zapravo ne podržava. Kako bi se promjene u Modelu ispitale prilikom svake iteracije petlje ažuriranja alata, već spomenuta klasa \textit{App} poziva odgovarajuće metode objekata klasa \textit{EngineModel} i \textit{ApplicationModel} koje interno zovu metode vlastitih \textit{VariableMap} objekata.
 
-\subsection{Pogled}
+\subsection{Pogled} \label{view-section}
+Pogled je, kao komponenta MVC-a, uglavnom odgovoran za prikaz podataka komponente Model na koristan i praktičan način. Na slici \ref{fig:high-level-overview} se može vidjeti kako je komponenta Pogled, baš kao i Model, implementirana pomoću dvije klase: \textit{MeshManager} i \textit{GraphManager}.\\
 
-Pogled je, kao komponenta MVC-a, uglavnom odgovoran za prikaz podataka iz komponente Model na koristan i praktičan način. Na slici \ref{fig:high-level-overview} se može vidjeti kako je komponenta Pogled, baš kao i Model, podijeljena na dvije klase: \textit{MeshManager} i \textit{GraphManager}.\\
+Ključna odgovornost klase \textit{MeshManager} je iscrtavanje poligona i linija uz pomoć OpenGL-a na temelju podataka iz komponente Model. Kako se može vidjeti na skici organizacije arhitekture koda, klasa \textit{MeshManager} ovu odgovornost razlaže na četiri dodatne klase: \textit{EngineVisualizationMesh}, \textit{EngineCellSelectionMesh}, \textit{EngineLinesMesh} i \textit{AxisMesh}. Navedene klase nasljeđuju apstraktnu klasu \textit{AbstractMesh}, s time da sve klase osim klase \textit{AxisMesh} klasu ne nasljeđuju izravno, već preko apstraktne klase \textit{AbstractEngineMesh}.
+Implementirana je i klasa \textit{Shader} kako bi se apstrahirale operacije vezane za sjenčare, pa svaka od spomenutih komponenata \textit{MeshManager}-a sadrži vlastitu instancu klase \textit{Shader} i definira vlastite \textit{buffer object}-e koje šalje na grafičku karticu (više u poglavlju \ref{graphics-card-data-section}). Klasa \textit{App} u svakoj iteraciji petlje ažuriranja pozove metodu \textit{render} klase \textit{MeshManager} čija je odgovornost ažuriranje prikaza modela motora u stvarnom vremenu.\\
 
-Ključna odgovornost klase \textit{MeshManager} je iscrtavanje poligona i linija uz pomoć OpenGL-a na temelju podataka iz komponente Model. Kako se može vidjeti na skici organizacije arhitekture koda, klasa \textit{MeshManager} to čini uz četiri pomoćne klase: \textit{EngineVisualizationMesh}, \textit{EngineCellSelectionMesh}, \textit{EngineLinesMesh} i \textit{AxisMesh}. Sve navedene pomoćne klase nasljeđuju apstraktnu klasu \textit{AbstractMesh}, s time da sve klase osim klase \textit{AxisMesh} klasu ne nasljeđuju izravno, već preko posredničke apstraktne klase \textit{AbstractEngineMesh}.
-Implementirana je i klasa \textit{Shader} kako bi se apstrahirale operacije vezane za sjenčare, a svaka od spomenutih komponenata \textit{MeshManager}-a sadrži vlastitu instancu klase \textit{Shader}, te definira vlastite \textit{buffer object}-e koje šalje na grafičku karticu (više u poglavlju \ref{graphics-card-data-section}).  Rezultati iscrtavanja se ne spremaju u glavni grafički međuspremnik \engl{framebuffer}, već u dva sporedna međuspremnika. U prvi međuspremnik rezultate iscrtavanja upisuju objekti klase \textit{EngineVisualizationMesh}, \textit{EngineLinesMesh} i \textit{AxisMesh}, a to je međuspremnik koji korisnik vidi jer se u prozoru prikaza motora zapravo iscrtava tekstura u koju se spremaju RGB vrijednosti navedenog međuspremnika. 
+Rezultati iscrtavanja se ne spremaju izravno u glavni grafički međuspremnik \engl{framebuffer}, već u dva sporedna međuspremnika. U prvi međuspremnik rezultate iscrtavanja upisuju objekti klasa \textit{EngineVisualizationMesh}, \textit{EngineLinesMesh} i \textit{AxisMesh}. Klasa \textit{EngineVisualizationMesh} računa boje ćelija pomoću podataka iz Modela te iscrtava "obojani" motor. Klasa \textit{EngineLinesMesh} iscrtava linije koje obrubljuju ćelije kako bi se lakše prepoznale njihove granice, a klasa \textit{AxisMesh} služi za iscrtavanje koordinatnih osi kako bi korisnik dobio osjećaj za 3D prostor u kojem se motor nalazi. Opisani grafički međuspremnik se prikazuje korisniku tako što se u prikazu motora zapravo crta tekstura u koju se spremaju RGB vrijednosti međuspremnika. Drugi međuspremnik se koristi isključivo za prepoznavanje trenutne "lebdeće" ćelije, pa je "skriven" od korisnika. Razlika između ovog međuspremnika i međuspremnika vidljivog korisniku je što su ćelije motora u ovom međuspremniku konstantno obojane istim bojama koje ovise isključivo o indeksu ćelije. Stoga se u svakom trenutku ovaj grafički međuspremnik može uzorkovati na pikselu na kojem se nalazi pokazivač miša kako bi se iz dobivene RGB vrijednosti piksela saznao indeks ćelije na kojoj je pokazivač miša pozicioniran. Iscrtavanje ovih podataka u "skriveni" međuspremnik, te uzorkovanje istog je zadatak klase \textit{EngineCellSelectionMesh}. Razlike između prikaza ovih međuspremnika su vidljive na slici \ref{fig:framebuffers-example}.
+
+\begin{figure} [H]
+     \centering
+     \begin{subfigure}[h]{0.8\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{engine_default_color.png}
+         \caption{Grafički međuspremnik koji je vidljiv korisniku}
+         \label{fig:color-settings-normal-mode}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[h]{0.8\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{engine_cell_selection.png}
+         \caption{Grafički međuspremnik za detekciju "lebdeće" ćelije}
+         \label{fig:color-settings-limits-mode}
+     \end{subfigure}
+     \caption{Razlike između prikaza grafičkih međuspremnika}
+     \label{fig:framebuffers-example}
+\end{figure}
+
+Druga klasa koja čini komponentu Pogleda je \textit{GraphManager}, a njena odgovornost je prikaz 2D grafova i legende gradijenta s obzirom na podatke koji su dostupni u Modelu poput: odabranih postavki, frekvencija i ćelija. Instanca ove klase izravno poziva metode biblioteke ImPlot koje su dodatno izmijenjene kako bi se omogućilo eksplicitno definiranje boja koje se koriste za crtanje grafova i legende gradijenta preko argumenata metoda. Klasa se pretplaćuje na događaje i signale Modela, tj. instanci sastavnih klasa Modela, koji su relevantni za ažuriranje instance pomoćne klase \textit{GraphData} unutar koje se čuvaju podaci važni za iscrtavanje grafova. Na ovaj način se objekt klase \textit{GraphData} ne mora ponovno "puniti" podacima u svakoj iteraciji petlje ažuriranja. No, \textit{GraphManager} izravno dohvaća podatke Modela, tj. ne pretplaćuje se na promjene, koji mijenjaju izgled grafa, ali ne zahtjevaju ponovno postavljanje objekta klase \textit{GraphData}. Konkretne metode iscrtavanja i uspoređivanja grafova, te uzorkovanja legende gradijenta su implementirane pomoću obrasca Strategija, čime se olakšava potencijalno dodavanje novih metoda iste namjene. Za razliku od do sada objašnjenih klasa, klasa \textit{App} ne poziva direktno metodu za iscrtavanje grafova i legendi klase \textit{GraphManager}, već to radi klasa \textit{ImGuiManager} kada definira prikaze korisničkog sučelja alata unutar kojih se te komponente trebaju nalaziti.\\
 
 \subsection{Upravljač}
 
+Komponenta Upravljač je u arhitekturi MVC uvijek odgovorna za komunikaciju s korisnikom, a kako je većina spomenute komunikacije u ovom alatu omogućena pomoću korisničkog sučelja koje pruža biblioteka Dear ImGui, glavna komponenta Upravljača je klasa \textit{ImGuiManager}. Navedena klasa je odgovorna za sve pozive metoda koje su dio biblioteke Dear ImGui, stoga ova klasa definira prozore korisničkog sučelja i njihove sadržaje, gumbe i funkcije koje se pozivaju na aktivaciju gumba, sučelja za mijenjanje boja i brojeva, izbornike i dijaloge za učitavanje datoteka itd. Osim navedenog, dužnost ove klase je i obavještavanje ostalih komponentama o događajima koji su vezani za korisničko sučelje poput promjene veličine prikaza motora ili definiranje direktorija datoteke za učitavanje podataka o motoru. Instanca ove klase čuva pokazivač na objekt klase \textit{MeshManager} kako bi pristupila teksturi u koju je spremljen grafički međuspremnik koji se prikazuje korisniku (opisan u poglavlju \ref{view-section}). Spomenutu teksturu zatim može prikazati u prozoru zaduženom za prikaz motora. Uz to instanca klase \textit{ImGuiManager} čuva i pokazivač na objekt klase \textit{GraphManager} čije metode koristi za iscrtavanje grafova i legende gradijenta.\\\\
+
+Važno je naglasiti kako, unatoč tome što je veliki dio interakcije s korisnikom u alatu implementiran pomoću biblioteke Dear ImGui, veliki dio stvarne interakcije koju korisnik obavlja sa alatom nije vezan za dijelove korisničko sučelja već za događaje poput klika i kretanja miša, te pomicanja kotačića miša. Ti su događaji važni kako bi se korisniku omogućilo označavanje "lebdeće" ćelije, odabiranje "lebdeće" ćelije i kontrola kamere. Kako je već spomenuto na početku poglavlja \ref{codebase-architecture-section}, klasa \textit{App} zapravo obrađuje GLFW događaje koji javljaju ovakav tip korisničkog unosa. Kako su takvi događaji važni za obraditi \textit{ImGuiManager}-u, objekt klase \textit{App} prvo pozove metodu objekta klase \textit{ImGuiManager} koja je zadužena za obrađivanje specifičnog događaja. U spomenutoj metodi se obrađivanje događaja delegira biblioteci Dear ImGui, a zatim se ispita je li pokazivač miša iznad prikaza modela motora, pošto su sve navedene interakcije vezane za prikaz modela motora. \textit{ImGuiManager} vraća odgovor na taj upit preko povratne vrijednosti pozvane funkcije. Ako je pokazivač miša iznad prikaza motora u trenutku pojave događaja, objekt klase \textit{App} će događaj dodatno obraditi pomoću ostalih komponenti MVC arhitekture, tako da je jednim dijelom i klasa \textit{App} dio komponente Upravljač.
+
+
 \section{Organizacija podataka na grafičkoj kartici} \label{graphics-card-data-section}
 
+U poglavlju \ref{view-section} je objašnjeno kako četiri klase šalju vlastitim sjenčarima različite podatke na grafičku karticu pošto imaju različite uloge. Cilj ovog poglavlja je detaljnije objašnjavanje toka podataka između procesora i grafičke kartice za svaku od navedenih klasa, a kako bi se omogućilo što razumljivije objašnjavanje tog toka, važno je objasniti nekoliko generalnih razlika između načina slanja i iscrtavanja podataka korištenih u ovom alatu.\\
+
+U alatu razvijenom u sklopu ovog rada se podaci na grafičku karticu šalju na dva načina: pomoću  \textit{vertex buffer object}-a i pomoću uniformnih varijabli. \textit{Vertex buffer object}-i, skraćeno VBO, sadrže polje podataka koji opisuju svaki vrh modela na način koji je relavantan sjenčaru vrhova. U grafičkom protočnom sustavu sjenčar vrhova procesira elemente VBO-a, a rezultate prosljeđuje u daljnji dio protočnog sustava. Za jedan sjenčar se može definirati proizvoljan broj VBO-a samo je važno uvijek povezati strukturu elementa koji je sačuvan u VBO-u sa atributima sjenčara vrhova pomoću funkcija OpenGL-a poput \textit{glVertexAttribPointer}. Uniformne varijable su iste za svaki vrh, te su zajedničke sjenčaru vrhova i fragmenata. Njih klijent ne šalje na grafičku karticu učitavanjem u VBO-e, već izravnim definiranjem lokacije i "pakirane "vrijednosti uniformne varijable. Klijent saznaje lokaciju uniformne varijable u sjenčaru pozivanjem funkcije \textit{glGetUniformLocation} kojoj kao argumente predaje indeks sjenčara i ime uniformne varijable.\\
+
+Također, u alatu se koriste i dvije različite metode za iscrtavanje podataka učitanih u VBO: \textit{glDrawArrays} i \textit{glDrawElements}. Metoda \textit{glDrawArrays} svaki element VBO-a šalje jednom u sjenčar vrhova, te pretpostavlja da su vrhovi unutar VBO-a poredani slijedno i prate strukturu koju predstavljaju, npr. tri vrha iz istog trokuta su unutar VBO-a definirani jedan za drugim, te zadnji trokut neće imati broj vrhova koji nije djeljiv sa tri. S druge strane metoda \textit{glDrawElements} zahtjeva dodatno definirani \textit{buffer object} zvani \textit{element buffer object}, skraćeno EBO, unutar kojeg su spremljeni indeksi podataka iz VBO-a koji definiraju poredak iscrtavanja učitanih podataka. Korištenjem ove metode u slučaju kada lica modela imaju velik broj dijeljenih vrhova, značajno se smanjuje broj podataka koji se šalje preko VBO-a, pošto se podaci ponavljajućih vrhova mogu "reciklirati" višestrukim navođenjem indeksa tog vrha unutar EBO-a.
+
+\subsection{Podaci za bojanje ćelija}
+
+Podaci koji su relevantni za bojanje ćelija su organizirani u dva VBO-a i 4 uniformne varijable. Preko VBO-a, tj. podataka koji opisuju pojedini vrh, se šalju pozicije vrhova, indeks ćelije kojoj pripadaju i boja te ćelije. Ti podaci su rastavljeni u dva VBO-a na način da se pozicije i indeks ćelije vrha šalju u sklopu jednog VBO-a, a boja ćelije pomoću drugog. Na taj način se podaci koji su konstantni (pozicija i indeks ćelije) ne moraju slati svaki put kada se mijenjaju boje modela motora, već se šalju samo kad se učitaju iz datoteka.\\
+
+Uniformne varijable koje se šalju na karticu za potrebe bojanja ćelija su matrice modela, pogleda i projekcije, te indeks trenutne "lebdeće" ćelije. Matrica modela je konstantno postavljena na matricu identiteta, a matrice pogleda i projekcije su tu kako bi se model pravilno iscrtavao i nakon promjene rotacije i pozicije kamere, te promjene dimenzija prozora prikaza motora. Indeks trenutne lebdeće ćelije je poslan kako bi sjenčar znao kojoj ćeliji treba postaviti boju na inverz trenutne boje. Na taj način nije potrebno ažurirati VBO sa bojama ćelija svaki put kada pokazivač miša bude postavljen na novu ćeliju.\\
+
+Za iscrtavanje ovih podataka se koristi metoda \textit{glDrawElements}, tako da je uz slanje podataka, potrebno poslati i indekse koji definiraju po kojem poretku ti podaci dolaze. Iako se na prvi pogled može primjetiti kako ćelije ne dijele vrhove sa istim indeksom ćelija, važno je napomenuti kako OpenGL u \textit{core} načinu rada podržava samo iscrtavanje trokuta. Stoga ćelije koje su četverokuti treba podijeliti na trokute, a takve ćelije korištenjem metode \textit{glDrawElements} ne definiraju unutar VBO-a više šest točaka već četiri. Kako takve ćelije čine ukupno 90.191\% svih ćelija modela motora koji se koristi u ovom radu (ostatak ćelija su trokuti), primjenom ove optimizacije se na grafičku karticu šalje 31.614\% manje podataka o vrhovima.
+
+\subsection{Podaci za detekciju lebdeće ćelije}
+
+Podaci koji se koriste za iscrtavanje motora sa ćelijama jedinstvenih boja (opisano u poglavlju \ref{view-section}) se na grafičku karticu šalju pomoću jednog VBO-a koji za svaki vrh definira njegovu poziciju i indeks ćelije kojoj pripada, te pomoću tri uniformne varijable: matrica modela, pogleda i projekcije. Sjenčar iz indeksa ćelije izračuna boju vrha te ćelije, a klasa \textit{EngineCellSelectionMesh} obavlja inverznu operaciju nakon što uzorkuje boju na pikselu iznad kojeg je postavljen pokazivač miša. Za ovo iscrtavanje se također koristi metoda \textit{glDrawElements}, te je smanjenje broja podataka jednako kao i kod podataka za bojanje ćelija.
+
+\subsection{Podaci za linije ćelija}
+
+Podaci koji se koriste za crtanje linija koje razgraničavaju ćelije se na grafičku karticu šalju pomoću jednog VBO-a koji prenosi samo pozicije vrhova linija i tri uniformne varijable koje su matrice modela, pogleda i projekcije. Ovi podaci se također iscrtavaju pomoću metode \textit{glDrawElements} od koje dobivaju veću uštedu u odnosu na korištenje metode \textit{glDrawArrays} jer se pozicije vrhova mogu dijeliti između ćelija pošto više nisu vezane indeksima i/ili bojama ćelija.
+
+\subsection{Podaci za koordinatne osi}
+Za crtanje linija koordinatnih osi se koristi jedan VBO unutar kojeg se prenosi polje podataka o vrhovima koji su opisani u dva bajta: prvi bajt je indeks u rasponu od 0 do 3, te služi za identificiranje pozicije vrha koordinatnih osi (točka ishodišta ili vrh x/y/z osi), a drugi bajt je indeks u rasponu od 0 do 2 i definira kojoj osi taj vrh pripada. Sjenčar interno definira konstantna polja koja indeksira pomoću indeksa iz VBO-a. Osim VBO-a sjenčar prima i dvije uniformne varijable: matrice pogleda i projekcije. Za razliku od dosadašnjih podataka, ovi podaci se crtaju metodom \textit{glDrawArrays}. Ova metoda se koristi zbog jednostavnosti i manje količine potrebnih podataka u odnosu na metodu \textit{glDrawElements}, pošto bi ta metoda zahtjevala dodatno definiranje EBO-a, što za ovako mali broj vrhova nema smisla.
+
 \chapter{Demonstracija rada alata}
-5-7 stranica
+
+\section{Učitavanje datoteka}
+prvo poglavlje
+prvo inicijalni screen, pa meni za odabrat podatke, pa dijalog za odabrat datoteke, pa kako izgleda kad je sve učitano
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/initial_screenshot.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/load_file_menu.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/file_select_dialog.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/files_loaded_screenshot.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\section{Normalni način rada}
+drugo poglavlje
+kako izgleda kada se odaberu frekvencije, pa promijeni par boja radi vidljivosti, pa promijeni uzorkovanje gradijenta radi vidljivosti (vidimo da je dosta gradijenata opasno otraga ali promjenom uzorkovanja možemo izolirati sami vrh), spomeni da je ovo posebno korisno za max pri lokalno selektiranim rasponima uzet quartic pa se vidi di je max najgori, pa promijeni funkcije i raspone (sličan efekt možemo postići ručnim definiranjem raspona i linearom), pa komentiraj korištenje spread-a
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/selected_frq.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/color_select.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/quartic_sampling_normal_mode.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/max_quartic.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/custom_limits_linear_sampling.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/spread.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\section{Način rada sa preddefiniranim ograničenjima}
+treće poglavlje
+
+upali limits mode i slikaj kako izgleda na pocetku komentirajuci da su prikazane samo ćelije koje su dokumentirane u ograničenjima, odaberi nekoliko frekvencija, izmijeni uzorkovanje gradijenata da pokazes kako pomazu sa razlikovanjem
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/limits_mode_opened.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/limits_mode_frq_selected.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/limits_mode_qrt.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\section{Uspoređivanje ćelija pomoću grafova}
+četvrto poglavlje
+
+hoveraj ćeliju, odaberi nekoliko ćelija radi detaljnijeg pregleda, uzmi max i reci kako selektirane ćelije imaju sličnu boju ko lebdeća ali se lebdeća drugačije ponaša -> važnost prikaza grafa
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/cell_hovered.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/selected_cells_max.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/hovered_cell_max.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/selected_cell_relative.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
+
+\begin{figure} [H]
+	\centering
+    \includegraphics[width=\textwidth]{demonstration/selected_cell_subplots.png}
+    \caption{Pregled MVC organizacije alata}
+    \label{fig:high-level-overview}
+\end{figure}
 
 \chapter{Zaključak}
 1 stranica

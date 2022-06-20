@@ -145,6 +145,7 @@ void App::init_imgui()
 void App::init_implot()
 {
 	ImPlot::CreateContext();
+	ImPlot::GetStyle().AntiAliasedLines = true;
 }
 
 void App::set_callbacks()
