@@ -14,3 +14,9 @@ public:
 
 	void invoke();
 };
+
+void Signal::invoke()
+{
+	for (auto& l : m_listeners)
+		l();
+}
