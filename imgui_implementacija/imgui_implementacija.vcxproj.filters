@@ -170,9 +170,6 @@
     <ClCompile Include="source\application_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\signals.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

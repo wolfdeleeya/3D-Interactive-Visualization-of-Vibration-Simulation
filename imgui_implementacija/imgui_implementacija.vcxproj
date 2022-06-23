@@ -220,7 +220,6 @@
     <ClCompile Include="source\mesh\engine_visualization_mesh.cpp" />
     <ClCompile Include="source\mesh_manager.cpp" />
     <ClCompile Include="source\shader_helper.cpp" />
-    <ClCompile Include="source\signals.cpp" />
     <ClCompile Include="source\app.cpp" />
   </ItemGroup>
   <ItemGroup>

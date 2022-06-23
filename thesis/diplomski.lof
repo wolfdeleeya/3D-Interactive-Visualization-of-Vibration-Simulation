@@ -3,18 +3,21 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Snimka zaslona alata\relax }}{8}{}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Snimka zaslona alata\relax }}{6}{}%
 \contentsline {figure}{\numberline {4.2}{\ignorespaces Prikaz motora tijekom normalnog načina rada\relax }}{9}{}%
 \contentsline {figure}{\numberline {4.3}{\ignorespaces Prikaz motora tijekom načina rada s preddefiniranim ograničenjima\relax }}{9}{}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Drugačije postavke uzorkovanja gradijenta \relax }}{11}{}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Postavke osi prikaza grafa\relax }}{13}{}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Postavke boja tijekom dva moguća načina rada \relax }}{14}{}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Prozor za odabir boje \relax }}{14}{}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Postavke grafa rastavljene na dijelove: postavke načina iscrtavanja (crveno), postavke načina usporedbe (zeleno) i postavke boje grafa "lebdeće ćelije" (plavo)\relax }}{16}{}%
-\contentsline {figure}{\numberline {4.9}{\ignorespaces Postavke grafa tijekom tri različita načina usporedbe\relax }}{17}{}%
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Prozor za odabir frekvencija\relax }}{18}{}%
-\contentsline {figure}{\numberline {4.11}{\ignorespaces Prozor postavki evaluacije odabranih frekvencija sa svim mogućim parametrima\relax }}{19}{}%
-\contentsline {figure}{\numberline {4.12}{\ignorespaces Prozor za općenite informacije \relax }}{20}{}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Drugačije postavke uzorkovanja gradijenta\relax }}{10}{}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Normalni način usporedbe grafova u obliku stupaca\relax }}{12}{}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Način usporedbe grafova s višestrukim prikazima u obliku stupaca\relax }}{13}{}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Način usporedbe grafova s višestrukim prikazima u obliku linija\relax }}{13}{}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Postavke osi prikaza grafa\relax }}{14}{}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Postavke boja tijekom dva moguća načina rada\relax }}{15}{}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Prozor za odabir boje\relax }}{15}{}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Postavke grafa rastavljene na dijelove: postavke načina iscrtavanja (crveno), postavke načina usporedbe (zeleno) i postavke boje grafa "lebdeće ćelije" (plavo)\relax }}{17}{}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Postavke grafa tijekom tri različita načina usporedbe\relax }}{18}{}%
+\contentsline {figure}{\numberline {4.13}{\ignorespaces Prozor za odabir frekvencija\relax }}{18}{}%
+\contentsline {figure}{\numberline {4.14}{\ignorespaces Prozor postavki evaluacije odabranih frekvencija sa svim mogućim parametrima\relax }}{19}{}%
+\contentsline {figure}{\numberline {4.15}{\ignorespaces Prozor za općenite informacije\relax }}{20}{}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Pregled MVC organizacije alata\relax }}{23}{}%
 \contentsline {figure}{\numberline {5.2}{\ignorespaces Razlike između prikaza grafičkih međuspremnika\relax }}{26}{}%
@@ -36,11 +39,4 @@
 \contentsline {figure}{\numberline {6.15}{\ignorespaces Prikaz grafova u načinu usporedbe s višestrukim prikazima\relax }}{40}{}%
 \contentsline {figure}{\numberline {6.16}{\ignorespaces Prikaz grafova u relativnom načinu usporedbe\relax }}{41}{}%
 \addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Normalni način usporedbe grafova u obliku stupaca\relax }}{45}{}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Normalni način usporedbe grafova u obliku linija\relax }}{46}{}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Način usporedbe grafova s višestrukim prikazima u obliku stupaca\relax }}{46}{}%
-\contentsline {figure}{\numberline {A.4}{\ignorespaces Način usporedbe grafova s višestrukim prikazima u obliku linija\relax }}{47}{}%
-\contentsline {figure}{\numberline {A.5}{\ignorespaces Relativni način usporedbe grafova u obliku stupaca u kojem su podaci svih ćelija prikazani u odnosu na ćeliju 10982\relax }}{47}{}%
-\contentsline {figure}{\numberline {A.6}{\ignorespaces Relativni način usporedbe grafova u obliku linija u kojem su podaci svih ćelija prikazani u odnosu na ćeliju 10982\relax }}{48}{}%
 \addvspace {10\p@ }

@@ -21,7 +21,7 @@
 \newblock [Pristupljeno 9. lipnja 2022].
 
 \bibitem[glf()]{glfw}
-Glfw: Main page.
+G{L}{F}{W}: {M}ain {P}age.
 \newblock \url{https://www.glfw.org/docs/3.3/index.html}.
 \newblock [Pristupljeno 15. lipnja 2022].
 
@@ -48,7 +48,7 @@ nativefiledialog: {A} tiny, neat {C} library that portably invokes native file
 \newblock [Pristupljeno 15. lipnja 2022].
 
 \bibitem[ope()]{opengl}
-Opengl - the industry standard for high performance graphics.
+Open{G}{L} - {T}he {I}ndustry {S}tandard for {H}igh {P}erformance {G}raphics.
 \newblock \url{https://www.opengl.org/}.
 \newblock [Pristupljeno 15. lipnja 2022].
 

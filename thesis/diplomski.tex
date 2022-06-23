@@ -71,7 +71,7 @@ Kako je spomenuto u radu \citep{matkovic2021getting}, stručnjake pri analizi NV
 	\end{itemize} 
 \item Lokalizacija značajki
 	\begin{itemize}
-	\item Koje ćelije motora pri zadanoj frekvenciji vibriraju snagom koja pripada zadanom rasponu?
+	\item Koje ćelije motora vibriraju snagom koja pripada zadanom rasponu?
 	\end{itemize} 
 \item Lokalna pretraga
 	\begin{itemize}
@@ -84,54 +84,18 @@ Alat razvijen u sklopu rada \citep{matkovic2021getting} dobro adresira navedene 
 No, iako je referirani rad cjelokupno odlično pokrio sve tri značajke, u području usporedbe snage vibracije dijelova motora na različitim frekvencijama vibracije još ima prostora za napredak. Naime, trenutna usporedba podataka na različitim frekvencijama je moguća samo pomoću 2D grafova, koji iako korisni, imaju problema s čitljivošću i jasnoćom. Alat koji je razvijen u sklopu ovog rada implementira niz vizualizacijskih tehnika koje potencijalno povećavaju intuitivnost usporedbe vibracija dijelova motora na različitim frekvencijama vibriranja u odnosu na izvedbu kod alata razvijenog u radu \citep{matkovic2021getting}.
 
 \chapter{Analiza zadatka i zahtjeva}
-Budući da dizajniranje alata za vizualizaciju nije jednostavan zadatak, potrebno je poduzeti određene predprodukcijske korake kako bi se osigurala zadovoljavajuća implementacija glavnog zadatka. Navedeni je zadatak potrebno dodatno analizirati, čime bi se uočili zahtjevi potrebni za njegovo uspješno odrađivanje. Identificirane zahtjeve je također potrebno analizirati, kako bi se utvrdila njihova povezanost s glavnim zadatkom, te osiguralo njihovo uspješno i cjelovito zadovoljavanje. 
+Budući da dizajniranje alata za vizualizaciju nije jednostavan zadatak, potrebno je poduzeti određene predprodukcijske korake kako bi se osigurala zadovoljavajuća implementacija glavnog zadatka. Navedeni je zadatak potrebno dodatno analizirati, čime bi se uočili zahtjevi potrebni za njegovo uspješno odrađivanje. Identificirane zahtjeve je također potrebno proučiti, kako bi se utvrdila njihova povezanost s glavnim zadatkom, te osiguralo njihovo uspješno i cjelovito zadovoljavanje. 
 
 \section{Identificirani zadaci}
-Ključni zadatak alata razvijenog u sklopu ovog rada je intuitivno i razumljivo prikazivanje razlika i sličnosti u vibriranju dijelova motora s obzirom na različite frekvencije vibriranja motora. Kao što je već navedeno u prethodnom poglavlju, alat iz rada \citep{matkovic2021getting} ima problema s čitljivošću i jasnoćom usporedbe utjecaja više frekvencija na snagu vibracije dijelova motora. Spomenuta usporedba je omogućena korištenjem grafova kod kojih svaka linija predstavlja funkciju vibracije jedne ćelije (x-os predstavlja sve frekvencije za koje postoje podaci, a y-os predstavlja snagu vibracije). Takav način rada stvara nezanemarive poteškoće s korištenjem alata. Teže je usporediti frekvencije koje nisu susjedne na grafu jer su podaci o svim frekevcijama konstantno prisutni na grafu. Čitljivost grafa je uvelike smanjena kada je odabrano više ćelija jer su grafovi svih odabranih ćelija prikazani linijama iste boje. Konačno, otežano je uočavanje dijelova modela koji se razlikuju u snazi vibriranja jer u jednom trenutku može biti odabrana samo jedna frekvencija na temelju koje se određuju boje ćelija motora.
+Budući da alat iz rada \citep{matkovic2021getting} ima problema s čitljivošću i jasnoćom usporedbe utjecaja više frekvencija na snagu vibracije dijelova motora, ključni zadatak alata razvijenog u sklopu ovog rada je omogućavanje intuitivnijeg i razumljivijeg uspoređivanja spomenutih utjecaja. U referiranom radu se za navedenu usporedbu koriste grafovi kod kojih svaka linija predstavlja funkciju vibracije jedne ćelije (x-os predstavlja sve frekvencije vibracije za koje postoje podaci, a y-os predstavlja snagu vibracije ćelije). Takav način rada stvara nezanemarive poteškoće s korištenjem alata koje je važno navesti kako bi se odredili ispravni zahtjevi koji te poteškoće rješavaju. Prvenstveno, otežano je uočavanje dijelova modela koji se razlikuju u snazi vibriranja jer je direktna usporedba snage vibracije ćelije na različitim frekvencijama moguća jedino pomoću grafova koji ne prenose informacije o poziciji ćelije. Zatim, budući da su podaci o svim frekevcijama konstantno prisutni na grafu, teže je usporediti frekvencije koje nisu susjedne na grafu. Konačno, čitljivost grafa je uvelike smanjena kada je odabrano više ćelija jer su grafovi svih odabranih ćelija prikazani linijama iste boje. 
 
 \section{Identificirani zahtjevi} \label{requests-section}
-Kako bi se usporedbu učinilo intuitivnijom i jasnijom, očiti korak je omogućiti iscrtavanje rezultata usporedbe na 3D modelu motora. Naime, iako se u alatu iz rada \citep{matkovic2021getting} ćelije bojaju na temelju jačine vibracija pri zadanoj frekvenciji vibriranja, nije moguće iscrtati utjecaj više frekvencija na modelu motora. Takvim iscrtavanjem bi se uveliko olakšalo uočavanje promjena na dijelovima motora. Naravno, kod više odabranih frekvencija, postavlja se pitanje: kako iz niza podataka o snagama vibracije ćelija pri odabranim frekvencijama odabrati jedan konačni iznos koji će pomoću zadanog raspona i gradijenta odrediti konačnu boju ćelije kojoj pripada. Alat razvijen u sklopu ovog rada korisniku nudi nekoliko funkcija koje može odabrati, a koje primaju niz iznosa vibracija te vraćaju jednu vrijednost vibracije, koja predstavlja "sažetak" navedenog niza. Za tu svrhu su u sklopu alata implementirane metode:
 
-\begin{itemize}
-\item MIN - najmanji iznos vibracije,
-\item MAX - najveći iznos ,
-\item AVERAGE - prosjek vibracija,
-\item MEDIAN - medijan vibracije,
-\item SPREAD - razlika između najvećeg i najmanjeg iznosa vibracije.\\
-\end{itemize}
-
-Korisnik zatim može odabrati funkciju koja najbolje odgovara njegovim potrebama. Na primjer, ako korisnik treba saznati maksimalno opterećenje za svaku ćeliju pri odabiru različitih frekvencija za to mu može koristiti funkcija MAX, a funkciju SPREAD može koristiti ako ga zanima kolike će vibriranje ćelija varirati tijekom višestrukih frekvencija vibriranja itd.\\
-
-No, kada navedene funkcije iz niza vrijednosti izračunaju konačnu vrijednost, taj iznos treba prebaciti u interval [0, 1] kako bi se omogućilo uzorkovanje gradijenta. Za ostvarivanje prijelaza u taj interval potrebno je znati koji broj označava najmanju vrijednost intervala, odnosno 0, a koji broj označava najveću vrijednost intervala, odnosno 1. U alatu su ponuđena tri načina računanja navedenog raspona:
-\begin{itemize}
-\item GLOBAL - donju i gornju granicu raspona čine najmanji i najveći iznos snage vibracije kojom neka ćelija može vibrirati s obzirom na odabrane frekvencije vibriranja,
-\item LOCAL - donju i gornju granicu raspona čine najmanji i najveći iznos snage vibracije kojom neka ćelija može vibrirati s obzirom na odabrane frekvencije vibriranja,
-\item USER DEFINED - korisnik sam definira donju i gornju granicu raspona.\\
-\end{itemize}
-
-Alat korisniku omogućuje definiranje boje gradijenta na temelju kojeg će se modelu odrediti boje ćelija.\\
-
-U sklopu alata je implementiran još jedan način "bojanja" modela motora koji je baziran na unaprijed određenim ograničenjima vibracija. Navedena ograničenja dijele raspon vibracija na 3 zone: bezopasnu, rizičnu i opasnu. Rasponi su definirani za određene frekvencije (ne nužno za sve) u posebnoj datoteci. Ovaj način bojanja je odvojen od normalnog načina rada, objašnjenog u prijašnjem odlomku. Boje ćelija u načinu rada s ograničenjima se određuju na sljedeći način:
-\begin{itemize}
-\item Zelena - ako se snage vibracije trenutne ćelije nalaze u bezopasnoj zoni s obzirom na sve odabrane frekvencije vibriranja
-\item Gradijent žute - ako se snage vibracije trenutne ćelije nalaze u rizičnoj zoni s obzirom na barem jednu odabranu frekvenciju, a nijedna u opasnoj zoni
-\item Gradijent crvene - ako se snage vibracije trenutne ćelije nalaze u opasnoj zoni s obzirom na barem jednu odabranu frekvenciju\\
-\end{itemize}
-
-Navedeni gradijenti se uzorkuju pomoću omjera broja frekvencija vibriranja tijekom kojih snaga vibracije ćelije spada u zonu gradijenta i ukupnog broj odabranih frekvencija. Navedena boja i gradijenti su početno postavljeni na spomenute vrijednosti, a korisnik ih može mijenjati kako njemu odgovara.\\
-
-Kako bi se adresirao problem s uspoređivanjem nesusjednih frekvencija vibracije motora, na grafu se iscrtavaju samo podaci za odabrane frekvencije. Konačno, kako bi se poboljšala čitljivost grafa u sklopu alata su implementirana dva načina iscrtavanja podataka: stupčasti i linijski, te tri načina uspoređivanja:
-\begin{itemize}
-\item DEFAULT - svi grafovi su prikazani unutar jednog prikaza
-\item SUBPLOTS - svaki graf je prikazan unutar zasebnog prikaza
-\item RELATIVE - kao DEFAULT, ali je dodatno moguće odabrati jednu ćeliju s obzirom na koju će se prikazati grafovi svih ostalih ćelija\\
-\end{itemize}
-
-Navedeno rješenje predstavlja poboljšanje na području čitljivosti zbog više razloga. Grafovi svih ćelija više nisu prikazani odjednom, već su samo prikazani grafovi odabranih ćelija. Moguće je prikazati svaki graf na zasebnom prikazu, čime je pojednostavljeno uspoređivanje u slučaju više odabranih ćelija. S relativnim uspoređivanjem, korisnik može lakše usporediti odabranu ćeliju s ostalim ćelijama. Konačno, budući da su omogućena dva načina iscrtavanja podataka, korisnik može odabrati način koji najbolje odgovara njegovim potrebama i preferencijama, te nije prisiljen koristiti linije za iscrtavanje grafova.
+Kako bi se olakšalo uočavanje dijelova motora koji se razlikuju u snazi vibriranja, alat će rezultate usporedbe iscrtati izravno na 3D modelu motora. Podaci o snazi vibracije ćelije tijekom odabranih frekvencija vibriranja će utjecati na boju ćelije, te će korisniku odmah biti vidljivo kako se vibracija određenih dijelova motora mijenja s obzirom na odabrane frekvencije vibriranja. Alat će korisniku nuditi razne načine određivanja boje ćelija motora koji se međusobno upotpunjuju. Kako bi se adresirao problem s uspoređivanjem nesusjednih frekvencija vibracije motora, na grafu će se iscrtavati samo podaci za odabrane frekvencije. Korisnik će moći odabrati i maknuti ćelije koje se iscrtavaju na grafu, a svaka odabrana ćelija će biti označena zasebnom bojom kako bi grafovi bili čitljivi neovisno o broju odabranih ćelija. Alat će korisniku nuditi više načina uspoređivanja grafova kako bi se dodatno doprinijelo čitljivosti grafova u raznim situacijama.
 
 \chapter{Dizajn vizualizacije}
 
-Zahtjevi navedeni u prijašnjem poglavlju daju naslutiti kako će sučelje alata biti kompleksno jer korisniku na raspolaganju trebaju biti brojne opcije. Kako bi se svi navedeni zahtjevi zadovoljili, a upotrebljivost alata se ne bi smanjila, potrebno je alat organizirati u smislene prozore, koje će korisnik moći premiještati, povećavati i smanjivati kako mu najbolje odgovara. Na slici \ref{fig:gen-screen} se može vidjeti kako je alat zapravo organiziran u sedam prozora. Navedeni prozori su detaljno opisani u nastavku.\\
+Kako bi se svi zahtjevi navedeni u poglavlju \ref{requests-section} zadovoljili, a upotrebljivost alata se ne bi smanjila, potrebno je alat organizirati u smislene prozore, koje će korisnik moći premještati, povećavati i smanjivati kako mu najbolje odgovara. Na slici \ref{fig:gen-screen} se može vidjeti kako je alat zapravo organiziran u sedam prozora. U sklopu poglavlja \ref{work-mode-section} su opisani načini rada koji pružaju odgovor na određene zahtjeve iz poglavlja \ref{requests-section}, dok su u poglavljima \ref{engine-view-section}-\ref{general-info-section} opisani izgledi i funkcionalnosti različitih prozora alata.
 
 \begin{figure}[H]
 \centering
@@ -140,8 +104,46 @@ Zahtjevi navedeni u prijašnjem poglavlju daju naslutiti kako će sučelje alata
 \label{fig:gen-screen}
 \end{figure}
 
+\section{Načini rada alata} \label{work-mode-section}
+
+Određivanje boje ćelije modela motora s obzirom na niz frekvencija koje je korisnik odabrao predstavlja glavni izazov kod dizajniranja vizualizacijskog alata ove vrste. U sklopu ovog alata su implementirana dva načina rada koja se međusobno ne razlikuju samo u izvedbi, već i u primjeni zbog čega se dobro upotpunjuju i pružaju korisniku više opcija kod vizualizacije podataka o vibraciji motora.
+
+\subsection{Normalni način rada}
+
+Kada u normalnom načinu rada korisnik odabere niz frekvencija vibriranja, za svaku ćeliju se izdvoji niz podataka o snagama vibracija te ćelije, te se taj niz preda kao argument funkciji koja ga "sažme" u jedan broj. U sklopu alata je implementirano nekoliko funkcija koje obavljaju tu zadaću, a korisnik odabire onu koja mu najviše odgovara. Implementirane funkcije su:
+
+\begin{itemize}
+\item MIN - najmanji iznos vibracije,
+\item MAX - najveći iznos,
+\item AVERAGE - prosjek vibracija,
+\item MEDIAN - medijan vibracije,
+\item SPREAD - razlika između najvećeg i najmanjeg iznosa vibracije.\\
+\end{itemize}
+
+Glavna ideja normalnog načina rada je da se vrijednost dobivena iz navedenih funkcija koristi za uzorkovanje gradijenta kojeg korisnik definira. No, prije nego se ta vrijednost može koristiti za uzorkovanje, potrebno ju je prebaciti u interval [0, 1]. Za ostvarivanje prijelaza u taj interval potrebno je definirati koji broj označava najmanju vrijednost intervala, odnosno 0, a koji broj označava najveću vrijednost intervala, odnosno 1. U alatu su ponuđena tri načina računanja navedenog raspona:
+
+\begin{itemize}
+\item GLOBAL - donju i gornju granicu raspona čine najmanji i najveći iznos snage vibracije kojom neka ćelija može vibrirati s obzirom na odabrane frekvencije vibriranja,
+\item LOCAL - donju i gornju granicu raspona čine najmanji i najveći iznos snage vibracije kojom neka ćelija može vibrirati s obzirom na odabrane frekvencije vibriranja,
+\item USER DEFINED - korisnik sam definira donju i gornju granicu raspona.\\
+\end{itemize}
+
+\subsection{Način rada sa preddefiniranim ograničenjima}
+
+Drugi dostupni način rada koji je implementiran u ovom alatu je baziran na unaprijed određenim ograničenjima vibracija. Navedena ograničenja dijele raspon vibracija na tri zone: bezopasnu, rizičnu i opasnu. Rasponi su definirani pomoću dva faktora koja definiraju gornju granicu bezopasne zone i gornju granicu rizične zone za određene frekvencije (ne nužno za sve), a nalaze se u posebnoj datoteci koju korisnik učitava u alat. Ćelije se raspoređuju u navedene zone po sljedećim pravilima:
+
+\begin{itemize}
+\item Bezopasna zona - ćelija vibrira snagom koja je u granicama bezopasne zone s obzirom na sve odabrane frekvencije
+\item Rizična zona - ćelija vibrira snagom koja je u granicama rizične zone s obzirom na barem jednu odabranu frekvenciju, a za nijednu odabranu frekvenciju se ne nalazi u opasnoj zoni,
+\item Opasna zona - ćelija vibrira snagom koja je u granicama opasne zone s obzirom na barem jednu odabranu frekvenciju\\
+\end{itemize}
+
+Boja ćelija koje se nalaze u bezopasnoj zoni je konstantna za sve ćelije u toj zoni. S druge strane, boje ćelija koje se nalaze u ostale dvije zone se određuju uzorkovanjem dva različita gradijenta. Navedeni gradijenti se uzorkuju pomoću omjera broja frekvencija vibriranja tijekom kojih snaga vibracije ćelije spada u zonu gradijenta i ukupnog broj odabranih frekvencija. Iako navedena boja i gradijenti imaju početno zadane vrijednosti, korisnik ih može mijenjati kako njemu odgovara.\\
+
+
 \section{Prikaz motora} \label{engine-view-section}
-Zadaća prikaza motora je jasno vizualizirati podatke o vibracijama ćelija, pritom uzimajući u obzir brojne postavke vizualizacije poput: načina rada, odabranih frekvencija, načina računanja konačnih podataka ćelije, zadanih raspona podataka, gradijenata koje se koristi za vizualizaciju i načina uzorkovanja tih gradijenata. Korisnik ovu komponentu također može koristiti i za označavanje interesnih ćelija.\\
+Zadaća prikaza motora je jasno vizualizirati podatke o vibracijama ćelija, pritom uzimajući u obzir brojne postavke vizualizacije poput: načina rada, odabranih frekvencija, načina računanja konačnih podataka ćelije, zadanih raspona podataka, gradijenata koje se koristi za vizualizaciju i načina uzorkovanja tih gradijenata. Korisnik ovu komponentu također može koristiti i za označavanje interesnih ćelija.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{engine_view_normal_mode.png}
@@ -158,6 +160,7 @@ Zadaća prikaza motora je jasno vizualizirati podatke o vibracijama ćelija, pri
 Na slikama \ref{fig:normal-mode-engine-view} i \ref{fig:limits-mode-engine-view} se može vidjeti primjer ovog prikaza tijekom dva moguća načina rada. Uz prikaz obojanog modela ova komponenta alata je zadužena i za prikaz legende gradijenta i nabrajanje odabranih frekvencija vibriranja, kako bi snimak prikaza prenosio sve relevantne informacije potrebne za razumijevanje rezultata vizualizacije. Osi koordinatnog sustava su nacrtane uz model motora kako bi korisnik dobio osjećaj za 3D prostor u kojem se model nalazi. Označavanje ćelija se odrađuje pozicioniranjem pokazivača miša iznad interesne ćelije te klikom na lijevu tipku miša. Kada korisnik pokazivačem miša prijeđe preko ćelije bez klikanja, boja ćelije postaje inverz prijašnje boje, kako bi se korisniku dala povratna informacija o ćeliji koja će biti odabrana odluči li se korisnik kliknuti lijevu tipku miša. Opisana ćelija će se u nastavku rada nazivati "lebdeća" ćelija. Jednom kada korisnik klikne na ćeliju, ćelija se označava jednom od boja iz trenutne palete (detaljno objašnjeno u poglavlju \ref{color-settings-section}) te je korisniku prikazan detaljan uvid u podatke označene ćelije putem prikaza grafa (vidi poglavlje \ref{graph-view-section}). Ponovnim klikom na već odabranu ćeliju, ćelija se briše iz liste odabranih ćelija.\\
 
 Kao što je vidljivo iz slika \ref{fig:normal-mode-engine-view} i \ref{fig:limits-mode-engine-view}, razlike u dva načina rada se ne manifestiraju samo u vizualizaciji motora, već i u sučelju ovog prikaza. Naime, kako je objašnjeno u poglavlju \ref{requests-section}, u normalnom načinu rada alatu je potreban jedan kontinuirani gradijent, a u načinu rada s preddefiniranim ograničenjima su potrebna dva diskretna gradijenta.
+
 \begin{figure} [H]
      \centering
      \begin{subfigure}[h]{0.16\textwidth}
@@ -194,21 +197,51 @@ Kao što je vidljivo iz slika \ref{fig:normal-mode-engine-view} i \ref{fig:limit
          \caption{Kvartičko v2}
          \label{fig:quartic_symmetrical_legend}
      \end{subfigure}
-        \caption{Drugačije postavke uzorkovanja gradijenta\\}
+        \caption{Drugačije postavke uzorkovanja gradijenta}
         \label{fig:colormap-legends}
 \end{figure}
 
-Osim što je navedene gradijente moguće mijenjati pomoću dvije kontrolne boje, moguće ih je mijenjati i promjenom funkcije uzorkovanja gradijenta, a utjecaj različitih funkcija uzorkovanja na kontinuirane gradijente se može vidjeti na slici \ref{fig:colormap-legends}. Različite funkcije uzorkovanja su izravno preuzete s web stranice Easing \citep{easing}.
+Osim što je navedene gradijente moguće mijenjati pomoću dvije kontrolne boje, moguće ih je mijenjati i promjenom funkcije uzorkovanja gradijenta. Navedeni dodatak je uveden kako bi vizualizacija bila indiferentna na distribuciju podataka na zadanom rasponu. Utjecaj različitih funkcija uzorkovanja na kontinuirane gradijente se može vidjeti na slici \ref{fig:colormap-legends}. Različite funkcije uzorkovanja su izravno preuzete s web stranice Easing \citep{easing}.
 
 \section{Prikaz grafa} \label{graph-view-section}
 
-Komponenta prikaza grafa služi za iscrtavanje jednog ili više prikaza grafova odabranih ćelija, ali i "lebdeće" ćelije. Prilikom iscrtavanja spomenutih grafova uzimaju se u obzir brojne postavke i načini crtanja. Boje grafova odabranih ćelija odgovaraju bojama koje te ćelije imaju unutar prikaza motora (vidi poglavlje \ref{engine-view-section}), a boja grafa "lebdeće" ćelije je zadana unutar postavki grafa (vidi poglavlje \ref{graph-settings-section}). Kao što je navedeno u poglavlju \ref{requests-section}, alat implementira tri načina usporedbe i dva načina iscrtavanja grafova, a izgled ove komponente uz sve moguće kombinacije postavki grafa su prikazane na slikama u dodatku \ref{appendix:graph-display-examples}. Na navedenim slikama se može vidjeti kako ovu komponentu čini jedan ili više prikaza grafova i gumb za brisanje liste odabranih ćelija.\\
+Komponenta prikaza grafa služi za iscrtavanje jednog ili više prikaza grafova odabranih ćelija, ali i "lebdeće" ćelije. Kako bi se poboljšala čitljivost grafa, u sklopu alata su implementirana dva načina iscrtavanja podataka: stupčasti i linijski, te tri načina uspoređivanja:
+\begin{itemize}
+\item Normalni način usporedbe (DEFAULT) - svi grafovi su prikazani unutar jednog prikaza,
+\item Način usporedbe s višestrukim prikazima (SUBPLOTS) - svaki graf je prikazan unutar zasebnog prikaza,
+\item Relativni način usporedbe (RELATIVE) - kao normalni način, ali je dodana mogućnost odabiranja ćelije s obzirom na koju će se prikazati grafovi svih ostalih ćelija.\\
+\end{itemize}
 
-Sa slika u dodatku \ref{appendix:graph-display-examples} je također vidljivo kako su rasponi osi prikaza grafova postavljeni tako da obuhvaćaju podatke koji se u njima nalaze, te nisu fiksno određeni. Implementacija ovakvog načina određivanja raspona je odabrana zbog smanjene preglednosti razlika u "tokovima" grafova kada su postavljeni fiskni rasponi jer pri fiksnim rasponima grafovi zauzimaju puno manji dio prikaza, a ostatak prikaza je potrošen na prazan prostor. Spomenuta primjedba je posebno uočljiva na slikama \ref{appendix:subplots_graph_display_bars} i \ref{appendix:subplots_graph_display_lines} gdje se vidi kako, zbog različitih raspona, grafovi koji su iscrtani pomoću stupaca bolje pokazuju razliku u iznosima podataka, ali grafovi iscrtani pomoću linija bolje pokazuju razlike u "tokovima" grafova. Konkretno, na slici \ref{appendix:subplots_graph_display_bars} se na prvi pogled čini kako se zelena ćelija (ćelija 10982) i žuta ćelija (ćelija 11182) ponašaju slično, no uvidom u graf na slici \ref{appendix:subplots_graph_display_lines} se otkriva kako to nije istina. Ali ako se korisniku ovakav način određivanja raspona ne sviđa, u alatu je moguće otvoriti postavke bilo koje osi prikaza grafa pozicioniranjem pokazivača miša iznad željene osi te klikom na desnu tipku miša. Kao što se vidi na slici \ref{fig:graph-axis-settings}, unutar spomenutih postavki je moguće uređivati brojna svojstva osi poput raspona, načina interpoliranja između granica raspona, smjera osi i mnoge druge postavke.
+Navedeno rješenje predstavlja poboljšanje na području čitljivosti zbog više razloga. Više nisu odjednom prikazani grafovi svih ćelija, već samo odabranih. Moguće je prikazati svaki graf na zasebnom prikazu, čime je pojednostavljeno uspoređivanje u slučaju više odabranih ćelija. S relativnim uspoređivanjem, korisnik može lakše usporediti odabranu ćeliju s ostalim ćelijama. Konačno, budući da su omogućena dva načina iscrtavanja podataka, korisnik može odabrati način koji najbolje odgovara njegovim potrebama i preferencijama, te nije prisiljen koristiti linije za iscrtavanje grafova. Boje grafova odabranih ćelija odgovaraju bojama koje te ćelije imaju unutar prikaza motora (vidi poglavlje \ref{engine-view-section}), a boja grafa "lebdeće" ćelije je zadana unutar postavki grafa (vidi poglavlje \ref{graph-settings-section}). Na slici \ref{fig:default_graph_display_bars} je vidljivo kako ovu komponentu čini jedan ili više prikaza grafova i gumb za brisanje liste odabranih ćelija.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{default_graph_display_bars.png}
+	\caption{Normalni način usporedbe grafova u obliku stupaca}
+    \label{fig:default_graph_display_bars}
+\end{figure}
+
+Iz priloženih slika je također vidljivo kako su rasponi osi prikaza grafova postavljeni tako da obuhvaćaju podatke koji se u njima nalaze, te nisu fiksno određeni. Implementacija ovakvog načina određivanja raspona je odabrana zbog smanjene preglednosti razlika u "tokovima" grafova kod fisknih raspona jer pri fiksno zadanim rasponima grafovi često zauzimaju mali dio prikaza, a ostatak prikaza je potrošen na prazan prostor. Spomenuta primjedba je posebno uočljiva na slikama \ref{fig:subplots_graph_display_bars} i \ref{fig:subplots_graph_display_lines} gdje se vidi kako, zbog različitih raspona, grafovi koji su iscrtani pomoću stupaca bolje prikazuju razliku u iznosima podataka, ali grafovi iscrtani pomoću linija bolje prikazuju razlike u "tokovima" grafova. Konkretno, na slici \ref{fig:subplots_graph_display_bars} se na prvi pogled čini kako se zelena ćelija (ćelija 10982) i žuta ćelija (ćelija 11182) ponašaju slično, no uvidom u graf na slici \ref{fig:subplots_graph_display_lines} se otkriva kako to nije istina.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{subplots_graph_display_bars.png}
+	\caption{Način usporedbe grafova s višestrukim prikazima u obliku stupaca}
+    \label{fig:subplots_graph_display_bars}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{subplots_graph_display_lines.png}
+	\caption{Način usporedbe grafova s višestrukim prikazima u obliku linija}
+    \label{fig:subplots_graph_display_lines}
+\end{figure}
+
+Korisnik dodatno može namjestiti odgovarajući raspon pojedinih osi pomoću postavki osi koje je moguće otvoriti pozicioniranjem pokazivača miša iznad željene osi te klikom na desnu tipku miša. Kao što se vidi na slici \ref{fig:graph-axis-settings}, unutar spomenutih postavki je moguće uređivati brojna svojstva osi poput raspona, načina interpoliranja između granica raspona, smjera osi itd.
 
 \begin{figure} [H]
 	\centering
-    \includegraphics[width=\textwidth]{graph_view_axis_settings.png}
+    \includegraphics[width=0.9\textwidth]{graph_view_axis_settings.png}
     \caption{Postavke osi prikaza grafa}
     \label{fig:graph-axis-settings}
 \end{figure}
@@ -231,16 +264,16 @@ Kao što samo ime ove komponente kaže, glavna svrha joj je čuvanje postavki ko
          \caption{Način rada s preddefiniranim ograničenjima}
          \label{fig:color-settings-limits-mode}
      \end{subfigure}
-     \caption{Postavke boja tijekom dva moguća načina rada\\}
+     \caption{Postavke boja tijekom dva moguća načina rada}
      \label{fig:color-settings-2-modes}
 \end{figure}
 
-Što se tiče mijenjanja postavki, korisnik može mijenjati boje klikom na obojani kvadrat čime se otvara prozor za mijenjanje boja prikazan na slici \ref{fig:color-picker}. U otvorenom prozoru boju se može mijenjati pomoću interaktivnog GUI sučelja ili unosom RGB ili HSV vrijednosti boje, a također je moguće i unošenje boja u heksadekadskom formatu.\\
+Što se tiče mijenjanja postavki, korisnik može mijenjati boje klikom na obojani kvadrat čime se otvara prozor za mijenjanje boja prikazan na slici \ref{fig:color-picker}. U otvorenom prozoru boju se može mijenjati pomoću interaktivnog GUI sučelja ili unosom RGB ili HSV vrijednosti boje, a također je moguće i unošenje boja u heksadekadskom formatu.
 
 \begin{figure} [H]
 	\centering
     \includegraphics[width=0.5\textwidth]{color_settings_color_picker.png}
-    \caption{Prozor za odabir boje\\}
+    \caption{Prozor za odabir boje}
     \label{fig:color-picker}
 \end{figure}
 
@@ -253,7 +286,6 @@ rgb_vrijednosti_boje2_u_rasponu_0_255
 rgb_vrijednosti_boje3_u_rasponu_0_255
 rgb_vrijednosti_boje4_u_rasponu_0_255
 \end{lstlisting}
-\ \\
 
 Na slici \ref{fig:color-settings-2-modes} se može vidjeti kako je za svaku paletu u kvadratiću prikazan spektar boja, desno od kojeg je navedeno ime palete, a ispod imena se nalazi gumb za prelazak na sljedeću paletu. Kako palete sadrže ograničen broj boja, u alatu je implementiran način brisanja ćelija kada je broj odabranih ćelija veći od broja boja u paleti. Postoje dva slučaja kod kojih se to dogodi: pri dodavanju nove ćelije kada su već sve boje palete "zauzete" i pri mijenjanju trenutne palete na paletu čiji je broj boja manji od broja trenutno odabranih ćelija. U prvom slučaju alat briše zadnju odabranu ćeliju i dodaje novoodabranu ćeliju, a u drugom slučaju alat briše onoliko zadnjih odabranih ćelija kolika je razlika između broja odabranih ćelija i broja boja nove palete.\\
 
@@ -302,11 +334,11 @@ Ali za razliku od postavki načina iscrtavanja, razlike između postavki načina
 
 \section{Odabir frekvencija} \label{frequency-selection-section}
 
-Ova komponenta služi isključivo za odabir frekvencija (kao što i samo ime govori), a postavljena je u odvojenu komponentu od postavki evaluacije odabranih frekvencija (opisanih u poglavlju \ref{frequency-settings-section}) radi poboljšanja lakoće korištenja alata. Izgled komponente se može vidjeti na slici \ref{fig:frequency-selection-view}. U normalnom načinu rada komponenta prikazuje sve frekvencije za koje su učitani podaci o vibriranju ćelija, dok su u načinu rada s preddefiniranim ograničenjima prikazane samo frekvencije za koje je definirano ograničenje u datoteci s ograničenjima. 
+Ova komponenta služi isključivo za odabir frekvencija (kao što i samo ime govori), a postavljena je u odvojenu komponentu od postavki evaluacije odabranih frekvencija (opisanih u poglavlju \ref{frequency-settings-section}) radi poboljšanja lakoće korištenja alata. Izgled komponente se može vidjeti na slici \ref{fig:frequency-selection-view}. U normalnom načinu rada komponenta prikazuje sve frekvencije za koje su učitani podaci o vibriranju ćelija, dok su u načinu rada s preddefiniranim ograničenjima prikazane samo frekvencije za koje je definirano ograničenje u datoteci s ograničenjima.
 
 \begin{figure} [H]
 	\centering
-    \includegraphics[width=0.45\textwidth]{frequency_selection_view.png}
+    \includegraphics[width=0.8\textwidth]{frequency_selection_view.png}
     \caption{Prozor za odabir frekvencija}
     \label{fig:frequency-selection-view}
 \end{figure}
@@ -327,14 +359,14 @@ Prozor postavki evaluacije odabranih frekvencija nije vidljiv sve dok korisnik n
 Oba načina rada u postavkama imaju gumb za brisanje liste trenutno odabranih frekvencija. Način rada s preddefiniranim ograničenjima osim tog gumba u postavkama neće imati niti jedan drugi element, a normalni način rada će moći mijenjati već spomenute metode računanja konačnih podataka i raspone izračunatih podataka. Lista za odabir raspona je vidljiva kada korisnik odabere barem jednu frekvenciju, a mijenjanje raspona definiranog od korisnika je omogućeno kada je navedeni raspon odabran u spomenutoj listi. Lista za odabir metoda računanja konkretnih podataka je vidljiva kada korisnik odabere dvije ili više frekvencije jer se pri jednoj odabranoj frekvenciji sve funkcije ponašaju identično.
 
 
-\section{Općenite informacije}
+\section{Općenite informacije} \label{general-info-section}
 
 Na slici \ref{fig:general-info} se može vidjeti komponenta koja služi za prikaz općenitih informacija vezanih za performanse alata poput broja sličica po sekundi i vremena proteklog između iscrtavanja dviju sličica. Korisnik dodatno može promijeniti interval nakon kojeg se navedene informacije ažuriraju.
 
 \begin{figure} [H]
 	\centering
     \includegraphics[width=0.9\textwidth]{general_info.png}
-    \caption{Prozor za općenite informacije\\}
+    \caption{Prozor za općenite informacije}
     \label{fig:general-info}
 \end{figure}
 
@@ -380,8 +412,6 @@ Organizacija k\^{o}da alata je generalno inspirirana obrascom Model-Pogled-Uprav
     \caption{Pregled MVC organizacije alata}
     \label{fig:high-level-overview}
 \end{figure}
-\ 
-\\
 
 Važno je spomenuti kako na slici \ref{fig:high-level-overview} nedostaje glavna klasa alata, a to je klasa \textit{App} jer ne sudjeluje izravno u MVC arhitekturi. Glavna odgovornost ove klase je povezivanje prikazanih komponenti, obrađivanje GLFW događaja i pozivanje metoda za ažuriranje spomenutih komponenti tijekom iteracija petlje ažuriranja. Spomenuta klasa stvara instance komponenti MVC arhitekture, te ih međusobno povezuje slanjem preko argumenata konstruktora ili povezivanjem preko sustava događaja i signala (detaljno opisanih u dodatku \ref{appendix:event-signal-system}). U poglavljima koje slijede su opisane uloge, odgovornosti i dijelovi svake komponente MVC organizacije ovog alata.
 
@@ -612,51 +642,6 @@ Za alat bi bilo dobro kad bi se nastavio razvijati u smjeru pokrivanja funkciona
 
 \bibliography{literatura}
 \bibliographystyle{fer}
-
-\appendix
-\chapter{Različiti načini crtanja grafova} \label{appendix:graph-display-examples}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{default_graph_display_bars.png}
-	\caption{Normalni način usporedbe grafova u obliku stupaca}
-    \label{appendix:default_graph_display_bars}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{default_graph_display_lines.png}
-	\caption{Normalni način usporedbe grafova u obliku linija}
-    \label{appendix:default_graph_display_lines}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{subplots_graph_display_bars.png}
-	\caption{Način usporedbe grafova s višestrukim prikazima u obliku stupaca}
-    \label{appendix:subplots_graph_display_bars}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{subplots_graph_display_lines.png}
-	\caption{Način usporedbe grafova s višestrukim prikazima u obliku linija}
-    \label{appendix:subplots_graph_display_lines}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{relative_graph_display_bars_cell_10982.png}
-	\caption{Relativni način usporedbe grafova u obliku stupaca u kojem su podaci svih ćelija prikazani u odnosu na ćeliju 10982}
-    \label{appendix:relative_graph_display_bars}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{relative_graph_display_lines_cell_10982.png}
-	\caption{Relativni način usporedbe grafova u obliku linija u kojem su podaci svih ćelija prikazani u odnosu na ćeliju 10982}
-    \label{appendix:relative_graph_display_lines}
-\end{figure}
 
 \chapter{Sustav događaja i signala} \label{appendix:event-signal-system}
 

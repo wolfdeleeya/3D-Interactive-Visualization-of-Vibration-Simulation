@@ -5,14 +5,17 @@
 \contentsline {chapter}{\numberline {3}Analiza zadatka i zahtjeva}{4}{}%
 \contentsline {section}{\numberline {3.1}Identificirani zadaci}{4}{}%
 \contentsline {section}{\numberline {3.2}Identificirani zahtjevi}{4}{}%
-\contentsline {chapter}{\numberline {4}Dizajn vizualizacije}{8}{}%
-\contentsline {section}{\numberline {4.1}Prikaz motora}{8}{}%
-\contentsline {section}{\numberline {4.2}Prikaz grafa}{11}{}%
-\contentsline {section}{\numberline {4.3}Postavke boja}{13}{}%
-\contentsline {section}{\numberline {4.4}Postavke grafa}{15}{}%
-\contentsline {section}{\numberline {4.5}Odabir frekvencija}{17}{}%
-\contentsline {section}{\numberline {4.6}Postavke evaluacije odabranih frekvencija}{18}{}%
-\contentsline {section}{\numberline {4.7}Općenite informacije}{19}{}%
+\contentsline {chapter}{\numberline {4}Dizajn vizualizacije}{6}{}%
+\contentsline {section}{\numberline {4.1}Načini rada alata}{6}{}%
+\contentsline {subsection}{\numberline {4.1.1}Normalni način rada}{7}{}%
+\contentsline {subsection}{\numberline {4.1.2}Način rada sa preddefiniranim ograničenjima}{7}{}%
+\contentsline {section}{\numberline {4.2}Prikaz motora}{8}{}%
+\contentsline {section}{\numberline {4.3}Prikaz grafa}{11}{}%
+\contentsline {section}{\numberline {4.4}Postavke boja}{14}{}%
+\contentsline {section}{\numberline {4.5}Postavke grafa}{16}{}%
+\contentsline {section}{\numberline {4.6}Odabir frekvencija}{18}{}%
+\contentsline {section}{\numberline {4.7}Postavke evaluacije odabranih frekvencija}{19}{}%
+\contentsline {section}{\numberline {4.8}Općenite informacije}{20}{}%
 \contentsline {chapter}{\numberline {5}Implementacija}{21}{}%
 \contentsline {section}{\numberline {5.1}Korištene biblioteke}{21}{}%
 \contentsline {subsection}{\numberline {5.1.1}OpenGL}{21}{}%
@@ -35,5 +38,4 @@
 \contentsline {section}{\numberline {6.4}Uspoređivanje ćelija pomoću grafova}{38}{}%
 \contentsline {chapter}{\numberline {7}Zaključak}{42}{}%
 \contentsline {chapter}{Literatura}{43}{}%
-\contentsline {chapter}{\numberline {A}Različiti načini crtanja grafova}{45}{}%
-\contentsline {chapter}{\numberline {B}Sustav događaja i signala}{49}{}%
+\contentsline {chapter}{\numberline {8}Sustav događaja i signala}{45}{}%

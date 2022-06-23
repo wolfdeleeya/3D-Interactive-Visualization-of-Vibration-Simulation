@@ -12,11 +12,8 @@ public:
 	template <typename L>
 	void add_member_listener(void(L::* m)(), L* l) { add_listener(std::bind(m, l)); }
 
-	void invoke();
+	void invoke() {
+		for (auto& l : m_listeners)
+			l();
+	}
 };
-
-void Signal::invoke()
-{
-	for (auto& l : m_listeners)
-		l();
-}
