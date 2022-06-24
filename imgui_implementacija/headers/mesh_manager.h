@@ -24,8 +24,6 @@ private:
 
 	Event<unsigned int> on_cell_hovered;
 
-	Signal on_colors_recalculated;
-
 	std::function<unsigned int(GLint, GLint)> m_index_selection_function;
 
 	unsigned int m_scene_view_FBO, m_scene_view_MS_FBO;
@@ -35,9 +33,6 @@ private:
 	glm::ivec2 m_window_dimensions;
 
 public:
-	Signal on_vertices_loaded,
-		on_cell_vertices_loaded;
-
 	MeshManager(ApplicationModel* application_model, EngineModel* engine_model, const glm::ivec2& window_dimensions);
 
 	~MeshManager();
@@ -46,13 +41,7 @@ public:
 
 	void view_mat_changed(const glm::mat4& view);
 
-	void colors_recalculated() { on_colors_recalculated.invoke(); }
-
 	void cell_hovered(unsigned int cell_index) { on_cell_hovered.invoke(cell_index); }
-
-	void load_vertex_positions(const char* path);
-
-	void load_cell_vertices(const char* path);
 
 	void window_size_changed(const glm::ivec2& window_dimensions);
 

@@ -129,6 +129,9 @@
     <ClInclude Include="headers\mesh\abstract_engine_mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\cell_color_calculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\Source\imgui.cpp">
@@ -231,6 +234,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\mesh\axis_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cell_color_calculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

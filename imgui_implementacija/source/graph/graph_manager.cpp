@@ -144,8 +144,6 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineModel* eng
 	m_engine_model->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_cell_plot, this); 
 	m_engine_model->on_selected_frequencies_changed.add_member_listener(&GraphManager::update_relative_plot, this);
 
-	m_application_model->on_limits_mode_toggled.add_listener(std::bind(&GraphManager::limits_mode_toggled, this, std::placeholders::_1));
-
 	m_render_plot_functions = {
 		std::bind(&GraphManager::draw_bar_graph, this, std::placeholders::_1, std::placeholders::_2),
 		std::bind(&GraphManager::draw_line_graph, this, std::placeholders::_1, std::placeholders::_2)
@@ -157,10 +155,13 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineModel* eng
 		std::bind(&GraphManager::draw_relative_comparison, this)
 	};
 
+	m_colormap_legend_functions = {
+	std::bind(&GraphManager::draw_normal_mode_colormap_legend, this),
+	std::bind(&GraphManager::draw_limits_mode_colormap_legend, this)
+	};
+
 	set_render_mode(RenderMode::BARS);
 	set_comparison_mode(ComparisonMode::DEFAULT);
-
-	m_colormap_legend_plot_function = std::bind(&GraphManager::draw_normal_mode_colormap_legend, this);
 
 	hovered_cell_graph_color = { 0.835, 0.662, 0.427 };
 	bar_width = 0.5;
@@ -291,4 +292,10 @@ void GraphManager::switch_comparison_mode()
 {
 	unsigned int next_mode = ((unsigned int)m_current_comparison_mode + 1) % (unsigned int)ComparisonMode::END;
 	set_comparison_mode((ComparisonMode)next_mode);
+}
+
+void GraphManager::draw_legend()
+{
+	unsigned int current_visualization_mode_index = (unsigned int)m_engine_model->current_visualization_mode();
+	m_colormap_legend_functions[current_visualization_mode_index]();
 }

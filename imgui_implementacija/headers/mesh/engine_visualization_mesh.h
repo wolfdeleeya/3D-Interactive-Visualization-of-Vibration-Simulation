@@ -3,6 +3,7 @@
 #include "abstract_engine_mesh.h"
 #include "data_loading.h"
 #include "engine_model.h"
+#include "cell_color_calculator.h"
 
 struct vertex {
 	glm::vec3 position;
@@ -15,7 +16,7 @@ private:
 
 	const static char* SELECTED_CELL_PAR_NAME;
 
-	EngineModel* m_engine_model;
+	CellColorCalculator m_color_calculator;
 
 	unsigned int m_VBO_color;
 
@@ -43,8 +44,6 @@ public:
 	virtual ~EngineVisualizationMesh() override;
 
 	virtual void render() override;
-
-	void on_colors_updated() { setup_color_data(); }
 
 	void set_target_FBO(unsigned int target_FBO) { m_target_FBO = target_FBO; }
 

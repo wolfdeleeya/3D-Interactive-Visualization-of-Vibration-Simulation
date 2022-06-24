@@ -21,25 +21,24 @@ void EngineLineMesh::setup_buffers()
 
 void EngineLineMesh::setup_indices()
 {
+	const std::map<unsigned int, std::vector<unsigned int>>& cell_vertices = m_engine_model->cell_vertices();
+
 	m_indeces_map.clear();
 
 	unsigned int current_index = 0;
 	
-	for (auto& pair : m_cell_vertices) {
-		std::vector<unsigned int>& vertices = pair.second;
+	for (auto& pair : cell_vertices) {
+		const std::vector<unsigned int>& vertices = pair.second;
 		for (unsigned int index : vertices)
 			if (m_indeces_map.find(index) == m_indeces_map.end())
 				m_indeces_map[index] = current_index++;
 	}
 
-	m_indeces = data::create_line_faces(m_cell_vertices, m_indeces_map);
+	m_indeces = data::create_line_faces(cell_vertices, m_indeces_map);
 }
 
 void EngineLineMesh::setup_vertex_data()
 {
-	if (m_cell_vertices.size() == 0 || m_vertex_positions.size() == 0)
-		return;
-
 	load_model_data();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -49,15 +48,17 @@ void EngineLineMesh::setup_vertex_data()
 
 void EngineLineMesh::load_model_data()
 {
-	m_model_data.resize(m_vertex_positions.size());
+	const std::map<unsigned int, glm::vec3>& vertex_positions = m_engine_model->vertex_positions();
 
-	for (auto& pair : m_vertex_positions) {
+	m_model_data.resize(vertex_positions.size());
+
+	for (auto& pair : vertex_positions) {
 		unsigned int index = m_indeces_map[pair.first];
 		m_model_data[index] = pair.second;
 	}
 }
 
-EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO) : AbstractEngineMesh(VERTEX_SHADER, FRAGMENT_SHADER, window_dimensions) 
+EngineLineMesh::EngineLineMesh(EngineModel* engine_model, const glm::ivec2& window_dimensions, unsigned int target_FBO) : AbstractEngineMesh(VERTEX_SHADER, FRAGMENT_SHADER, engine_model, window_dimensions) 
 {
 	m_target_FBO = target_FBO;
 	setup_buffers(); 
@@ -65,7 +66,7 @@ EngineLineMesh::EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int
 
 void EngineLineMesh::render()
 {
-	if (is_empty())
+	if (!m_engine_model->is_model_data_loaded())
 		return;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_target_FBO);

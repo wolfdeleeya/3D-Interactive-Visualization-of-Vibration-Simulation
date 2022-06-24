@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\cell_color_calculator.h" />
     <ClInclude Include="headers\color_helper.h" />
     <ClInclude Include="headers\custom_imgui_widgets.h" />
     <ClInclude Include="headers\graph\graph_manager.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="imgui\Source\implot.cpp" />
     <ClCompile Include="imgui\Source\implot_demo.cpp" />
     <ClCompile Include="imgui\Source\implot_items.cpp" />
+    <ClCompile Include="source\cell_color_calculator.cpp" />
     <ClCompile Include="source\color_helper.cpp" />
     <ClCompile Include="source\custom_imgui_widgets.cpp" />
     <ClCompile Include="source\graph\graph_data.cpp" />

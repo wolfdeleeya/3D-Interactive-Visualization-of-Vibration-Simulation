@@ -2,12 +2,14 @@
 #include <map>
 #include <functional>
 
+#include "signals.h"
+
 template <typename E, typename V>	//E must be enum, V can be any value
 class VariableMap {
 private:
 	std::map<E, V> m_cached_values;
 	std::map<E, V> m_values;
-	std::map<E, std::function<void(void)>> m_on_change_functions;
+	std::map<E, Signal> m_on_change_signals;
 
 	std::function<bool(const V&, const V&)> m_comparator;
 
@@ -15,20 +17,22 @@ private:
 
 public:
 	VariableMap(std::function<bool(const V&, const V&)> comparator, const E& end_enum, 
-		const V& default_value, const std::function<void(void)>& default_on_change_function);
+		const V& default_value);
 
 	bool check_for_changes();
 
 	V* get(const E& e) { return &m_values.at(e); }
+
+	V get_val(const E& e) const { return m_values.at(e); }
 	
 	void set(const E& e, const V& v) { m_values[e] = v; }
 
-	void set_on_change_function(const E& e, const std::function<void(void)>& f) { m_on_change_functions[e] = f; }
+	void add_on_change_listener(const E& e, std::function<void(void)> f) { m_on_change_signals[e].add_listener(f); }
 };
 
 template<typename E, typename V>
 inline VariableMap<E, V>::VariableMap(std::function<bool(const V&, const V&)> comparator, const E& end_enum,
-	const V& default_value, const std::function<void(void)>& default_on_change_function) 
+	const V& default_value) 
 {
 	m_comparator = comparator;
 	m_end_enum = end_enum;
@@ -37,7 +41,6 @@ inline VariableMap<E, V>::VariableMap(std::function<bool(const V&, const V&)> co
 	for (int i = 0; i < num_of_values; ++i) {
 		m_values.insert({ (E) i, default_value });
 		m_cached_values.insert({ (E)i, default_value });
-		m_on_change_functions.insert({ (E)i, default_on_change_function });
 	}
 }
 
@@ -51,7 +54,7 @@ inline bool VariableMap<E, V>::check_for_changes()
 		if (!m_comparator(m_cached_values[(E)i], m_values[(E)i])) {
 			are_changes_pending = true;
 			m_cached_values[(E)i] = m_values[(E)i];
-			m_on_change_functions[(E)i]();
+			m_on_change_signals[(E)i].invoke();
 		}
 	}
 

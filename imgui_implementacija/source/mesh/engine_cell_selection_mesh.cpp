@@ -32,13 +32,16 @@ void EngineCellSelectionMesh::load_model_data()
 {
 	m_model_data.resize(m_indeces.size());
 
-	for (auto& pair : m_cell_vertices) {
+	const std::map<unsigned int, glm::vec3>& vertex_positions = m_engine_model->vertex_positions();
+	const std::map<unsigned int, std::vector<unsigned int>>& cell_vertices = m_engine_model->cell_vertices();
+
+	for (const auto& pair : cell_vertices) {
 		unsigned int cell_index = pair.first;
 		for (unsigned int vert_index : pair.second) {
-			glm::vec3 pos = m_vertex_positions[vert_index];
+			glm::vec3 pos = vertex_positions.at(vert_index);
 
 			unsigned int index = m_indeces_map[cell_index][vert_index];
-
+			
 			m_model_data[index] = { pos, cell_index };
 		}
 	}
@@ -82,23 +85,21 @@ void EngineCellSelectionMesh::setup_buffers()
 void EngineCellSelectionMesh::setup_indices()
 {
 	m_indeces_map.clear();
+	const std::map<unsigned int, std::vector<unsigned int>>& cell_vertices = m_engine_model->cell_vertices();
 
 	unsigned int current_index = 0;
-	for (auto& pair : m_cell_vertices) {
+	for (const auto& pair : cell_vertices) {
 		unsigned int cell_index = pair.first;
 		for (unsigned int vert_index : pair.second) {
 			m_indeces_map[cell_index][vert_index] = current_index++;
 		}
 	}
 
-	m_indeces = data::triangulate_cell_indeces(m_cell_vertices, m_indeces_map);
+	m_indeces = data::triangulate_cell_indeces(cell_vertices, m_indeces_map);
 }
 
 void EngineCellSelectionMesh::setup_vertex_data()
 {
-	if (m_cell_vertices.size() == 0 || m_vertex_positions.size() == 0)
-		return;
-
 	load_model_data();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -106,8 +107,8 @@ void EngineCellSelectionMesh::setup_vertex_data()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-EngineCellSelectionMesh::EngineCellSelectionMesh(const glm::ivec2& window_dimensions, const glm::ivec2& framebuffer_dimensions):
-	AbstractEngineMesh(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER, window_dimensions)
+EngineCellSelectionMesh::EngineCellSelectionMesh(EngineModel* engine_model, const glm::ivec2& window_dimensions, const glm::ivec2& framebuffer_dimensions):
+	AbstractEngineMesh(CELL_SELECT_VERT_SHADER, CELL_SELECT_FRAG_SHADER, engine_model, window_dimensions)
 {
 	glGenFramebuffers(1, &m_FBO);
 
@@ -127,7 +128,7 @@ EngineCellSelectionMesh::~EngineCellSelectionMesh()
 
 void EngineCellSelectionMesh::render()
 {
-	if (is_empty())
+	if (!m_engine_model->is_model_data_loaded())
 		return;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);

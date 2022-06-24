@@ -21,7 +21,7 @@ private:
 
 	void load_model_data();
 public:
-	EngineLineMesh(const glm::ivec2& window_dimensions, unsigned int target_FBO = 0);
+	EngineLineMesh(EngineModel* engine_model, const glm::ivec2& window_dimensions, unsigned int target_FBO = 0);
 
 	virtual void render() override;
 

@@ -18,15 +18,12 @@ private:
 	
 	float m_rotation_sensitivity;
 
-	bool m_is_limits_mode_active;
-
 	VariableMap<ColorVariables, glm::vec3> m_color_variables;
 
 	const static float min_camera_distance, max_camera_distance;
 
 public:
 	Event<const glm::mat4&> on_view_mat_changed;
-	Event<bool> on_limits_mode_toggled;
 
 	ApplicationModel();
 
@@ -42,11 +39,7 @@ public:
 
 	void handle_mouse_dragged(const glm::ivec2& mouse_delta);
 
-	void set_is_limits_mode_active(bool value);
-
 	void refresh_camera() { on_view_mat_changed.invoke(m_camera->view_mat()); }
-
-	bool is_limits_mode_active() { return m_is_limits_mode_active; }
 
 	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }
 

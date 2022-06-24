@@ -42,27 +42,20 @@ App::App(int init_width, int init_height) {
 
 	m_appliction_model->on_view_mat_changed.add_member_listener(&MeshManager::view_mat_changed, m_mesh_manager);
 
-	m_appliction_model->on_limits_mode_toggled.add_member_listener(&EngineModel::on_limits_mode_toggled, m_engine_model);
-
-	m_engine_model->on_colors_recalculated.add_member_listener(&MeshManager::colors_recalculated, m_mesh_manager);
 	m_engine_model->on_cell_hovered.add_member_listener(&MeshManager::cell_hovered, m_mesh_manager);
 
 	m_imgui_manager->on_scene_view_scale_changed.add_member_listener(&MeshManager::window_size_changed, m_mesh_manager);
 
-	m_imgui_manager->on_load_vertex_positions.add_member_listener(&MeshManager::load_vertex_positions, m_mesh_manager);
+	m_imgui_manager->on_load_vertex_positions.add_member_listener(&EngineModel::load_vertex_positions, m_engine_model);
 	m_imgui_manager->on_load_vertex_positions.add_member_listener(&ApplicationModel::on_vertex_positions_loaded, m_appliction_model);
 
 	m_imgui_manager->on_load_cell_vertices.add_member_listener(&EngineModel::load_cell_vertices, m_engine_model);
-	m_imgui_manager->on_load_cell_vertices.add_member_listener(&MeshManager::load_cell_vertices, m_mesh_manager);
 
 	m_imgui_manager->on_load_cell_stats.add_member_listener(&EngineModel::load_cell_stats, m_engine_model);
 
 	m_imgui_manager->on_load_frequency_limits.add_member_listener(&EngineModel::load_frequency_limits, m_engine_model);
 
 	m_imgui_manager->on_scene_view_focus_changed.add_member_listener(&EngineModel::on_scene_view_focus_changed, m_engine_model);
-
-	m_mesh_manager->on_vertices_loaded.add_member_listener(&EngineModel::calculate_color, m_engine_model);		//notify engine data to recalculate colors if it's loaded before cells and vertices
-	m_mesh_manager->on_cell_vertices_loaded.add_member_listener(&EngineModel::calculate_color, m_engine_model);
 
 	m_appliction_model->refresh_camera();
 }

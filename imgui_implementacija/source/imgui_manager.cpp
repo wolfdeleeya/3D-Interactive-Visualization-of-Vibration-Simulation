@@ -36,7 +36,8 @@ void ImGuiManager::draw_color_selection_widget()
 		ImGui::EndGroup();
 
 		if (m_engine_model->are_stats_loaded()) {
-			bool is_limits_mode_active = m_application_model->is_limits_mode_active();
+			EngineModel::VisualizationMode current_visualization_mode = m_engine_model->current_visualization_mode();
+			bool is_limits_mode_active = current_visualization_mode == EngineModel::VisualizationMode::LIMITS;
 
 			if (m_engine_model->are_frequenzy_limits_loaded()) {
 				
@@ -44,7 +45,7 @@ void ImGuiManager::draw_color_selection_widget()
 				ImGui::SameLine();
 
 				if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "Normal Mode")) {
-					m_application_model->set_is_limits_mode_active(!is_limits_mode_active);
+					m_engine_model->set_next_visualization_mode();
 				}
 			}
 
@@ -184,7 +185,9 @@ void ImGuiManager::draw_frequency_selection_widget()
 	if (ImGui::Begin("Frequency Selection")) {
 		if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
 		{
-			bool is_limits_mode_active = m_application_model->is_limits_mode_active();
+			EngineModel::VisualizationMode current_visualization_mode = m_engine_model->current_visualization_mode();
+			bool is_limits_mode_active = current_visualization_mode == EngineModel::VisualizationMode::LIMITS;
+
 			const std::vector<std::string>& frequency_names = is_limits_mode_active ? m_frequencies_with_limits : m_frequenzy_names;
 
 			std::unique_ptr<bool> selected(new bool[frequency_names.size()]);
@@ -213,7 +216,11 @@ void ImGuiManager::draw_frequency_selection_evaluation_settings_widget()
 
 	if (num_of_selected_frequencies > 0) {
 		if (ImGui::Begin("Frequency Selection Evaluation Settings")) {
-			if (!m_application_model->is_limits_mode_active()) {
+			
+			EngineModel::VisualizationMode current_visualization_mode = m_engine_model->current_visualization_mode();
+			bool is_limits_mode_active = current_visualization_mode == EngineModel::VisualizationMode::LIMITS;
+
+			if (!is_limits_mode_active) {
 				draw_limits_selection();
 				if (num_of_selected_frequencies > 1)
 					draw_function_selection();

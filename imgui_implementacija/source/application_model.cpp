@@ -5,21 +5,13 @@
 
 const float ApplicationModel::min_camera_distance = 0.5, ApplicationModel::max_camera_distance = 5;
 
-void ApplicationModel::set_is_limits_mode_active(bool value)
-{
-	m_is_limits_mode_active = value;
-	on_limits_mode_toggled.invoke(value);
-}
-
 ApplicationModel::ApplicationModel():
-	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 }, []() {})
+	m_color_variables([](const glm::vec3& c1, const glm::vec3& c2) { return are_equal(c1, c2); }, ColorVariables::END, { 0,0,0 })
 {
 	m_rotation_sensitivity = 1;
 	m_scroll_sensitivity = 0.05;
 
 	m_camera = new Camera(max_camera_distance, glm::vec3(0));
-
-	m_is_limits_mode_active = false;
 }
 
 ApplicationModel::~ApplicationModel()

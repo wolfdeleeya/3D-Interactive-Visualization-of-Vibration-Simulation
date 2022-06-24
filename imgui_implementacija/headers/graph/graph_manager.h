@@ -10,6 +10,7 @@ class GraphManager {
 
 	typedef std::function<void(const GraphData&, int)> render_plot_function;
 	typedef std::function<void(void)> comparison_plot_function;
+	typedef std::function<void(void)> colormap_legend_function;
 
 private:
 	ApplicationModel* m_application_model;
@@ -23,8 +24,7 @@ private:
 
 	std::vector<render_plot_function> m_render_plot_functions;
 	std::vector <comparison_plot_function> m_comparison_plot_functions;
-
-	std::function<void(void)> m_colormap_legend_plot_function;
+	std::vector<colormap_legend_function> m_colormap_legend_functions;
 
 	unsigned int m_current_referent_cell_index;
 
@@ -71,12 +71,7 @@ public:
 
 	void switch_comparison_mode();
 
-	void draw_legend() { m_colormap_legend_plot_function(); }
-
-	void limits_mode_toggled(bool is_active) 
-	{
-		m_colormap_legend_plot_function = std::bind((is_active ? &GraphManager::draw_limits_mode_colormap_legend : &GraphManager::draw_normal_mode_colormap_legend), this);
-	}
+	void draw_legend();
 
 	RenderMode current_render_mode() { return m_current_render_mode; }
 

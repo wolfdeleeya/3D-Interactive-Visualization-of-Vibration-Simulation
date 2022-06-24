@@ -35,7 +35,7 @@ protected:
 	virtual void setup_vertex_data() override;
 
 public:
-	EngineCellSelectionMesh(const glm::ivec2& window_dimensions, const glm::ivec2& framebuffer_dimensions);
+	EngineCellSelectionMesh(EngineModel* engine_model, const glm::ivec2& window_dimensions, const glm::ivec2& framebuffer_dimensions);
 
 	virtual ~EngineCellSelectionMesh() override;
 

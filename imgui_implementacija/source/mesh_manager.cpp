@@ -23,13 +23,12 @@ MeshManager::MeshManager(ApplicationModel* application_model, EngineModel* engin
 	setup_scene_view_framebuffer(window_dimensions);
 
 	EngineVisualizationMesh* evm = new EngineVisualizationMesh(m_engine_model, window_dimensions, m_scene_view_MS_FBO);
-	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(window_dimensions, { 200, 200 });
-	EngineLineMesh* elm = new EngineLineMesh(window_dimensions, m_scene_view_MS_FBO);
+	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(m_engine_model, window_dimensions, { 200, 200 });
+	EngineLineMesh* elm = new EngineLineMesh(m_engine_model, window_dimensions, m_scene_view_MS_FBO);
 
 	m_axis_mesh = new AxisMesh(window_dimensions, m_scene_view_MS_FBO);
 
 	on_cell_hovered.add_member_listener(&EngineVisualizationMesh::cell_hovered, evm);
-	on_colors_recalculated.add_member_listener(&EngineVisualizationMesh::on_colors_updated, evm);
 
 	m_index_selection_function = std::bind(&EngineCellSelectionMesh::get_index_at_pos, ecm, std::placeholders::_1, std::placeholders::_2);
 
@@ -91,24 +90,6 @@ void MeshManager::view_mat_changed(const glm::mat4& view)
 		mesh->set_view(view);
 
 	m_axis_mesh->set_view(view);
-}
-
-void MeshManager::load_vertex_positions(const char* path)
-{
-	const auto& vertex_positions = data::load_vertices(path);
-	for (AbstractEngineMesh* mesh : m_engine_meshes)
-		mesh->set_vertex_positions(vertex_positions);
-
-	on_vertices_loaded.invoke();
-}
-
-void MeshManager::load_cell_vertices(const char* path)
-{
-	const auto& cell_vertices = data::load_cells(path);
-	for (AbstractEngineMesh* mesh : m_engine_meshes)
-		mesh->set_cell_vertices(cell_vertices);
-
-	on_cell_vertices_loaded.invoke();
 }
 
 void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
