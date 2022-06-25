@@ -26,23 +26,22 @@ MeshManager::MeshManager(ApplicationModel* application_model, EngineModel* engin
 	EngineCellSelectionMesh* ecm = new EngineCellSelectionMesh(m_engine_model, window_dimensions, { 200, 200 });
 	EngineLineMesh* elm = new EngineLineMesh(m_engine_model, window_dimensions, m_scene_view_MS_FBO);
 
-	m_axis_mesh = new AxisMesh(window_dimensions, m_scene_view_MS_FBO);
+	AxisMesh* axis_mesh = new AxisMesh(window_dimensions, m_scene_view_MS_FBO);
 
 	on_cell_hovered.add_member_listener(&EngineVisualizationMesh::cell_hovered, evm);
 
 	m_index_selection_function = std::bind(&EngineCellSelectionMesh::get_index_at_pos, ecm, std::placeholders::_1, std::placeholders::_2);
 
-	m_engine_meshes.push_back(evm);
-	m_engine_meshes.push_back(ecm);
-	m_engine_meshes.push_back(elm);
+	m_meshes.push_back(evm);
+	m_meshes.push_back(ecm);
+	m_meshes.push_back(elm);
+	m_meshes.push_back(axis_mesh);
 }
 
 MeshManager::~MeshManager()
 {
-	for (AbstractEngineMesh* mesh : m_engine_meshes)
+	for (AbstractMesh* mesh : m_meshes)
 		delete mesh;
-
-	delete m_axis_mesh;
 
 	glDeleteFramebuffers(1, &m_scene_view_FBO);
 	glDeleteFramebuffers(1, &m_scene_view_MS_FBO);
@@ -86,10 +85,8 @@ void MeshManager::setup_scene_view_framebuffer(const glm::ivec2& scene_view_dime
 
 void MeshManager::view_mat_changed(const glm::mat4& view)
 {
-	for (AbstractMesh* mesh : m_engine_meshes)
+	for (AbstractMesh* mesh : m_meshes)
 		mesh->set_view(view);
-
-	m_axis_mesh->set_view(view);
 }
 
 void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
@@ -98,10 +95,8 @@ void MeshManager::window_size_changed(const glm::ivec2& window_dimensions)
 	
 	setup_scene_view_framebuffer(window_dimensions);
 	
-	for (AbstractEngineMesh* mesh : m_engine_meshes)
+	for (AbstractMesh* mesh : m_meshes)
 		mesh->update_window_size(window_dimensions);
-
-	m_axis_mesh->update_window_size(window_dimensions);
 }
 
 void MeshManager::render()
@@ -115,9 +110,7 @@ void MeshManager::render()
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
 
-	m_axis_mesh->render();
-
-	for (AbstractEngineMesh* mesh : m_engine_meshes)
+	for (AbstractMesh* mesh : m_meshes)
 		mesh->render(); 
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_scene_view_MS_FBO); 

@@ -18,9 +18,7 @@ private:
 	ApplicationModel* m_application_model;
 	EngineModel* m_engine_model;
 
-	std::vector<AbstractEngineMesh*> m_engine_meshes;
-
-	AxisMesh* m_axis_mesh;
+	std::vector<AbstractMesh*> m_meshes;
 
 	Event<unsigned int> on_cell_hovered;
 
@@ -31,8 +29,9 @@ private:
 	unsigned int m_scene_view_MS_RBO_depth;
 
 	glm::ivec2 m_window_dimensions;
-
 public:
+	Event<const glm::vec3&> on_engine_center_calculated;
+
 	MeshManager(ApplicationModel* application_model, EngineModel* engine_model, const glm::ivec2& window_dimensions);
 
 	~MeshManager();

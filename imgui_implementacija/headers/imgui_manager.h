@@ -66,7 +66,7 @@ private:
 
 	void draw_graph_settings_widget();
 
-	void draw_comparison_graph_settings() { m_comparison_graph_settings_functions[unsigned int(m_graph_manager->current_comparison_mode())](); }
+	void draw_comparison_graph_settings() { m_comparison_graph_settings_functions[(unsigned int)m_application_model->current_graph_comparison_mode()](); }
 
 	//specific comparison graph settings
 
@@ -74,7 +74,7 @@ private:
 
 	void draw_relative_comparison_graph_settings();
 
-	void draw_render_graph_settings() { m_render_graph_settings_functions[unsigned int(m_graph_manager->current_render_mode())](); }
+	void draw_render_graph_settings() { m_render_graph_settings_functions[(unsigned int)m_application_model->current_graph_render_mode()](); }
 
 	//specific graph render settings methods
 

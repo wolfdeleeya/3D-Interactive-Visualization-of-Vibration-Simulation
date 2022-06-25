@@ -2,6 +2,7 @@
 
 #include "engine_model.h"
 #include "abstract_mesh.h"
+#include "glm/gtx/transform.hpp"
 
 class AbstractEngineMesh : public AbstractMesh {
 protected:

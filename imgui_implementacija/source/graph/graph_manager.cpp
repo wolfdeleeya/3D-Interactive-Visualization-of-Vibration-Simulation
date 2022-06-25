@@ -3,23 +3,12 @@
 #include "graph/graph_manager.h"
 #include "implot_helper.h"
 
-const std::vector<const char*> GraphManager::RENDER_MODE_LABELS = {
-	"BARS", 
-	"LINES"
-};
-
-const std::vector<const char*> GraphManager::COMPARISON_MODE_LABELS = {
-	"DEFAULT",
-	"SUBPLOTS",
-	"RELATIVE"
-};
-
 void GraphManager::draw_bar_graph(const GraphData& gd, int cell_index)
 {
 	if (cell_index >= 0)
-		MyImPlot::PlotBars(gd, cell_index,bar_width);
+		MyImPlot::PlotBars(gd, cell_index, m_application_model->graph_bar_width);
 	else
-		MyImPlot::PlotBarGroups(gd, bar_width);
+		MyImPlot::PlotBarGroups(gd, m_application_model->graph_bar_width);
 }
 
 void GraphManager::draw_line_graph(const GraphData& gd, int cell_index)
@@ -45,7 +34,7 @@ void GraphManager::draw_default_comparison()
 		if (m_graph_data.positions.size() > 0) {
 			ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
 
-			render_plot_function& render_function = m_render_plot_functions[(unsigned int)m_current_render_mode];
+			render_plot_function& render_function = m_render_plot_functions[(unsigned int) m_application_model->current_graph_render_mode()];
 			render_function(m_graph_data, -1);
 		}
 
@@ -57,6 +46,8 @@ void GraphManager::draw_subplot_comparison()
 {
 	unsigned int num_of_selected_cells = m_engine_model->num_of_selected_cells();
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
+
+	unsigned int num_of_columns = m_application_model->graph_num_of_columns;
 
 	unsigned int num_of_rows = num_of_selected_cells / num_of_columns;
 	num_of_rows = num_of_rows < 1 ? 1 : num_of_rows;	//make sure that the number of rows is not 0
@@ -73,7 +64,7 @@ void GraphManager::draw_subplot_comparison()
 				if (m_graph_data.positions.size() > 0) {
 					ImPlot::SetupAxisTicks(ImAxis_X1, &m_graph_data.positions[0], num_of_groups, &m_graph_data.group_labels[0]);
 
-					render_plot_function& render_function = m_render_plot_functions[(unsigned int)m_current_render_mode];
+					render_plot_function& render_function = m_render_plot_functions[(unsigned int) m_application_model->current_graph_render_mode()];
 					render_function(m_graph_data, i);
 				}
 
@@ -89,10 +80,12 @@ void GraphManager::draw_relative_comparison()
 	unsigned int num_of_groups = m_cached_relative_graph_data.group_labels.size();
 	unsigned int num_of_items = m_cached_relative_graph_data.item_labels.size();
 	
-	std::string title = "Selected Cell Frequencies - Relative Display - ";
-	std::string referent_cell_title = std::string("Relative To Cell ") + std::to_string(m_current_referent_cell_index);
+	unsigned int current_referent_cell_index = m_application_model->current_graph_referant_cell_index();
 
-	title += m_engine_model->does_cell_exist(m_current_referent_cell_index) ? referent_cell_title : "No Selected Referent Cell";
+	std::string title = "Selected Cell Frequencies - Relative Display - ";
+	std::string referent_cell_title = std::string("Relative To Cell ") + std::to_string(current_referent_cell_index);
+
+	title += m_engine_model->does_cell_exist(current_referent_cell_index) ? referent_cell_title : "No Selected Referent Cell";
 
 	if (ImPlot::BeginPlot(title.c_str(), {-1, -1})) {
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
@@ -101,7 +94,7 @@ void GraphManager::draw_relative_comparison()
 		if (m_graph_data.positions.size() > 0) {
 			ImPlot::SetupAxisTicks(ImAxis_X1, &m_cached_relative_graph_data.positions[0], num_of_groups, &m_cached_relative_graph_data.group_labels[0]);
 
-			render_plot_function& render_function = m_render_plot_functions[(unsigned int)m_current_render_mode];
+			render_plot_function& render_function = m_render_plot_functions[(unsigned int)m_application_model->current_graph_render_mode()];
 			render_function(m_cached_relative_graph_data, -1);
 		}
 
@@ -132,6 +125,8 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineModel* eng
 	m_application_model = application_model;
 	m_engine_model = engine_model;
 
+	m_application_model->on_graph_referent_cell_changed.add_member_listener(&GraphManager::update_relative_plot, this);
+
 	m_engine_model->on_cell_hovered.add_listener([this](unsigned int id) { this->update_cell_plot(); });
 	m_engine_model->on_cell_hovered.add_listener([this](unsigned int id) { this->update_relative_plot(); });
 
@@ -159,13 +154,6 @@ GraphManager::GraphManager(ApplicationModel* application_model, EngineModel* eng
 	std::bind(&GraphManager::draw_normal_mode_colormap_legend, this),
 	std::bind(&GraphManager::draw_limits_mode_colormap_legend, this)
 	};
-
-	set_render_mode(RenderMode::BARS);
-	set_comparison_mode(ComparisonMode::DEFAULT);
-
-	hovered_cell_graph_color = { 0.835, 0.662, 0.427 };
-	bar_width = 0.5;
-	num_of_columns = 1;
 }
 
 void GraphManager::update_cell_plot()
@@ -174,10 +162,6 @@ void GraphManager::update_cell_plot()
 		return;
 
 	unsigned int num_of_selected_cells = m_engine_model->num_of_selected_cells();
-	
-	if (num_of_selected_cells > 0)
-		num_of_columns = num_of_columns > num_of_selected_cells ? num_of_selected_cells : num_of_columns;
-	
 
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
@@ -200,7 +184,7 @@ void GraphManager::update_cell_plot()
 
 	//add hovered cell to the list
 	if (m_engine_model->is_valid_cell_hovered()) {
-		colors.push_back(hovered_cell_graph_color);
+		colors.push_back(m_application_model->hovered_cell_graph_color);
 
 		std::pair<std::string, std::vector<float>> data_entry;
 
@@ -223,14 +207,16 @@ void GraphManager::update_relative_plot()
 	std::vector<std::pair<std::string, std::vector<float>>> item_data;
 	std::vector<glm::vec3> colors;
 
+	unsigned int current_referent_cell_index = m_application_model->current_graph_referant_cell_index();
+
 	std::vector<unsigned int> selected_cells = m_engine_model->selected_cells();
 
 	unsigned int n_selected_cells = selected_cells.size();
 
-	std::vector<float> referent_cell_data = m_engine_model->get_values_for_cell(m_current_referent_cell_index);
+	std::vector<float> referent_cell_data = m_engine_model->get_values_for_cell(current_referent_cell_index);
 
 	for (unsigned int i = 0; i < n_selected_cells; ++i) {
-		if (selected_cells[i] == m_current_referent_cell_index) {
+		if (selected_cells[i] == current_referent_cell_index) {
 			continue;
 		}
 
@@ -251,7 +237,7 @@ void GraphManager::update_relative_plot()
 
 	//add hovered cell to the list
 	if (m_engine_model->is_valid_cell_hovered()) {
-		colors.push_back(hovered_cell_graph_color);
+		colors.push_back(m_application_model->hovered_cell_graph_color);
 
 		std::pair<std::string, std::vector<float>> data_entry;
 
@@ -270,28 +256,10 @@ void GraphManager::update_relative_plot()
 	m_cached_relative_graph_data = GraphData(m_engine_model->selected_frequencies_names(), item_data, colors);
 }
 
-void GraphManager::set_referent_cell(unsigned int new_referent_cell_index)
-{
-	m_current_referent_cell_index = new_referent_cell_index;
-	update_relative_plot();
-}
-
 void GraphManager::draw_cell_plot()
 {
-	comparison_plot_function current_comparison_plot_function = m_comparison_plot_functions[(unsigned int)m_current_comparison_mode];
+	comparison_plot_function current_comparison_plot_function = m_comparison_plot_functions[(unsigned int)m_application_model->current_graph_comparison_mode()];
 	current_comparison_plot_function();
-}
-
-void GraphManager::switch_render_mode()
-{
-	unsigned int next_mode = ((unsigned int)m_current_render_mode + 1) % (unsigned int)RenderMode::END;
-	set_render_mode((RenderMode)next_mode);
-}
-
-void GraphManager::switch_comparison_mode()
-{
-	unsigned int next_mode = ((unsigned int)m_current_comparison_mode + 1) % (unsigned int)ComparisonMode::END;
-	set_comparison_mode((ComparisonMode)next_mode);
 }
 
 void GraphManager::draw_legend()

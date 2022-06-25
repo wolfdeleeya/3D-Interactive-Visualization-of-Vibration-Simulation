@@ -326,21 +326,21 @@ void ImGuiManager::draw_graph_settings_widget()
 
 		ImGui::Text("Graph Rendering Mode:");
 		ImGui::SameLine();
-		if (ImGui::Button(m_graph_manager->current_render_mode_label())) {
-			m_graph_manager->switch_render_mode();
+		if (ImGui::Button(m_application_model->current_graph_render_mode_label())) {
+			m_application_model->switch_graph_render_mode();
 		}
 
 		draw_render_graph_settings();
 
 		ImGui::Text("Comparison Mode:");
 		ImGui::SameLine();
-		if (ImGui::Button(m_graph_manager->current_comparison_mode_label())) {
-			m_graph_manager->switch_comparison_mode();
+		if (ImGui::Button(m_application_model->current_graph_comparison_mode_label())) {
+			m_application_model->switch_graph_comparison_mode();
 		}
 
 		draw_comparison_graph_settings();
 
-		draw_color_selection("Hovered Cell Graph Color", m_graph_manager->hovered_cell_graph_color);
+		draw_color_selection("Hovered Cell Graph Color", m_application_model->hovered_cell_graph_color);
 	}
 	ImGui::End();
 }
@@ -351,7 +351,7 @@ void ImGuiManager::draw_subplots_comparison_graph_settings()
 
 	//if the number of selected cells is greater than 1, than the grid of subplots will have more than 1 subplot
 	if (num_of_selected_cells > 1)
-		ImGui::DragInt("Number Of Colums", &m_graph_manager->num_of_columns, 0.1, 1, num_of_selected_cells);
+		ImGui::DragInt("Number Of Colums", &m_application_model->graph_num_of_columns, 0.1, 1, num_of_selected_cells);
 }
 
 void ImGuiManager::draw_relative_comparison_graph_settings()
@@ -377,7 +377,7 @@ void ImGuiManager::draw_relative_comparison_graph_settings()
 					selected = 0;
 				else
 					selected = current_cell_index;
-				m_graph_manager->set_referent_cell(selected);
+				m_application_model->set_graph_referent_cell(selected);
 			}
 		}
 		ImGui::TreePop();
@@ -386,7 +386,7 @@ void ImGuiManager::draw_relative_comparison_graph_settings()
 
 void ImGuiManager::draw_bar_graph_settings()
 {
-	ImGui::DragFloat("Bar Width", &m_graph_manager->bar_width, 0.05, 0, 1);
+	ImGui::DragFloat("Bar Width", &m_application_model->graph_bar_width, 0.05, 0, 1);
 }
 
 void ImGuiManager::draw_colormap_legend_widget()
