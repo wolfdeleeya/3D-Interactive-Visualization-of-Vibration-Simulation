@@ -63,6 +63,8 @@ public:
 
 	void switch_graph_comparison_mode();
 
+	void on_vertex_positions_loaded(const char* path);
+
 	void refresh_camera() { on_view_mat_changed.invoke(m_camera->view_mat()); }
 
 	glm::vec3* get_color(ColorVariables e) { return m_color_variables.get(e); }

@@ -9,7 +9,7 @@ const std::vector<const char*> ApplicationModel::GRAPH_RENDER_MODE_LABELS = {
 };
 
 const std::vector<const char*> ApplicationModel::GRAPH_COMPARISON_MODE_LABELS = {
-	"DEFAULT",
+	"GENERAL",
 	"SUBPLOTS",
 	"RELATIVE"
 };
@@ -88,4 +88,34 @@ void ApplicationModel::switch_graph_comparison_mode()
 {
 	unsigned int next_mode = ((unsigned int)m_current_graph_comparison_mode + 1) % (unsigned int)GraphComparisonMode::END;
 	set_graph_comparison_mode((GraphComparisonMode)next_mode);
+}
+
+void ApplicationModel::on_vertex_positions_loaded(const char* path)				//set camera to point at average position of vertices
+{
+	const auto& vertices = data::load_vertices(path);
+
+	float min_x, max_x, min_y, max_y, min_z, max_z;		//calculate bounding box
+
+	min_x = min_y = min_z = std::numeric_limits<float>::max();
+	max_x = max_y = max_z = std::numeric_limits<float>::min();
+
+	for (const auto& pair : vertices)
+	{
+		glm::vec3 v = pair.second;
+
+		min_x = v.x < min_x ? v.x : min_x;
+		max_x = v.x > max_x ? v.x : max_x;
+
+		min_y = v.y < min_y ? v.y : min_y;
+		max_y = v.y > max_y ? v.y : max_y;
+
+		min_z = v.z < min_z ? v.z : min_z;
+		max_z = v.z > max_z ? v.z : max_z;
+	}
+
+	glm::vec3 box_center((min_x + max_x) / 2, (min_y + max_y) / 2, (min_z + max_z) / 2);
+
+	m_camera->set_target(box_center);
+
+	on_view_mat_changed.invoke(m_camera->view_mat());
 }

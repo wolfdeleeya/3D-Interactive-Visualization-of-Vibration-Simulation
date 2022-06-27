@@ -14,7 +14,7 @@ class ImGuiManager {
 private:
 	GLFWwindow* m_window; 
 
-	std::vector<std::string> m_frequenzy_names;
+	std::vector<std::string> m_frequency_names;
 	std::vector<std::string> m_frequencies_with_limits;
 
 	std::string m_selected_frequencies_text;

@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{14}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -52,6 +52,23 @@ Open{G}{L} - {T}he {I}ndustry {S}tandard for {H}igh {P}erformance {G}raphics.
 \newblock \url{https://www.opengl.org/}.
 \newblock [Pristupljeno 15. lipnja 2022].
 
+\bibitem[Harrison(2004)]{harrison2004vehicle}
+M.~Harrison.
+\newblock \emph{Vehicle Refinement: Controlling Noise and Vibration in Road
+  Vehicles}.
+\newblock Elsevier Butterworth-Heinemann, 2004.
+\newblock ISBN 9780750661294.
+\newblock URL \url{https://books.google.hr/books?id=SppqPydUAFQC}.
+
+\bibitem[Inselberg i Dimsdale(1990)]{inselberg1990}
+Alfred Inselberg i Bernard Dimsdale.
+\newblock Parallel coordinates: A tool for visualizing multi-dimensional
+  geometry.
+\newblock U \emph{Proceedings of the 1st Conference on Visualization '90}, VIS
+  '90, stranica 361–378, Washington, DC, USA, 1990. IEEE Computer Society
+  Press.
+\newblock ISBN 0818620838.
+
 \bibitem[Matkovi{\'c} et~al.(2021)Matkovi{\'c}, Splechtna, Gra{\v{c}}anin,
   Todorovi{\'c}, Goja, Bedi{\'c}, i Hauser]{matkovic2021getting}
 Kre{\v{s}}imir Matkovi{\'c}, Rainer Splechtna, Denis Gra{\v{c}}anin, Goran
@@ -59,6 +76,15 @@ Kre{\v{s}}imir Matkovi{\'c}, Rainer Splechtna, Denis Gra{\v{c}}anin, Goran
 \newblock Getting insight into noise, vibration, and harshness simulation data.
 \newblock U \emph{2021 Winter Simulation Conference (WSC)}, stranice 1--12.
   IEEE, 2021.
+
+\bibitem[Munzner(2009)]{munzer2009}
+Tamara Munzner.
+\newblock A nested model for visualization design and validation.
+\newblock \emph{IEEE Transactions on Visualization and Computer Graphics},
+  15\penalty0 (6):\penalty0 921–928, nov 2009.
+\newblock ISSN 1077-2626.
+\newblock \doi{10.1109/TVCG.2009.111}.
+\newblock URL \url{https://doi.org/10.1109/TVCG.2009.111}.
 
 \bibitem[Unwin(2020)]{Unwin2020Why}
 Antony Unwin.

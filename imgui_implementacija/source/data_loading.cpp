@@ -111,11 +111,11 @@ namespace data {
 		return result;
 	}
 
-	std::map<unsigned int, cell_stats> load_cell_stats(const char* path, std::vector<std::string>& frequenzy_names) {
+	std::map<unsigned int, cell_stats> load_cell_stats(const char* path, std::vector<std::string>& frequency_names) {
 		int valid_line_count = 0;
 		std::ifstream file(path);
 		std::string line;
-		frequenzy_names.clear();
+		frequency_names.clear();
 		std::map<unsigned int, cell_stats> result;
 	
 		while (std::getline(file, line)) {
@@ -130,7 +130,7 @@ namespace data {
 				int column = 0;
 				while (std::getline(line_stream, string_token, ',')) {
 					if (column >= 8)
-						frequenzy_names.push_back(string_token);
+						frequency_names.push_back(string_token);
 					++column;
 				}
 			}
@@ -161,7 +161,7 @@ namespace data {
 
 				int column_index = 0;							//skip first 8
 
-				while (std::getline(line_stream, string_token, ',')) {	//load remaining frequenzy data
+				while (std::getline(line_stream, string_token, ',')) {	//load remaining frequency data
 					stats.freq_data.push_back(std::stof(string_token));
 					++column_index;
 				}
@@ -173,7 +173,7 @@ namespace data {
 		return result;
 	}
 	
-	std::map<std::string, glm::vec2> load_frequenzy_limits(const char* path, std::vector<std::string>& frequencies_names)		//currently reads only primitive limits format
+	std::map<std::string, glm::vec2> load_frequency_limits(const char* path, std::vector<std::string>& frequencies_names)		//currently reads only primitive limits format
 	{
 		frequencies_names.clear();
 

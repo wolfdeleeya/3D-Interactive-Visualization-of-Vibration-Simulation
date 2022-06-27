@@ -27,7 +27,7 @@ void GraphManager::draw_default_comparison()
 	unsigned int num_of_groups = m_graph_data.group_labels.size();
 	unsigned int num_of_items = m_graph_data.item_labels.size();
 
-	if (ImPlot::BeginPlot("Selected Cell Frequencies - Default Display", { -1, -1 })) {
+	if (ImPlot::BeginPlot("Selected Cell Frequencies - General Display", { -1, -1 })) {
 		ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
 		ImPlot::SetupAxes("Frequency", "Vibrations", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
 
@@ -117,7 +117,7 @@ void GraphManager::draw_limits_mode_colormap_legend()
 void GraphManager::draw_normal_mode_colormap_legend()
 {
 	glm::vec2 limits = m_engine_model->get_current_normal_mode_limits();
-	MyImPlot::ColormapScale("Normal Mode Colormap", *(m_engine_model->get_gradient(EngineModel::GradientVariables::NORMAL_MODE_GRADIENT)), limits.x, limits.y, 10, { 0, -1 }, true);
+	MyImPlot::ColormapScale("General Mode Colormap", *(m_engine_model->get_gradient(EngineModel::GradientVariables::NORMAL_MODE_GRADIENT)), limits.x, limits.y, 10, { 0, -1 }, true);
 }
 
 GraphManager::GraphManager(ApplicationModel* application_model, EngineModel* engine_model) : m_graph_data({}, {}, {}), m_cached_relative_graph_data({}, {}, {})

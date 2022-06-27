@@ -3,39 +3,37 @@
 \contentsline {chapter}{\numberline {1}Uvod}{1}{}%
 \contentsline {chapter}{\numberline {2}Pregled područja}{2}{}%
 \contentsline {chapter}{\numberline {3}Analiza zadatka i zahtjeva}{4}{}%
-\contentsline {section}{\numberline {3.1}Identificirani zadaci}{4}{}%
-\contentsline {section}{\numberline {3.2}Identificirani zahtjevi}{4}{}%
-\contentsline {chapter}{\numberline {4}Dizajn vizualizacije}{6}{}%
-\contentsline {section}{\numberline {4.1}Načini rada alata}{6}{}%
-\contentsline {subsection}{\numberline {4.1.1}Normalni način rada}{7}{}%
-\contentsline {subsection}{\numberline {4.1.2}Način rada sa preddefiniranim ograničenjima}{7}{}%
-\contentsline {section}{\numberline {4.2}Prikaz motora}{8}{}%
-\contentsline {section}{\numberline {4.3}Prikaz grafa}{11}{}%
-\contentsline {section}{\numberline {4.4}Postavke boja}{14}{}%
-\contentsline {section}{\numberline {4.5}Postavke grafa}{16}{}%
-\contentsline {section}{\numberline {4.6}Odabir frekvencija}{18}{}%
-\contentsline {section}{\numberline {4.7}Postavke evaluacije odabranih frekvencija}{19}{}%
-\contentsline {section}{\numberline {4.8}Općenite informacije}{20}{}%
-\contentsline {chapter}{\numberline {5}Implementacija}{21}{}%
-\contentsline {section}{\numberline {5.1}Korištene biblioteke}{21}{}%
-\contentsline {subsection}{\numberline {5.1.1}OpenGL}{21}{}%
-\contentsline {subsection}{\numberline {5.1.2}Dear ImGui}{22}{}%
-\contentsline {subsection}{\numberline {5.1.3}ImPlot}{22}{}%
-\contentsline {subsection}{\numberline {5.1.4}Ostale biblioteke}{22}{}%
-\contentsline {section}{\numberline {5.2}Arhitektura rješenja}{23}{}%
-\contentsline {subsection}{\numberline {5.2.1}Model}{24}{}%
-\contentsline {subsection}{\numberline {5.2.2}Pogled}{25}{}%
-\contentsline {subsection}{\numberline {5.2.3}Upravljač}{27}{}%
-\contentsline {section}{\numberline {5.3}Organizacija podataka na grafičkoj kartici}{28}{}%
-\contentsline {subsection}{\numberline {5.3.1}Podaci za bojanje ćelija}{29}{}%
-\contentsline {subsection}{\numberline {5.3.2}Podaci za detekciju lebdeće ćelije}{30}{}%
-\contentsline {subsection}{\numberline {5.3.3}Podaci za linije ćelija}{30}{}%
-\contentsline {subsection}{\numberline {5.3.4}Podaci za koordinatne osi}{30}{}%
-\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{32}{}%
-\contentsline {section}{\numberline {6.1}Učitavanje datoteka}{32}{}%
-\contentsline {section}{\numberline {6.2}Normalni način rada}{34}{}%
-\contentsline {section}{\numberline {6.3}Način rada s preddefiniranim ograničenjima}{37}{}%
-\contentsline {section}{\numberline {6.4}Uspoređivanje ćelija pomoću grafova}{38}{}%
-\contentsline {chapter}{\numberline {7}Zaključak}{42}{}%
-\contentsline {chapter}{Literatura}{43}{}%
-\contentsline {chapter}{\numberline {8}Sustav događaja i signala}{45}{}%
+\contentsline {chapter}{\numberline {4}Dizajn vizualizacije}{5}{}%
+\contentsline {section}{\numberline {4.1}Vrste analize motora}{5}{}%
+\contentsline {subsection}{\numberline {4.1.1}Općenita analiza vibracija}{6}{}%
+\contentsline {subsection}{\numberline {4.1.2}Analiza vibracija s preddefiniranim ograničenjima}{6}{}%
+\contentsline {section}{\numberline {4.2}Prikaz motora}{7}{}%
+\contentsline {section}{\numberline {4.3}Prikaz grafa}{10}{}%
+\contentsline {section}{\numberline {4.4}Postavke boja}{13}{}%
+\contentsline {section}{\numberline {4.5}Postavke grafa}{15}{}%
+\contentsline {section}{\numberline {4.6}Odabir frekvencija}{17}{}%
+\contentsline {section}{\numberline {4.7}Postavke evaluacije odabranih frekvencija}{18}{}%
+\contentsline {section}{\numberline {4.8}Općenite informacije}{19}{}%
+\contentsline {chapter}{\numberline {5}Implementacija}{20}{}%
+\contentsline {section}{\numberline {5.1}Korištene biblioteke}{20}{}%
+\contentsline {subsection}{\numberline {5.1.1}OpenGL}{20}{}%
+\contentsline {subsection}{\numberline {5.1.2}Dear ImGui}{21}{}%
+\contentsline {subsection}{\numberline {5.1.3}ImPlot}{21}{}%
+\contentsline {subsection}{\numberline {5.1.4}Ostale biblioteke}{21}{}%
+\contentsline {section}{\numberline {5.2}Arhitektura rješenja}{22}{}%
+\contentsline {subsection}{\numberline {5.2.1}Model}{23}{}%
+\contentsline {subsection}{\numberline {5.2.2}Pogled}{24}{}%
+\contentsline {subsection}{\numberline {5.2.3}Upravljač}{26}{}%
+\contentsline {section}{\numberline {5.3}Organizacija podataka na grafičkoj kartici}{27}{}%
+\contentsline {subsection}{\numberline {5.3.1}Podaci za bojanje elemenata}{28}{}%
+\contentsline {subsection}{\numberline {5.3.2}Podaci za detekciju lebdećeg elementa}{29}{}%
+\contentsline {subsection}{\numberline {5.3.3}Podaci za linije elemenata}{29}{}%
+\contentsline {subsection}{\numberline {5.3.4}Podaci za koordinatne osi}{29}{}%
+\contentsline {chapter}{\numberline {6}Demonstracija rada alata}{31}{}%
+\contentsline {section}{\numberline {6.1}Učitavanje datoteka}{31}{}%
+\contentsline {section}{\numberline {6.2}Općenita analiza vibracija}{33}{}%
+\contentsline {section}{\numberline {6.3}Analiza vibracija s preddefiniranim ograničenjima}{36}{}%
+\contentsline {section}{\numberline {6.4}Uspoređivanje elemenata pomoću grafova}{37}{}%
+\contentsline {chapter}{\numberline {7}Zaključak}{41}{}%
+\contentsline {chapter}{Literatura}{42}{}%
+\contentsline {chapter}{\numberline {A}Sustav događaja i signala}{44}{}%

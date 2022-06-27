@@ -11,9 +11,9 @@
 #include "variable_map.h"
 #include "signals.h"
 
-struct FrequenzyComparator {
+struct frequencyComparator {
 	std::vector<std::string> all_names;
-	FrequenzyComparator(const std::vector<std::string>& all_names) : all_names(all_names) {}
+	frequencyComparator(const std::vector<std::string>& all_names) : all_names(all_names) {}
 
 	bool operator()(const std::string& s1, const std::string& s2) const
 	{
@@ -46,13 +46,13 @@ private:
 
 	std::vector<unsigned int> m_cell_indeces;
 
-	std::vector<std::string> m_frequenzy_names;
+	std::vector<std::string> m_frequency_names;
 	std::vector<std::string> m_selected_frequencies_names;
 
 	std::vector<unsigned int> m_selected_frequencies_indeces;
 	std::vector<std::string> m_frequencies_with_limits;
 
-	std::map<std::string, glm::vec2> m_frequenzy_limits;
+	std::map<std::string, glm::vec2> m_frequency_limits;
 	std::vector<unsigned int> m_selected_cells;
 	std::vector<data::pallete> m_selected_cells_palletes;
 
@@ -68,7 +68,7 @@ private:
 	VariableMap<UnsignedIntVariables, unsigned int> m_uint_variables;
 	VariableMap<VibrationLimitsVariables, glm::vec2> m_normal_mode_limits_variables;
 
-	FrequenzyComparator m_frq_comparator;
+	frequencyComparator m_frq_comparator;
 
 	void find_local_limits();
 
@@ -164,7 +164,7 @@ public:
 
 	bool are_stats_loaded() const { return m_cell_stats.size() > 0; }
 
-	bool are_frequenzy_limits_loaded() const { return m_frequenzy_limits.size() > 0; }
+	bool are_frequency_limits_loaded() const { return m_frequency_limits.size() > 0; }
 
 	bool are_selected_cells_palletes_loaded() const { return m_selected_cells_palletes.size() > 0; }
 
@@ -172,7 +172,7 @@ public:
 
 	std::vector<data::pallete> selected_cells_palletes() const { return m_selected_cells_palletes; }
 
-	std::vector<std::string> frequenzy_names() const { return m_frequenzy_names; }
+	std::vector<std::string> frequency_names() const { return m_frequency_names; }
 
 	const std::vector<unsigned int>& selected_frequencies_indeces() const { return m_selected_frequencies_indeces; }
 
@@ -196,7 +196,7 @@ public:
 
 	std::vector<float> get_hovered_cell_values() const { return get_values_for_cell(m_hovered_cell); }
 
-	glm::vec2 get_frequency_limit(unsigned int frequency_index) const { return m_frequenzy_limits.at(m_frequenzy_names.at(frequency_index)); }
+	glm::vec2 get_frequency_limit(unsigned int frequency_index) const { return m_frequency_limits.at(m_frequency_names.at(frequency_index)); }
 
 	VisualizationMode current_visualization_mode() const { return (VisualizationMode) m_uint_variables.get_val(UnsignedIntVariables::VISUALIZATION_MODE); }
 

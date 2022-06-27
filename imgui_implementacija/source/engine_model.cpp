@@ -45,7 +45,7 @@ void EngineModel::find_global_limits()
 	for (const auto& pair : m_cell_stats) {
 		const std::vector<float>& freq_data = pair.second.freq_data;
 
-		for (unsigned int index = 0; index < m_frequenzy_names.size(); ++index) {
+		for (unsigned int index = 0; index < m_frequency_names.size(); ++index) {
 			float value = freq_data[index];
 
 			global_limits.x = global_limits.x > value ? value : global_limits.x;		//set min limit
@@ -60,7 +60,7 @@ void EngineModel::refresh_selected_frequencies_names()
 {
 	m_selected_frequencies_names.clear();
 	for (unsigned int index : m_selected_frequencies_indeces)
-		m_selected_frequencies_names.push_back(m_frequenzy_names[index]);
+		m_selected_frequencies_names.push_back(m_frequency_names[index]);
 }
 
 void EngineModel::add_selected_cell(unsigned int cell_index)
@@ -200,14 +200,14 @@ EngineModel::EngineModel(const glm::vec3& color) : m_frq_comparator({}),
 
 void EngineModel::load_cell_stats(const char* path)
 {
-	m_cell_stats = data::load_cell_stats(path, m_frequenzy_names);
+	m_cell_stats = data::load_cell_stats(path, m_frequency_names);
 
 	m_cell_indeces.clear();
 
 	for (const auto& pair : m_cell_stats)
 		m_cell_indeces.push_back(pair.first);
 
-	m_frq_comparator.all_names = m_frequenzy_names;
+	m_frq_comparator.all_names = m_frequency_names;
 
 	find_global_limits();
 
@@ -216,7 +216,7 @@ void EngineModel::load_cell_stats(const char* path)
 
 void EngineModel::load_frequency_limits(const char* path)
 {
-	m_frequenzy_limits = data::load_frequenzy_limits(path, m_frequencies_with_limits);
+	m_frequency_limits = data::load_frequency_limits(path, m_frequencies_with_limits);
 
 	on_frequency_limits_loaded.invoke();
 }
@@ -380,13 +380,13 @@ glm::vec2 EngineModel::get_current_normal_mode_limits()
 unsigned int EngineModel::get_index_from_frequency_name(const std::string& name) const
 {
 	unsigned int index = 0;
-	for (const auto& f_name : m_frequenzy_names) {
+	for (const auto& f_name : m_frequency_names) {
 		if (f_name == name)
 			return index;
 		++index;
 	}
 
-	if (index >= m_frequenzy_names.size())
+	if (index >= m_frequency_names.size())
 		throw std::out_of_range("FREQUENCY INDEX OUT OF RANGE!");
 }
 

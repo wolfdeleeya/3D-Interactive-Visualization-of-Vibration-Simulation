@@ -39,12 +39,12 @@ void ImGuiManager::draw_color_selection_widget()
 			EngineModel::VisualizationMode current_visualization_mode = m_engine_model->current_visualization_mode();
 			bool is_limits_mode_active = current_visualization_mode == EngineModel::VisualizationMode::LIMITS;
 
-			if (m_engine_model->are_frequenzy_limits_loaded()) {
+			if (m_engine_model->are_frequency_limits_loaded()) {
 				
 				ImGui::Text("Current Mode:");
 				ImGui::SameLine();
 
-				if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "Normal Mode")) {
+				if (ImGui::Button(is_limits_mode_active ? "Limits Mode" : "General Mode")) {
 					m_engine_model->set_next_visualization_mode();
 				}
 			}
@@ -61,7 +61,7 @@ void ImGuiManager::draw_color_selection_widget()
 
 void ImGuiManager::draw_normal_color_selection()
 {
-	draw_gradient_selection("Normal Mode Gradient", *m_engine_model->get_gradient(EngineModel::GradientVariables::NORMAL_MODE_GRADIENT));
+	draw_gradient_selection("General Mode Gradient", *m_engine_model->get_gradient(EngineModel::GradientVariables::NORMAL_MODE_GRADIENT));
 }
 
 void ImGuiManager::draw_limits_mode_color_selection()
@@ -188,7 +188,7 @@ void ImGuiManager::draw_frequency_selection_widget()
 			EngineModel::VisualizationMode current_visualization_mode = m_engine_model->current_visualization_mode();
 			bool is_limits_mode_active = current_visualization_mode == EngineModel::VisualizationMode::LIMITS;
 
-			const std::vector<std::string>& frequency_names = is_limits_mode_active ? m_frequencies_with_limits : m_frequenzy_names;
+			const std::vector<std::string>& frequency_names = is_limits_mode_active ? m_frequencies_with_limits : m_frequency_names;
 
 			std::unique_ptr<bool> selected(new bool[frequency_names.size()]);
 
@@ -516,7 +516,7 @@ void ImGuiManager::update()
 
 	draw_color_selection_widget();
 
-	if (m_frequenzy_names.size() > 0) {
+	if (m_frequency_names.size() > 0) {
 		draw_frequency_selection_evaluation_settings_widget();
 		draw_frequency_selection_widget();
 	}
@@ -575,7 +575,7 @@ bool ImGuiManager::handle_mouse_click(int button, bool down)
 
 void ImGuiManager::cell_stats_loaded()
 {
-	m_frequenzy_names = m_engine_model->frequenzy_names();
+	m_frequency_names = m_engine_model->frequency_names();
 }
 
 glm::ivec2 ImGuiManager::get_scene_view_space_mouse_pos(const glm::ivec2& mouse_pos)
@@ -605,7 +605,7 @@ void ImGuiManager::selected_frequencies_changed()
 	m_selected_frequencies_text = "SELECTED FREQUENCIES:\n";
 
 	for (unsigned int f_index : m_engine_model->selected_frequencies_indeces())
-		m_selected_frequencies_text += (m_frequenzy_names[f_index] + "\n");
+		m_selected_frequencies_text += (m_frequency_names[f_index] + "\n");
 }
 
 void ImGuiManager::handle_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

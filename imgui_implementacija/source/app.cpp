@@ -47,6 +47,7 @@ App::App(int init_width, int init_height) {
 	m_imgui_manager->on_scene_view_scale_changed.add_member_listener(&MeshManager::window_size_changed, m_mesh_manager);
 
 	m_imgui_manager->on_load_vertex_positions.add_member_listener(&EngineModel::load_vertex_positions, m_engine_model);
+	m_imgui_manager->on_load_vertex_positions.add_member_listener(&ApplicationModel::on_vertex_positions_loaded, m_appliction_model);
 
 	m_imgui_manager->on_load_cell_vertices.add_member_listener(&EngineModel::load_cell_vertices, m_engine_model);
 
