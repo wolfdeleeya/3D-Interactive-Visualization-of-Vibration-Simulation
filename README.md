@@ -12,4 +12,6 @@ simulation using a 3D engine model and 2D graphs. The focus of the presented too
 is to enable a simpler way of comparing the vibration of engine parts with respect to
 selected frequencies.
 
+![general_screenshot](https://user-images.githubusercontent.com/57198780/186611503-f046f65c-142a-4c5d-99d1-5450edbd3f5e.png "General screenshot of the tool")
+
 This is a GitHub project of my master thesis on the same name for the tool I developed using C++ and OpenGL. 
