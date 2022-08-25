@@ -1,5 +1,4 @@
 \babel@toc {croatian}{}\relax 
-\contentsline {chapter}{Popis slika}{vi}{}%
 \contentsline {chapter}{\numberline {1}Uvod}{1}{}%
 \contentsline {chapter}{\numberline {2}Pregled područja}{2}{}%
 \contentsline {chapter}{\numberline {3}Analiza zadatka i zahtjeva}{4}{}%
