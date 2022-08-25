@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="207a5012-a158-493f-a2ea-9f965297c5f8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/glad/glad.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/app.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/application_model.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/camera.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/cell_color_calculator.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/cell_value_functors.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/color_helper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/custom_imgui_widgets.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/data_loading.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/debug.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/engine_model.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/events.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/glm_vec_helper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/gradient.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/graph/graph_data.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/graph/graph_manager.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/imgui_manager.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/implot_helper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/mesh/abstract_engine_mesh.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/mesh/abstract_mesh.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/mesh/axis_mesh.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/mesh/engine_cell_selection_mesh.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/mesh/engine_lines_mesh.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/mesh/engine_visualization_mesh.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/mesh_manager.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/shader_helper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/signals.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/headers/variable_map.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imconfig.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imgui.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imgui_impl_glfw.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imgui_impl_opengl3.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imgui_impl_opengl3_loader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imgui_internal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/implot.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/implot_internal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imstb_rectpack.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imstb_textedit.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Headers/imstb_truetype.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/imgui.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/imgui_demo.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/imgui_draw.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/imgui_impl_glfw.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/imgui_impl_opengl3.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/imgui_tables.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/imgui_widgets.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/implot.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/implot_demo.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui/Source/implot_items.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui_implementacija.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/imgui_implementacija.vcxproj.filters" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/palletes/default_pallete.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/axis_shader.frag" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/axis_shader.vert" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/engine_cell_selection_shader.frag" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/engine_cell_selection_shader.vert" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/engine_shader.frag" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/engine_shader.vert" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/line_shader.frag" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/shaders/line_shader.vert" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/app.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/application_model.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/camera.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/cell_color_calculator.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/cell_value_functors.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/color_helper.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/custom_imgui_widgets.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/data_loading.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/debug.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/engine_model.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/gradient.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/graph/graph_data.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/graph/graph_manager.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/imgui_manager.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/implot_helper.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/mesh/abstract_engine_mesh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/mesh/abstract_mesh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/mesh/axis_mesh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/mesh/engine_cell_selection_mesh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/mesh/engine_lines_mesh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/mesh/engine_visualization_mesh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/mesh_manager.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui_implementacija/source/shader_helper.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/master_thesis/master_thesis.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/master_thesis/master_thesis.vcxproj.filters" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/master_thesis/source/mesh/abstract_engine_mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/master_thesis/source/mesh/abstract_engine_mesh.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.aux" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.bbl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.blg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.dvi" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.lof" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.synctex.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.tex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski.toc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski_ispravak.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski_latex.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/diplomski_print.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/fer.bst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/fer.cls" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/literatura.bib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/docs/task.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/color_settings_color_picker.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/color_settings_limits_mode.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/color_settings_normal_mode.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/cubic_colormap.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/cubic_symmetrical_colormap.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/default_graph_display_bars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/cell_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/color_select.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/custom_limits_linear_sampling.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/file_select_dialog.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/files_loaded_screenshot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/hovered_cell_max.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/initial_screenshot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/limits_mode_frq_selected.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/limits_mode_opened.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/load_file_menu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/quartic_sampling_normal_mode.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/selected_cell_relative.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/selected_cell_subplots.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/selected_cells_max.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/selected_frq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/demonstration/spread.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/engine_cell_selection.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/engine_default_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/engine_view_limits.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/engine_view_normal_mode.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/frequency_selection_view.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/frq_sel_eval_settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/general_info.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/general_screenshot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/general_screenshot_segmented.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/graph_settings_default.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/graph_settings_relative.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/graph_settings_subplots.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/graph_settings_subplots_segmented.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/graph_view_axis_settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/high_level_overview.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/linear_colormap.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/quartic_colormap.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/quartic_symmetrical_colormap.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/subplots_graph_display_bars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis/resources/images/subplots_graph_display_lines.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/cover_image.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/graphs/normal_bars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/graphs/normal_lines.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/graphs/relative_bars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/graphs/subplots_bars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/graphs/subplots_lines.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/hovered_cell.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/limits_mode.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/normal_graph_bars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/normal_graph_lines.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/images/normal_mode.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis_presentation/thesis_presentation.pptx" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2DqOV7HI3tsrD8VqnJIH5IUXItR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="cidr.known.project.marker" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="207a5012-a158-493f-a2ea-9f965297c5f8" name="Changes" comment="" />
+      <created>1661423175001</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1661423175001</updated>
+      <workItem from="1661423177460" duration="41000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
