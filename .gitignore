@@ -351,4 +351,4 @@ MigrationBackup/
 .ionide/
 
 # do not ignore this
-master_thesis/imgui.ini
+!master_thesis/imgui.ini
