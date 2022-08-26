@@ -1,7 +1,7 @@
 # 3D Interactive Visualization of Vibration Simulation
 
 
-This is a GitHub project of my master thesis of the same name for the tool I developed using C++ and OpenGL. Additionaly, I used [GLFW](https://github.com/glfw/glfw) for creating application windows, [Dear ImGui](https://github.com/ocornut/imgui) for drawing UI, [ImPlot](https://github.com/epezent/implot) for drawing plots, [glm](https://github.com/g-truc/glm) for math calculations and [NFD](https://github.com/mlabbe/nativefiledialog) for opening native file dialogues.
+This is a GitHub project of my master thesis of the same name for the tool I developed using C++ and OpenGL. Additionaly, I used [GLFW](https://github.com/glfw/glfw) for creating and updating the application window, [Dear ImGui](https://github.com/ocornut/imgui) for drawing UI, [ImPlot](https://github.com/epezent/implot) for drawing plots, [glm](https://github.com/g-truc/glm) for math calculations and [NFD](https://github.com/mlabbe/nativefiledialog) for opening native file dialogues.
 
 ## Abstract
 
@@ -35,7 +35,7 @@ Limits mode - engine cells are colored based on selected harmonics and predefine
 
 <br />
 
-Engine cells' colors are determined based on selected gradient. User can select end values of gradient and gradient sampling function. Visual results of various sampling functions can be seen in figures below.
+Engine cells' colors are determined based on the selected gradient. User can select gradient end values and gradient sampling function. Visual results of various sampling functions can be seen in figures below.
 
 <br />
 
@@ -43,8 +43,26 @@ Engine cells' colors are determined based on selected gradient. User can select 
 
 <br />
 
-For detailed comparision and analysis of specific cells values, user can utilize various graph modes implemented in the tool. To place a specific cell on the graph, user must select it by left-clicking it in the engine view window. After that, cell will be colored with it's graph color. Cell can be deselected by left-clicking.
+For detailed comparision and analysis of specific cells values, user can utilize various graph modes implemented in the tool. To place a specific cell on the graph, user can select it by left-clicking it in the engine view window. After that, cell will be colored with it's graph color. Cell can also be deselected by left-clicking.
 
-![normal_bars](https://user-images.githubusercontent.com/57198780/186657438-ed488ded-d27f-451c-ad70-683157697eef.png) ![relative_bars](https://user-images.githubusercontent.com/57198780/186657443-ae229072-9c9d-4fda-8e67-5482418c21d3.png) ![subplots_bars](https://user-images.githubusercontent.com/57198780/186657446-0f9b586a-7569-40b9-b692-9399045ea1d9.png)
+<br />
 
-For more in-depth analysis of the tool check out the [full master thesis](https://github.com/wolfdeleeya/3D-Interactive-Visualization-of-Vibration-Simulation/blob/thesis_paper_and_presentation/thesis.pdf).
+<img src="https://user-images.githubusercontent.com/57198780/186657438-ed488ded-d27f-451c-ad70-683157697eef.png" width=50%>
+
+<img src="https://user-images.githubusercontent.com/57198780/186657443-ae229072-9c9d-4fda-8e67-5482418c21d3.png" width=50%>
+
+<img src="https://user-images.githubusercontent.com/57198780/186657446-0f9b586a-7569-40b9-b692-9399045ea1d9.png" width=50%>
+
+<br />
+
+## Codebase arhitecture
+
+Majority of the codebase is generally inspired by MVC design pattern and actual class diagram can be seen below.
+
+<br />
+
+![english_master_thesis (2)](https://user-images.githubusercontent.com/57198780/186856745-b192ec5b-d27f-48c8-b009-e270ffedeabe.jpg)
+
+<br />
+
+For more in-depth analysis of the tool's features and it's codebase check out the [full master thesis](https://github.com/wolfdeleeya/3D-Interactive-Visualization-of-Vibration-Simulation/blob/thesis_paper_and_presentation/thesis.pdf).
