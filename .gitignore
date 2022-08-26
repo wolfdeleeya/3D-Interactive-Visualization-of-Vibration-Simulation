@@ -349,3 +349,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+//do not ignore this
+!.\master_thesis\imgui.ini
