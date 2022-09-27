@@ -49,6 +49,10 @@ public:
 
 	static App* create_app(int init_width, int init_height);
 
+	App(const App& a) = delete;
+
+	App operator=(const App& a) = delete;
+
 	~App();
 	
 	bool should_close() { return glfwWindowShouldClose(m_window); }
