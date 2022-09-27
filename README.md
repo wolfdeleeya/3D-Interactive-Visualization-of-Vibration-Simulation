@@ -1,7 +1,8 @@
 # 3D Interactive Visualization of Vibration Simulation
 
-
 This is a GitHub project of my [master thesis](https://github.com/wolfdeleeya/3D-Interactive-Visualization-of-Vibration-Simulation/blob/thesis_paper_and_presentation/thesis.pdf) of the same name for the tool I developed using C++ and OpenGL. Additionaly, I used [GLFW](https://github.com/glfw/glfw) for creating and updating the application window, [Dear ImGui](https://github.com/ocornut/imgui) for drawing UI, [ImPlot](https://github.com/epezent/implot) for drawing plots, [glm](https://github.com/g-truc/glm) for math calculations and [NFD](https://github.com/mlabbe/nativefiledialog) for opening native file dialogues.
+
+DISCLAIMER: Demo engine data was generously provided by AVL-ST d.o.o.
 
 ## Abstract
 
