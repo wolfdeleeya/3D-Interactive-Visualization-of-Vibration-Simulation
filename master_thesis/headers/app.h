@@ -51,7 +51,7 @@ public:
 
 	App(const App& a) = delete;
 
-	App operator=(const App& a) = delete;
+	App& operator=(const App& a) = delete;
 
 	~App();
 	
